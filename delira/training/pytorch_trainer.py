@@ -432,7 +432,7 @@ class PyTorchNetworkTrainer(AbstractNetworkTrainer):
 
         batchgen._finish()
 
-    def predict(self, batchgen, batch_size=None):
+    def _predict(self, batchgen, batch_size=None):
         """
         Returns predictions from network for batches from batchgen
 
@@ -517,7 +517,8 @@ class PyTorchNetworkTrainer(AbstractNetworkTrainer):
                     else:
                         loss_mean_vals[key] = val.detach()
 
-                outputs_all.append([pytorch_batch_to_numpy(tmp) for tmp in preds])
+                outputs_all.append([pytorch_batch_to_numpy(tmp)
+                                    for tmp in preds])
 
                 label_dict = {
                 }

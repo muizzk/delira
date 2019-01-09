@@ -103,6 +103,114 @@ class AbstractExperiment(TrixiExperiment):
 
         raise NotImplementedError()
 
+        def tune_hyper_parameters(self, data: BaseDataManager,
+                                  tune_config: dict,
+                                  trial_scheduler: TrialScheduler,
+                                  params: typing.Optional[Parameters] = None,
+                                  **kwargs):
+        """
+        Tunes the hyperparameters (and model arguments) given in 
+        ``hyper_params`` and ``model_kwargs`` by starting different trials 
+        via ``tune``
+
+        Parameters
+        ----------
+        data : typing.List[BaseDataManager]
+            list of datamanagers (will be splitted randomly)
+        tune_config : dict
+            Configuration dict configuring the ``tune`` trials
+        trial_scheduler : TrialScheduler
+            Scheduler to schedule different trials (and maybe scatter them 
+            to correct devices)
+        :class:`Parameters`, optional
+            Class containing all parameters (defaults to None).
+            If not specified, the parameters fall back to the ones given during 
+            class initialization
+
+        See Also
+        --------
+        * `ray.tune <https://ray.readthedocs.io/en/latest/tune.html>` 
+            for general information about tuning possibilities
+        * `ray.tune.schedulers 
+            <https://ray.readthedocs.io/en/latest/tune-schedulers.html>` for 
+            more details about the available scheduling algorithms
+        * `ray.tune.userguide 
+            <https://ray.readthedocs.io/en/latest/tune-usage.html>` for more 
+            details about how to configure an experiment
+
+        """
+
+        ray.init()
+        register_trainable("%s_hp_trial" % self.__class__.__name__,
+                           lambda cfg, rprtr: self._hyper_parameter_trial(
+                               data=data, config=cfg, reporter=rprtr))
+
+        run_experiments_kwargs = {}
+
+        for key in getargs(run_experiments)[0]:
+            if key in kwargs:
+                run_experiments_kwargs[key] = kwargs.pop(key)
+
+        if params is None:
+            if hasattr(self, "params"):
+                params = self.params
+            else:
+                raise ValueError(
+                    "No parameters for parameter search specified")
+
+        run_experiments({
+            "%s_hp_search": {
+                "run": "%s_hp_trial" % self.__class__.__name__
+                ** tune_config,
+                "config": {
+                    "parameters": params
+                    ** kwargs
+                }
+            }
+        },
+            verbose=0,
+            scheduler=trial_scheduler,
+            **run_experiments_kwargs
+        )
+
+    def _hyper_parameter_trial(self, data: BaseDataManager,
+                               config: dict,
+                               reporter: StatusReporter
+                               ):
+        """
+        Internal function defining a single trial for parameter optimization 
+        with ``tune``
+
+        Parameters
+        ----------
+        data : typing.List[BaseDataManager]
+            list of datamanagers (will be splitted randomly)
+        reporter : StatusReporter
+            reporter which will be passed to the network trainer to report the 
+            results of a trial back to the ``tune`` engine
+        config : dict
+            configuration of the trial; May include keyword arguments for 
+            sklearns ``train_test_split``, the ``parameters``
+
+        """
+
+        train_mgr, test_mgr = data.train_test_split(config.pop("test_size",
+                                                               0.25),
+                                                    config.pop(
+            "train_size", None),
+            config.pop("random_state",
+                       None),
+            config.pop(
+            "shuffle", True),
+            config.pop("stratify",
+                       None))
+
+        self._run += 1
+        self.run(train_mgr, test_mgr,
+                 params=config.pop("parameters", None),
+                 fold=self._run - 1
+                 )
+
     def kfold(self, num_epochs: int, data: typing.List[BaseDataManager],
               num_splits=None, shuffle=False, random_seed=None, **kwargs):
         """

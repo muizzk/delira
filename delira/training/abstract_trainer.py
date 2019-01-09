@@ -26,7 +26,7 @@ class AbstractNetworkTrainer(object):
 
     """
 
-    def __init__(self, fold=0, callbacks=[]):
+    def __init__(self, fold=0, callbacks=[], reporter=None):
         """
 
         Parameters
@@ -35,10 +35,13 @@ class AbstractNetworkTrainer(object):
             current fold in (default: 0)
         callbacks : list
             list of callbacks to register
+        reporter: 
+            Ray Reporter needed for hyperparameter optimization
 
         """
         self._callbacks = []
         self._fold = fold
+        self._reporter = reporter
 
         for cbck in callbacks:
             self.register_callback(cbck)
@@ -191,18 +194,56 @@ class AbstractNetworkTrainer(object):
         """
         raise NotImplementedError()
 
-    @abstractmethod
-    def predict(self, batchgen, batchsize=None):
+        def predict(self, batchgen, batchsize=None, val_score_key=None,
+                    curr_epoch=None):
         """
-        Defines a rotine to predict data obtained from a batchgenerator
+        Defines a routine to predict data obtained from a batchgenerator and 
+        reports to the reporter if possible
+
+        Parameters
+        ----------
+        batchgen : MultiThreadedAugmenter
+            Generator Holding the Batches, optional
+        batchsize : int or None, optional
+            Artificial batchsize (sampling will be done with batchsize
+            1 and sampled data will be stacked to match the artificial
+            batchsize)(default: None)
+        val_score_key : int or None, optional
+            validation score key used for hyperparameter tuning if provided
+
+        """
+        outputs_all, labels_all, val_dict = self._predict(batchgen,
+                                                          batchsize=batchsize)
+
+        if self._reporter is not None:
+            if val_score_key is not None:
+                if curr_epoch is not None:
+                    self._reporter(**{val_score_key: val_dict[val_score_key],
+                                      "training_iteration": curr_epoch})
+                else:
+                    self._reporter(**{val_score_key: val_dict[val_score_key]})
+
+            else:
+                logger.warning(
+                    "Reporter for hyperparameter search is given, but "
+                    "no val_score_key is specified to optimize the "
+                    "hyperparameters")
+
+        return outputs_all, labels_all, val_dict
+
+    @abstractmethod
+    def _predict(self, batchgen, batchsize=None):
+        """
+        Defines a routine to predict data obtained from a batchgenerator
 
         Parameters
         ----------
         batchgen : MultiThreadedAugmenter
             Generator Holding the Batches
-        batchsize : Artificial batchsize (sampling will be done with batchsize
-                    1 and sampled data will be stacked to match the artificial
-                    batchsize)(default: None)
+        batchsize : 
+            Artificial batchsize (sampling will be done with batchsize
+            1 and sampled data will be stacked to match the artificial
+            batchsize)(default: None)
 
         Raises
         ------
@@ -211,7 +252,6 @@ class AbstractNetworkTrainer(object):
 
         """
         raise NotImplementedError()
-
     @property
     def fold(self):
         """
