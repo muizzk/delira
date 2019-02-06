@@ -310,6 +310,12 @@
 <p class="last"><code class="docutils literal notranslate"><span class="pre">delira</span></code> supports mixed-precision training via <a class="reference external" href="https://github.com/NVIDIA/apex">apex</a>, but <code class="docutils literal notranslate"><span class="pre">apex</span></code> must be installed separately</p>
 </div>
 </li>
+<li><p class="first"><a class="reference external" href="https://tensorflow.org">tf</a> (very experimental): Suffix <code class="docutils literal notranslate"><span class="pre">tf</span></code></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">the <code class="docutils literal notranslate"><span class="pre">tf</span></code> backend is still very experimental and may be unstable.</p>
+</div>
+</li>
 <li><p class="first">None: No Suffix</p>
 </li>
 <li><p class="first">All (installs all registered backends and their dependencies; not recommended, since this will install many large packages): Suffix <code class="docutils literal notranslate"><span class="pre">full</span></code></p>
@@ -348,7 +354,12 @@
 <td><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/justusschock/delira.git</span> <span class="pre">&amp;&amp;</span> <span class="pre">cd</span> <span class="pre">delira</span> <span class="pre">&amp;&amp;</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">.[torch]</span></code></td>
 <td><code class="docutils literal notranslate"><span class="pre">delira</span></code> with <code class="docutils literal notranslate"><span class="pre">torch</span></code> backend supports mixed-precision training via <a class="reference external" href="https://github.com/NVIDIA/apex.git">NVIDIA/apex</a> (must be installed separately).</td>
 </tr>
-<tr class="row-even"><td>Full</td>
+<tr class="row-even"><td><a class="reference external" href="https://tensorflow.org">tf</a></td>
+<td>–</td>
+<td><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/justusschock/delira.git</span> <span class="pre">&amp;&amp;</span> <span class="pre">cd</span> <span class="pre">delira</span> <span class="pre">&amp;&amp;</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">.[tf]</span></code></td>
+<td>The tensorflow backend is still very experimental and lacks some <a class="reference external" href="https://github.com/justusschock/delira/issues/47">features</a></td>
+</tr>
+<tr class="row-odd"><td>Full</td>
 <td><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">delira[full]</span></code></td>
 <td><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/justusschock/delira.git</span> <span class="pre">&amp;&amp;</span> <span class="pre">cd</span> <span class="pre">delira</span> <span class="pre">&amp;&amp;</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">.[full]</span></code></td>
 <td>All backends are getting installed.</td>
