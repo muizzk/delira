@@ -1,0 +1,1247 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>delira.training.experiment &mdash; delira 0.2.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/delira.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting_started.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../getting_started.html#backends">Backends</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial_delira.html">Delira Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#loading-data">Loading Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#the-dataset">The Dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#the-dataloader">The Dataloader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#the-datamanager">The Datamanager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#sampler">Sampler</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#models">Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#init"><code class="docutils literal notranslate"><span class="pre">__init__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#closure"><code class="docutils literal notranslate"><span class="pre">closure</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#prepare-batch"><code class="docutils literal notranslate"><span class="pre">prepare_batch</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#abstract-networks-for-specific-backends">Abstract Networks for specific Backends</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#pytorch">PyTorch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../tutorial_delira.html#forward"><code class="docutils literal notranslate"><span class="pre">forward</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../tutorial_delira.html#id1"><code class="docutils literal notranslate"><span class="pre">prepare_batch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../tutorial_delira.html#closure-example"><code class="docutils literal notranslate"><span class="pre">closure</span> <span class="pre">example</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#other-examples">Other examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#training">Training</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#parameters">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#trainer">Trainer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#experiment">Experiment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#logging">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#multistreamhandler"><code class="docutils literal notranslate"><span class="pre">MultiStreamHandler</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#logging-with-visdom-the-trixi-loggers">Logging with <code class="docutils literal notranslate"><span class="pre">Visdom</span></code> - The <code class="docutils literal notranslate"><span class="pre">trixi</span></code> Loggers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../tutorial_delira.html#types-of-visdomhandlers">Types of VisdomHandlers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#more-examples">More Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../classification_pytorch.html">Classification with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../classification_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../classification_pytorch.html#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../classification_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../classification_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../classification_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../classification_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gan_pytorch.html">Generative Adversarial Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../gan_pytorch.html#hyperparameters">HyperParameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gan_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gan_pytorch.html#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gan_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gan_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gan_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gan_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../segmentation_2d_pytorch.html">Segmentation in 2D using U-Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#data-praparation">Data Praparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../segmentation_3d_pytorch.html">Segmentation in 3D using U-Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#data-praparation">Data Praparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">API Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_api/_build/modules.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../_api/_build/delira/delira.html">Delira</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/data_loading/data_loading.html">Data Loading</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/data_loading/arbitrary_data.html">Arbitrary Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/data_loading/nii.html">Nii</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/data_loading/sampler.html">Sampler</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/delira.io.html">IO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/logging/logging.html">Logging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/logging/handlers.html"><span class="hidden-section">MultiStreamHandler</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/logging/handlers.html#trixihandler"><span class="hidden-section">TrixiHandler</span></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/models/models.html">Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/models/classification.html">Classification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/models/gan.html">Generative Adversarial Networks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/models/segmentation.html">Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/training/training.html">Training</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/parameters.html">Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/trainer.html">Network Trainer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/experiment.html">Experiment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/callbacks.html">Callbacks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/losses.html">Losses</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html"><span class="hidden-section">AurocMetricPyTorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#accurarcymetricpytorch"><span class="hidden-section">AccurarcyMetricPyTorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#pytorch-batch-to-numpy"><span class="hidden-section">pytorch_batch_to_numpy</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#pytorch-tensor-to-numpy"><span class="hidden-section">pytorch_tensor_to_numpy</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#float-to-pytorch-tensor"><span class="hidden-section">float_to_pytorch_tensor</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#create-optims-default-pytorch"><span class="hidden-section">create_optims_default_pytorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#create-optims-gan-default-pytorch"><span class="hidden-section">create_optims_gan_default_pytorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#create-optims-default-tf"><span class="hidden-section">create_optims_default_tf</span></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/delira.utils.html">Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/class_hierarchy.html">Class Hierarchy Diagrams</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/justusschock/delira">GitHub</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">delira</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>delira.training.experiment</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for delira.training.experiment</h1><div class="highlight"><pre>
+<span></span>
+
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">now</span>
+<span class="kn">from</span> <span class="nn">..data_loading</span> <span class="k">import</span> <span class="n">BaseDataManager</span><span class="p">,</span> <span class="n">BaseLazyDataset</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">delira_version</span>
+<span class="kn">from</span> <span class="nn">.parameters</span> <span class="k">import</span> <span class="n">Parameters</span>
+<span class="kn">from</span> <span class="nn">..models</span> <span class="k">import</span> <span class="n">AbstractNetwork</span>
+<span class="kn">from</span> <span class="nn">.abstract_trainer</span> <span class="k">import</span> <span class="n">AbstractNetworkTrainer</span>
+<span class="kn">from</span> <span class="nn">trixi.experiment</span> <span class="k">import</span> <span class="n">Experiment</span> <span class="k">as</span> <span class="n">TrixiExperiment</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">KFold</span><span class="p">,</span> <span class="n">StratifiedKFold</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">inspect</span> <span class="k">import</span> <span class="n">signature</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AbstractExperiment"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.AbstractExperiment">[docs]</a><span class="k">class</span> <span class="nc">AbstractExperiment</span><span class="p">(</span><span class="n">TrixiExperiment</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Abstract Class Representing a single Experiment (must be subclassed for</span>
+<span class="sd">    each Backend)</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :class:`PyTorchExperiment`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_epochs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_epochs : int</span>
+<span class="sd">            number of epochs to train</span>
+<span class="sd">        *args :</span>
+<span class="sd">            positional arguments</span>
+<span class="sd">        **kwargs :</span>
+<span class="sd">            keyword arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">n_epochs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_run</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="AbstractExperiment.setup"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.AbstractExperiment.setup">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstract Method to setup a :class:`AbstractNetworkTrainer`</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        NotImplementedError</span>
+<span class="sd">            if not overwritten by subclass</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AbstractExperiment.run"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.AbstractExperiment.run">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_data</span><span class="p">:</span> <span class="n">BaseDataManager</span><span class="p">,</span>
+            <span class="n">val_data</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">BaseDataManager</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">params</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Parameters</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        trains single model</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        train_data : :class:`BaseDataManager`</span>
+<span class="sd">            data manager containing the training data</span>
+<span class="sd">        val_data : :class:`BaseDataManager`</span>
+<span class="sd">            data manager containing the validation data</span>
+<span class="sd">        parameters : :class:`Parameters`, optional</span>
+<span class="sd">            Class containing all parameters (defaults to None).</span>
+<span class="sd">            If not specified, the parameters fall back to the ones given during</span>
+<span class="sd">            class initialization</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        NotImplementedError</span>
+<span class="sd">            If not overwritten in subclass</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AbstractExperiment.test"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.AbstractExperiment.test">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+             <span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span>
+             <span class="n">network</span><span class="p">:</span> <span class="n">AbstractNetwork</span><span class="p">,</span>
+             <span class="n">datamgr_test</span><span class="p">:</span> <span class="n">BaseDataManager</span><span class="p">,</span>
+             <span class="n">trainer_cls</span><span class="o">=</span><span class="n">AbstractNetworkTrainer</span><span class="p">,</span>
+             <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes prediction for all items in datamgr_test with network</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        params : :class:`Parameters`</span>
+<span class="sd">            the parameters to construct a model</span>
+<span class="sd">        network : :class:&#39;AbstractNetwork&#39;</span>
+<span class="sd">            the network to train</span>
+<span class="sd">        datamgr_test : :class:&#39;BaseDataManager&#39;</span>
+<span class="sd">            holds the test data</span>
+<span class="sd">        trainer_cls :</span>
+<span class="sd">            class defining the actual trainer,</span>
+<span class="sd">            defaults to :class:`AbstractNetworkTrainer`,</span>
+<span class="sd">            which should be suitable for most cases,</span>
+<span class="sd">            but can easily be overwritten and exchanged if necessary</span>
+<span class="sd">        **kwargs :</span>
+<span class="sd">            holds additional keyword arguments</span>
+<span class="sd">            (which are completly passed to the trainers init)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray</span>
+<span class="sd">            predictions from batches</span>
+<span class="sd">        list of np.ndarray</span>
+<span class="sd">            labels from batches</span>
+<span class="sd">        dict</span>
+<span class="sd">            dictionary containing the mean validation metrics and</span>
+<span class="sd">            the mean loss values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AbstractExperiment.kfold"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.AbstractExperiment.kfold">[docs]</a>    <span class="k">def</span> <span class="nf">kfold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+              <span class="n">data</span><span class="p">:</span> <span class="n">BaseDataManager</span><span class="p">,</span>
+              <span class="n">num_splits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">train_kwargs</span><span class="o">=</span><span class="p">{},</span>
+              <span class="n">test_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs K-Fold Crossvalidation</span>
+<span class="sd">        The supported scenario is:</span>
+
+<span class="sd">            * passing a single datamanager: the data within the single manager</span>
+<span class="sd">            will be split and multiple datamanagers will be created holding</span>
+<span class="sd">            the subsets.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_epochs : int</span>
+<span class="sd">            number of epochs to train the model</span>
+<span class="sd">        data : single :class:`BaseDataManager`</span>
+<span class="sd">            single datamanager (will be split for crossvalidation)</span>
+<span class="sd">        num_splits : None or int</span>
+<span class="sd">            number of splits for kfold</span>
+<span class="sd">            if None: 10 splits will be validated per default</span>
+<span class="sd">        shuffle : bool</span>
+<span class="sd">            whether or not to shuffle indices for kfold</span>
+<span class="sd">        random_seed : None or int</span>
+<span class="sd">            random seed used to seed the kfold (if shuffle is true),</span>
+<span class="sd">            pytorch and numpy</span>
+<span class="sd">        train_kwargs : dict</span>
+<span class="sd">            keyword arguments to specify training behavior</span>
+<span class="sd">        test_kwargs : dict</span>
+<span class="sd">            keyword arguments to specify testing behavior</span>
+<span class="sd">        **kwargs :</span>
+<span class="sd">            additional keyword arguments (completely passed to self.run())</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :method:`BaseDataManager.update_state_from_dict` for valid keys in</span>
+<span class="sd">            ``train_kwargs`` and ``test_kwargs``</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># set number of splits if not specified</span>
+        <span class="k">if</span> <span class="n">num_splits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">num_splits</span> <span class="o">=</span> <span class="mi">10</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;num_splits not defined, using default value of </span><span class="se">\</span>
+<span class="s2">                            10 splits instead &quot;</span><span class="p">)</span>
+
+        <span class="c1"># extract actual data to be split</span>
+        <span class="n">split_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dataset</span><span class="p">)))</span>
+
+        <span class="c1"># instantiate the actual kfold</span>
+        <span class="n">fold</span> <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="n">num_splits</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">,</span>
+                     <span class="n">random_state</span><span class="o">=</span><span class="n">random_seed</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">random_seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">random_seed</span><span class="p">)</span>
+
+        <span class="c1"># run folds</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">train_idxs</span><span class="p">,</span> <span class="n">test_idxs</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fold</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">split_data</span><span class="p">)):</span>
+
+            <span class="c1"># extract data from single manager</span>
+            <span class="n">train_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">train_idxs</span><span class="p">)</span>
+            <span class="n">test_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">test_idxs</span><span class="p">)</span>
+
+            <span class="c1"># update manager behavior for train and test case</span>
+            <span class="n">train_data</span><span class="o">.</span><span class="n">update_state_from_dict</span><span class="p">(</span><span class="n">train_kwargs</span><span class="p">)</span>
+            <span class="n">test_data</span><span class="o">.</span><span class="n">update_state_from_dict</span><span class="p">(</span><span class="n">test_kwargs</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span><span class="p">,</span>
+                     <span class="n">num_epochs</span><span class="o">=</span><span class="n">num_epochs</span><span class="p">,</span>
+                     <span class="n">fold</span><span class="o">=</span><span class="n">idx</span><span class="p">,</span>
+                     <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AbstractExperiment.stratified_kfold"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.AbstractExperiment.stratified_kfold">[docs]</a>    <span class="k">def</span> <span class="nf">stratified_kfold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                         <span class="n">data</span><span class="p">:</span> <span class="n">BaseDataManager</span><span class="p">,</span>
+                         <span class="n">num_splits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">label_key</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">train_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="n">test_kwargs</span><span class="o">=</span><span class="p">{},</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs stratified K-Fold Crossvalidation</span>
+<span class="sd">        The supported supported scenario is:</span>
+
+<span class="sd">            * passing a single datamanager: the data within the single manager</span>
+<span class="sd">              will be split and multiple datamanagers will be created holding</span>
+<span class="sd">              the subsets.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_epochs : int</span>
+<span class="sd">            number of epochs to train the model</span>
+<span class="sd">        data : :class:`BaseDataManager`</span>
+<span class="sd">            single datamanager</span>
+<span class="sd">            (will be split for crossvalidation)</span>
+<span class="sd">        num_splits : None or int</span>
+<span class="sd">            number of splits for kfold</span>
+<span class="sd">            if None: 10 splits will be validated</span>
+<span class="sd">        shuffle : bool</span>
+<span class="sd">            whether or not to shuffle indices for kfold</span>
+<span class="sd">        random_seed : None or int</span>
+<span class="sd">            random seed used to seed the kfold (if shuffle is true),</span>
+<span class="sd">            pytorch and numpy</span>
+<span class="sd">        label_key : str (default: &quot;label&quot;)</span>
+<span class="sd">            the key to extract the label for stratification from each data</span>
+<span class="sd">            sample</span>
+<span class="sd">        train_kwargs : dict</span>
+<span class="sd">            keyword arguments to specify training behavior</span>
+<span class="sd">        test_kwargs : dict</span>
+<span class="sd">            keyword arguments to specify testing behavior</span>
+<span class="sd">        **kwargs :</span>
+<span class="sd">            additional keyword arguments (completely passed to self.run())</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :method:`BaseDataManager.update_state_from_dict` for valid keys in</span>
+<span class="sd">            ``train_kwargs`` and ``test_kwargs``</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">num_splits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">num_splits</span> <span class="o">=</span> <span class="mi">10</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;num_splits not defined, using default value of </span><span class="se">\</span>
+<span class="s2">                                10 splits instead &quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="n">BaseLazyDataset</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;A lazy dataset is given for stratified kfold. </span><span class="se">\</span>
+<span class="s2">                            Iterating over the dataset to extract labels for </span><span class="se">\</span>
+<span class="s2">                            stratification may be a massive overhead&quot;</span><span class="p">)</span>
+
+        <span class="n">split_idxs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dataset</span><span class="p">)))</span>
+        <span class="n">split_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="n">_idx</span><span class="p">][</span><span class="n">label_key</span><span class="p">]</span> <span class="k">for</span> <span class="n">_idx</span> <span class="ow">in</span> <span class="n">split_idxs</span><span class="p">]</span>
+
+        <span class="n">fold</span> <span class="o">=</span> <span class="n">StratifiedKFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="n">num_splits</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">,</span>
+                               <span class="n">random_state</span><span class="o">=</span><span class="n">random_seed</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">train_idxs</span><span class="p">,</span> <span class="n">test_idxs</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fold</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">split_idxs</span><span class="p">,</span>
+                                                                 <span class="n">split_labels</span><span class="p">)):</span>
+            <span class="c1"># extract data from single manager</span>
+            <span class="n">train_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">train_idxs</span><span class="p">)</span>
+            <span class="n">test_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">test_idxs</span><span class="p">)</span>
+
+            <span class="c1"># update manager behavior for train and test case</span>
+            <span class="n">train_data</span><span class="o">.</span><span class="n">update_state_from_dict</span><span class="p">(</span><span class="n">train_kwargs</span><span class="p">)</span>
+            <span class="n">test_data</span><span class="o">.</span><span class="n">update_state_from_dict</span><span class="p">(</span><span class="n">test_kwargs</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span><span class="p">,</span>
+                     <span class="n">num_epochs</span><span class="o">=</span><span class="n">num_epochs</span><span class="p">,</span>
+                     <span class="n">fold</span><span class="o">=</span><span class="n">idx</span><span class="p">,</span>
+                     <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts :class:`AbstractExperiment` to string representation</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            representation of class</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;Experiment:</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Call :meth:`AbstractExperiment.run`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *args :</span>
+<span class="sd">            positional arguments</span>
+<span class="sd">        **kwargs :</span>
+<span class="sd">            keyword arguments</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`AbstractNetworkTrainer`</span>
+<span class="sd">            trainer of trained network</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AbstractExperiment.save"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.AbstractExperiment.save">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the Whole experiments</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        NotImplementedError</span>
+<span class="sd">            If not overwritten in subclass</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AbstractExperiment.load"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.AbstractExperiment.load">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads whole experiment</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file_name : str</span>
+<span class="sd">            file_name to load the experiment from</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        NotImplementedError</span>
+<span class="sd">            if not overwritten in subclass</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+
+<span class="k">if</span> <span class="s2">&quot;torch&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;DELIRA_BACKEND&quot;</span><span class="p">]:</span>
+
+    <span class="kn">import</span> <span class="nn">torch</span>
+    <span class="kn">from</span> <span class="nn">.train_utils</span> <span class="k">import</span> <span class="n">create_optims_default_pytorch</span>
+    <span class="kn">from</span> <span class="nn">.pytorch_trainer</span> <span class="k">import</span> <span class="n">PyTorchNetworkTrainer</span> <span class="k">as</span> <span class="n">PTNetworkTrainer</span>
+    <span class="kn">from</span> <span class="nn">..models</span> <span class="k">import</span> <span class="n">AbstractPyTorchNetwork</span>
+
+<div class="viewcode-block" id="PyTorchExperiment"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.PyTorchExperiment">[docs]</a>    <span class="k">class</span> <span class="nc">PyTorchExperiment</span><span class="p">(</span><span class="n">AbstractExperiment</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Single Experiment for PyTorch Backend</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`AbstractExperiment`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                     <span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span>
+                     <span class="n">model_cls</span><span class="p">:</span> <span class="n">AbstractPyTorchNetwork</span><span class="p">,</span>
+                     <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">val_score_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">optim_builder</span><span class="o">=</span><span class="n">create_optims_default_pytorch</span><span class="p">,</span>
+                     <span class="n">checkpoint_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                     <span class="n">trainer_cls</span><span class="o">=</span><span class="n">PTNetworkTrainer</span><span class="p">,</span>
+                     <span class="o">**</span><span class="n">kwargs</span>
+                     <span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            params : :class:`Parameters`</span>
+<span class="sd">                the training and model parameters</span>
+<span class="sd">            model_cls :</span>
+<span class="sd">                the class to instantiate models</span>
+<span class="sd">            name : str</span>
+<span class="sd">                the experiment&#39;s name, </span>
+<span class="sd">                default: None -&gt; &quot;UnnamedExperiment&quot;</span>
+<span class="sd">            save_path : str</span>
+<span class="sd">                the path to save the experiment to</span>
+<span class="sd">                (a date-time signature will be appended),</span>
+<span class="sd">                default: None -&gt; Use current working dir</span>
+<span class="sd">            val_score_key : str or None</span>
+<span class="sd">                key to access the metric to monitor for model</span>
+<span class="sd">                selection and callbacks (often starts with &quot;val_&quot;)</span>
+<span class="sd">            optim_builder : function</span>
+<span class="sd">                function returning a dictionary of optimizers</span>
+<span class="sd">                defaults to :function:`create_optims_default_pytorch`</span>
+<span class="sd">            checkpoint_freq : int</span>
+<span class="sd">                save checkpoint after each n epochs</span>
+<span class="sd">                (if set to 1, checkpoints will be saved after each epoch,</span>
+<span class="sd">                if set to 2, checkpoints will be saved after each</span>
+<span class="sd">                2 epochs etc.)</span>
+<span class="sd">            trainer_cls :</span>
+<span class="sd">                class defining the actual trainer,</span>
+<span class="sd">                defaults to :class:`PyTorchNetworkTrainer`,</span>
+<span class="sd">                which should be suitable for most cases,</span>
+<span class="sd">                but can easily be overwritten and exchanged if necessary</span>
+<span class="sd">            **kwargs :</span>
+<span class="sd">                additional keyword arguments</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">params</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+            <span class="n">n_epochs</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;num_epochs&quot;</span><span class="p">)</span>
+            <span class="n">AbstractExperiment</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_epochs</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;UnnamedExperiment&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+            <span class="k">if</span> <span class="n">save_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">save_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span>
+                                          <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
+                                              <span class="s2">&quot;%y-%m-</span><span class="si">%d</span><span class="s2">_%H-%M-%S&quot;</span><span class="p">)))</span>
+
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Save Path </span><span class="si">%s</span><span class="s2"> already exists&quot;</span><span class="p">)</span>
+
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">trainer_cls</span> <span class="o">=</span> <span class="n">trainer_cls</span>
+
+            <span class="k">if</span> <span class="n">val_score_key</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">):</span>
+                <span class="n">val_score_key</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">val_score_key</span> <span class="o">=</span> <span class="n">val_score_key</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_cls</span> <span class="o">=</span> <span class="n">model_cls</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_optim_builder</span> <span class="o">=</span> <span class="n">optim_builder</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_freq</span> <span class="o">=</span> <span class="n">checkpoint_freq</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_run</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># log HyperParameters</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">({</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">model_class = </span><span class="si">%s</span><span class="s2">&quot;</span>
+                                  <span class="o">%</span> <span class="n">model_cls</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">}})</span>
+
+<div class="viewcode-block" id="PyTorchExperiment.setup"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.PyTorchExperiment.setup">[docs]</a>        <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Perform setup of Network Trainer</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            params : :class:`Parameters`</span>
+<span class="sd">                the parameters to construct a model and network trainer</span>
+<span class="sd">            **kwargs :</span>
+<span class="sd">                keyword arguments</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">model_params</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">permute_training_on_top</span><span class="p">()</span><span class="o">.</span><span class="n">model</span>
+
+            <span class="n">model_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">,</span> <span class="s2">&quot;kwargs&quot;</span><span class="p">]:</span>
+                    <span class="k">continue</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">model_kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">model_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+            <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_cls</span><span class="p">(</span><span class="o">**</span><span class="n">model_kwargs</span><span class="p">)</span>
+
+            <span class="n">training_params</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">permute_training_on_top</span><span class="p">()</span><span class="o">.</span><span class="n">training</span>
+            <span class="n">criterions</span> <span class="o">=</span> <span class="n">training_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;criterions&quot;</span><span class="p">)</span>
+            <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">training_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;optimizer_cls&quot;</span><span class="p">)</span>
+            <span class="n">optimizer_params</span> <span class="o">=</span> <span class="n">training_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;optimizer_params&quot;</span><span class="p">)</span>
+            <span class="n">metrics</span> <span class="o">=</span> <span class="n">training_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">)</span>
+            <span class="n">lr_scheduler_cls</span> <span class="o">=</span> <span class="n">training_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;lr_sched_cls&quot;</span><span class="p">)</span>
+            <span class="n">lr_scheduler_params</span> <span class="o">=</span> <span class="n">training_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;lr_sched_params&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainer_cls</span><span class="p">(</span>
+                <span class="n">network</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">save_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span>
+                    <span class="s2">&quot;checkpoints&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;run_</span><span class="si">%02d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">),</span>
+                <span class="n">criterions</span><span class="o">=</span><span class="n">criterions</span><span class="p">,</span>
+                <span class="n">optimizer_cls</span><span class="o">=</span><span class="n">optimizer_cls</span><span class="p">,</span>
+                <span class="n">optimizer_params</span><span class="o">=</span><span class="n">optimizer_params</span><span class="p">,</span>
+                <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">,</span>
+                <span class="n">lr_scheduler_cls</span><span class="o">=</span><span class="n">lr_scheduler_cls</span><span class="p">,</span>
+                <span class="n">lr_scheduler_params</span><span class="o">=</span><span class="n">lr_scheduler_params</span><span class="p">,</span>
+                <span class="n">optim_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_optim_builder</span><span class="p">,</span>
+                <span class="n">save_freq</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_freq</span><span class="p">,</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="PyTorchExperiment.run"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.PyTorchExperiment.run">[docs]</a>        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">train_data</span><span class="p">:</span> <span class="n">BaseDataManager</span><span class="p">,</span>
+                <span class="n">val_data</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">BaseDataManager</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+                <span class="n">params</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Parameters</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            trains single model</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            train_data : BaseDataManager</span>
+<span class="sd">                holds the trainset</span>
+<span class="sd">            val_data : BaseDataManager or None</span>
+<span class="sd">                holds the validation set (if None: Model will not be validated)</span>
+<span class="sd">            params : :class:`Parameters`</span>
+<span class="sd">                the parameters to construct a model and network trainer</span>
+<span class="sd">            **kwargs :</span>
+<span class="sd">                holds additional keyword arguments</span>
+<span class="sd">                (which are completly passed to the trainers init)</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            :class:`AbstractNetworkTrainer`</span>
+<span class="sd">                trainer of trained network</span>
+
+<span class="sd">            Raises</span>
+<span class="sd">            ------</span>
+<span class="sd">            ValueError</span>
+<span class="sd">                Class has no Attribute ``params`` and no parameters were given as</span>
+<span class="sd">                function argument</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;params&quot;</span><span class="p">):</span>
+                    <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No parameters given&quot;</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+
+            <span class="n">training_params</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">permute_training_on_top</span><span class="p">()</span><span class="o">.</span><span class="n">training</span>
+
+            <span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_run</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">num_epochs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;num_epochs&quot;</span><span class="p">,</span> <span class="n">training_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span>
+                <span class="s2">&quot;num_epochs&quot;</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">,</span> <span class="n">train_data</span><span class="p">,</span> <span class="n">val_data</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">val_score_key</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;val_score_mode&quot;</span><span class="p">,</span>
+                                                 <span class="s2">&quot;lowest&quot;</span><span class="p">)</span>
+                                 <span class="p">)</span></div>
+
+<div class="viewcode-block" id="PyTorchExperiment.test"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.PyTorchExperiment.test">[docs]</a>        <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span>
+                 <span class="n">network</span><span class="p">:</span> <span class="n">AbstractPyTorchNetwork</span><span class="p">,</span>
+                 <span class="n">datamgr_test</span><span class="p">:</span> <span class="n">BaseDataManager</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Executes prediction for all items in datamgr_test with network</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            params : :class:`Parameters`</span>
+<span class="sd">                the parameters to construct a model</span>
+<span class="sd">            network : :class:&#39;AbstractPyTorchNetwork&#39;</span>
+<span class="sd">                the network to train</span>
+<span class="sd">            datamgr_test : :class:&#39;BaseDataManager&#39;</span>
+<span class="sd">                holds the test data</span>
+<span class="sd">            **kwargs :</span>
+<span class="sd">                holds additional keyword arguments</span>
+<span class="sd">                (which are completly passed to the trainers init)</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                predictions from batches</span>
+<span class="sd">            list of np.ndarray</span>
+<span class="sd">                labels from batches</span>
+<span class="sd">            dict</span>
+<span class="sd">                dictionary containing the mean validation metrics and</span>
+<span class="sd">                the mean loss values</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="c1"># setup trainer with dummy optimization which won&#39;t be used!</span>
+            <span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainer_cls</span><span class="p">(</span>
+                <span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span>
+                <span class="n">save_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">),</span>
+                <span class="n">optimizer_cls</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">,</span>
+                <span class="n">optim_fn</span><span class="o">=</span><span class="n">create_optims_default_pytorch</span><span class="p">,</span>
+                <span class="n">criterions</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s1">&#39;criterions&#39;</span><span class="p">),</span>
+                <span class="n">optimizer_params</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s1">&#39;optimizer_params&#39;</span><span class="p">),</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="c1"># testing with batchsize 1 and 1 augmentation processs to</span>
+            <span class="c1"># avoid dropping of last elements</span>
+            <span class="n">orig_num_aug_processes</span> <span class="o">=</span> <span class="n">datamgr_test</span><span class="o">.</span><span class="n">n_process_augmentation</span>
+            <span class="n">orig_batch_size</span> <span class="o">=</span> <span class="n">datamgr_test</span><span class="o">.</span><span class="n">batch_size</span>
+
+            <span class="n">datamgr_test</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">datamgr_test</span><span class="o">.</span><span class="n">n_process_augmentation</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="n">outputs</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">metrics_val</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span>
+                <span class="n">datamgr_test</span><span class="o">.</span><span class="n">get_batchgen</span><span class="p">(),</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">orig_batch_size</span><span class="p">)</span>
+
+            <span class="c1"># reset old values</span>
+            <span class="n">datamgr_test</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">orig_batch_size</span>
+            <span class="n">datamgr_test</span><span class="o">.</span><span class="n">n_process_augmentation</span> <span class="o">=</span> <span class="n">orig_num_aug_processes</span>
+            <span class="k">return</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">metrics_val</span></div>
+
+<div class="viewcode-block" id="PyTorchExperiment.save"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.PyTorchExperiment.save">[docs]</a>        <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Saves the Whole experiments</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;experiment.delira.pkl&quot;</span><span class="p">),</span>
+                      <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;parameters&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="PyTorchExperiment.load"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.PyTorchExperiment.load">[docs]</a>        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Loads whole experiment</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            file_name : str</span>
+<span class="sd">                file_name to load the experiment from</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+        <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+            <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PyTorchExperiment.kfold"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.PyTorchExperiment.kfold">[docs]</a>        <span class="k">def</span> <span class="nf">kfold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                  <span class="n">data</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">BaseDataManager</span><span class="p">],</span>
+                                     <span class="n">BaseDataManager</span><span class="p">],</span>
+                  <span class="n">num_splits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">train_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="n">test_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">random_seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">random_seed</span><span class="p">)</span>
+
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">kfold</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">num_splits</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">,</span> <span class="n">random_seed</span><span class="p">,</span>
+                          <span class="n">train_kwargs</span><span class="p">,</span> <span class="n">test_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PyTorchExperiment.stratified_kfold"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.PyTorchExperiment.stratified_kfold">[docs]</a>        <span class="k">def</span> <span class="nf">stratified_kfold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                             <span class="n">data</span><span class="p">:</span> <span class="n">BaseDataManager</span><span class="p">,</span>
+                             <span class="n">num_splits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">label_key</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">train_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="n">test_kwargs</span><span class="o">=</span><span class="p">{},</span>
+                             <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">random_seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">random_seed</span><span class="p">)</span>
+
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">stratified_kfold</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">num_splits</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">,</span>
+                                     <span class="n">random_seed</span><span class="p">,</span> <span class="n">label_key</span><span class="p">,</span> <span class="n">train_kwargs</span><span class="p">,</span>
+                                     <span class="n">test_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+<span class="k">if</span> <span class="s2">&quot;tf&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;DELIRA_BACKEND&quot;</span><span class="p">]:</span>
+
+    <span class="kn">from</span> <span class="nn">.tf_trainer</span> <span class="k">import</span> <span class="n">TfNetworkTrainer</span>
+    <span class="kn">from</span> <span class="nn">.train_utils</span> <span class="k">import</span> <span class="n">create_optims_default_tf</span>
+    <span class="kn">from</span> <span class="nn">..models</span> <span class="k">import</span> <span class="n">AbstractTfNetwork</span>
+    <span class="kn">from</span> <span class="nn">.parameters</span> <span class="k">import</span> <span class="n">Parameters</span>
+    <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<div class="viewcode-block" id="TfExperiment"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.TfExperiment">[docs]</a>    <span class="k">class</span> <span class="nc">TfExperiment</span><span class="p">(</span><span class="n">AbstractExperiment</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Single Experiment for Tf Backend</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`AbstractExperiment`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                     <span class="n">params</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Parameters</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+                     <span class="n">model_cls</span><span class="p">:</span> <span class="n">AbstractTfNetwork</span><span class="p">,</span>
+                     <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">val_score_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">optim_builder</span><span class="o">=</span><span class="n">create_optims_default_tf</span><span class="p">,</span>
+                     <span class="n">checkpoint_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                     <span class="n">trainer_cls</span><span class="o">=</span><span class="n">TfNetworkTrainer</span><span class="p">,</span>
+                     <span class="o">**</span><span class="n">kwargs</span>
+                     <span class="p">):</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">params</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+            <span class="n">n_epochs</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;num_epochs&quot;</span><span class="p">)</span>
+            <span class="n">AbstractExperiment</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_epochs</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;UnnamedExperiment&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+            <span class="k">if</span> <span class="n">save_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">save_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span>
+                                        <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
+                                            <span class="s2">&quot;%y-%m-</span><span class="si">%d</span><span class="s2">_%H-%M-%S&quot;</span><span class="p">)))</span>
+
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Save Path </span><span class="si">%s</span><span class="s2"> already exists&quot;</span><span class="p">)</span>
+
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">trainer_cls</span> <span class="o">=</span> <span class="n">trainer_cls</span>
+
+            <span class="k">if</span> <span class="n">val_score_key</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">):</span>
+                <span class="n">val_score_key</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">val_score_key</span> <span class="o">=</span> <span class="n">val_score_key</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_cls</span> <span class="o">=</span> <span class="n">model_cls</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_optim_builder</span> <span class="o">=</span> <span class="n">optim_builder</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_freq</span> <span class="o">=</span> <span class="n">checkpoint_freq</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_run</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># log HyperParameters</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">({</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span>
+                                    <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">model_class = </span><span class="si">%s</span><span class="s2">&quot;</span>
+                                    <span class="o">%</span> <span class="n">model_cls</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">}})</span>
+
+<div class="viewcode-block" id="TfExperiment.setup"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.TfExperiment.setup">[docs]</a>        <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Perform setup of Network Trainer</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            params : :class:`Parameters`</span>
+<span class="sd">                the parameters to construct a model and network trainer</span>
+<span class="sd">            **kwargs :</span>
+<span class="sd">                keyword arguments</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="n">model_params</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">permute_training_on_top</span><span class="p">()</span><span class="o">.</span><span class="n">model</span>
+
+            <span class="n">model_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">,</span> <span class="s2">&quot;kwargs&quot;</span><span class="p">]:</span>
+                    <span class="k">continue</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">model_kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">model_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+            <span class="n">tf</span><span class="o">.</span><span class="n">reset_default_graph</span><span class="p">()</span>
+
+            <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_cls</span><span class="p">(</span><span class="o">**</span><span class="n">model_kwargs</span><span class="p">)</span>
+
+            <span class="n">training_params</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">permute_training_on_top</span><span class="p">()</span><span class="o">.</span><span class="n">training</span>
+            <span class="n">criterions</span> <span class="o">=</span> <span class="n">training_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;criterions&quot;</span><span class="p">)</span>
+            <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">training_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;optimizer_cls&quot;</span><span class="p">)</span>
+            <span class="n">optimizer_params</span> <span class="o">=</span> <span class="n">training_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;optimizer_params&quot;</span><span class="p">)</span>
+            <span class="n">metrics</span> <span class="o">=</span> <span class="n">training_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">)</span>
+            <span class="n">lr_scheduler_cls</span> <span class="o">=</span> <span class="n">training_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;lr_sched_cls&quot;</span><span class="p">)</span>
+            <span class="n">lr_scheduler_params</span> <span class="o">=</span> <span class="n">training_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;lr_sched_params&quot;</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainer_cls</span><span class="p">(</span>
+                <span class="n">network</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">save_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span>
+                    <span class="s2">&quot;checkpoints&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;run_</span><span class="si">%02d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">),</span>
+                <span class="n">losses</span><span class="o">=</span><span class="n">criterions</span><span class="p">,</span>
+                <span class="n">optimizer_cls</span><span class="o">=</span><span class="n">optimizer_cls</span><span class="p">,</span>
+                <span class="n">optimizer_params</span><span class="o">=</span><span class="n">optimizer_params</span><span class="p">,</span>
+                <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">,</span>
+                <span class="n">lr_scheduler_cls</span><span class="o">=</span><span class="n">lr_scheduler_cls</span><span class="p">,</span>
+                <span class="n">lr_scheduler_params</span><span class="o">=</span><span class="n">lr_scheduler_params</span><span class="p">,</span>
+                <span class="n">optim_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_optim_builder</span><span class="p">,</span>
+                <span class="n">save_freq</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_freq</span><span class="p">,</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TfExperiment.run"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.TfExperiment.run">[docs]</a>        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">train_data</span><span class="p">:</span> <span class="n">BaseDataManager</span><span class="p">,</span>
+                <span class="n">val_data</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">BaseDataManager</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+                <span class="n">params</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Parameters</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            trains single model</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            train_data : BaseDataManager</span>
+<span class="sd">                holds the trainset</span>
+<span class="sd">            val_data : BaseDataManager or None</span>
+<span class="sd">                holds the validation set (if None: Model will not be validated)</span>
+<span class="sd">            params : :class:`Parameters`</span>
+<span class="sd">                the parameters to construct a model and network trainer</span>
+<span class="sd">            **kwargs :</span>
+<span class="sd">                holds additional keyword arguments</span>
+<span class="sd">                (which are completly passed to the trainers init)</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            :class:`AbstractNetworkTrainer`</span>
+<span class="sd">                trainer of trained network</span>
+
+<span class="sd">            Raises</span>
+<span class="sd">            ------</span>
+<span class="sd">            ValueError</span>
+<span class="sd">                Class has no Attribute ``params`` and no parameters were given as</span>
+<span class="sd">                function argument</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;params&quot;</span><span class="p">):</span>
+                    <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No parameters given&quot;</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+
+            <span class="n">training_params</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">permute_training_on_top</span><span class="p">()</span><span class="o">.</span><span class="n">training</span>
+
+            <span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_run</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">num_epochs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;num_epochs&quot;</span><span class="p">,</span> <span class="n">training_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span>
+                <span class="s2">&quot;num_epochs&quot;</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">,</span> <span class="n">train_data</span><span class="p">,</span> <span class="n">val_data</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">val_score_key</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;val_score_mode&quot;</span><span class="p">,</span>
+                                                 <span class="s2">&quot;lowest&quot;</span><span class="p">)</span>
+                                 <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TfExperiment.save"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.TfExperiment.save">[docs]</a>        <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Saves the Whole experiments</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;experiment.delira.pkl&quot;</span><span class="p">),</span>
+                    <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">export_to_files</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TfExperiment.load"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.TfExperiment.load">[docs]</a>        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Loads whole experiment</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            file_name : str</span>
+<span class="sd">                file_name to load the experiment from</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+        <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+            <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TfExperiment.kfold"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.TfExperiment.kfold">[docs]</a>        <span class="k">def</span> <span class="nf">kfold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                  <span class="n">data</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">BaseDataManager</span><span class="p">],</span>
+                                     <span class="n">BaseDataManager</span><span class="p">],</span>
+                  <span class="n">num_splits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">train_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="n">test_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">random_seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tf</span><span class="o">.</span><span class="n">set_random_seed</span><span class="p">(</span><span class="n">random_seed</span><span class="p">)</span>
+
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">kfold</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">num_splits</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">,</span> <span class="n">random_seed</span><span class="p">,</span>
+                          <span class="n">train_kwargs</span><span class="p">,</span> <span class="n">test_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TfExperiment.stratified_kfold"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.TfExperiment.stratified_kfold">[docs]</a>        <span class="k">def</span> <span class="nf">stratified_kfold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                             <span class="n">data</span><span class="p">:</span> <span class="n">BaseDataManager</span><span class="p">,</span>
+                             <span class="n">num_splits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">label_key</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">train_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="n">test_kwargs</span><span class="o">=</span><span class="p">{},</span>
+                             <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">random_seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tf</span><span class="o">.</span><span class="n">set_random_seed</span><span class="p">(</span><span class="n">random_seed</span><span class="p">)</span>
+
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">stratified_kfold</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">num_splits</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">,</span>
+                                     <span class="n">random_seed</span><span class="p">,</span> <span class="n">label_key</span><span class="p">,</span> <span class="n">train_kwargs</span><span class="p">,</span>
+                                     <span class="n">test_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Justus Schock, Oliver Rippel, Christoph Haarburger
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

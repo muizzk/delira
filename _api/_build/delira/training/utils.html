@@ -1,0 +1,595 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>AurocMetricPyTorch &mdash; delira 0.2.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Utils" href="../delira.utils.html" />
+    <link rel="prev" title="Custom Loss Functions" href="losses.html" /> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html">
+          
+
+          
+            
+            <img src="../../../../_static/delira.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#backends">Backends</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial_delira.html">Delira Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#loading-data">Loading Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#the-dataset">The Dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#the-dataloader">The Dataloader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#the-datamanager">The Datamanager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#sampler">Sampler</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#models">Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#init"><code class="docutils literal notranslate"><span class="pre">__init__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#closure"><code class="docutils literal notranslate"><span class="pre">closure</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#prepare-batch"><code class="docutils literal notranslate"><span class="pre">prepare_batch</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#abstract-networks-for-specific-backends">Abstract Networks for specific Backends</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#pytorch">PyTorch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial_delira.html#forward"><code class="docutils literal notranslate"><span class="pre">forward</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial_delira.html#id1"><code class="docutils literal notranslate"><span class="pre">prepare_batch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial_delira.html#closure-example"><code class="docutils literal notranslate"><span class="pre">closure</span> <span class="pre">example</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#other-examples">Other examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#training">Training</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#parameters">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#trainer">Trainer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#experiment">Experiment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#logging">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#multistreamhandler"><code class="docutils literal notranslate"><span class="pre">MultiStreamHandler</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#logging-with-visdom-the-trixi-loggers">Logging with <code class="docutils literal notranslate"><span class="pre">Visdom</span></code> - The <code class="docutils literal notranslate"><span class="pre">trixi</span></code> Loggers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial_delira.html#types-of-visdomhandlers">Types of VisdomHandlers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#more-examples">More Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../classification_pytorch.html">Classification with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../classification_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../classification_pytorch.html#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../classification_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../classification_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../classification_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../classification_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../gan_pytorch.html">Generative Adversarial Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gan_pytorch.html#hyperparameters">HyperParameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gan_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gan_pytorch.html#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gan_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gan_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gan_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gan_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html">Segmentation in 2D using U-Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#data-praparation">Data Praparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html">Segmentation in 3D using U-Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#data-praparation">Data Praparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">API Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../modules.html">API Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../delira.html">Delira</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../data_loading/data_loading.html">Data Loading</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../data_loading/arbitrary_data.html">Arbitrary Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data_loading/nii.html">Nii</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data_loading/sampler.html">Sampler</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../delira.io.html">IO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logging/logging.html">Logging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../logging/handlers.html"><span class="hidden-section">MultiStreamHandler</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../logging/handlers.html#trixihandler"><span class="hidden-section">TrixiHandler</span></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../models/models.html">Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../models/classification.html">Classification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../models/gan.html">Generative Adversarial Networks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../models/segmentation.html">Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="training.html">Training</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="parameters.html">Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="trainer.html">Network Trainer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="experiment.html">Experiment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="callbacks.html">Callbacks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="losses.html">Losses</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#"><span class="hidden-section">AurocMetricPyTorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#accurarcymetricpytorch"><span class="hidden-section">AccurarcyMetricPyTorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pytorch-batch-to-numpy"><span class="hidden-section">pytorch_batch_to_numpy</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pytorch-tensor-to-numpy"><span class="hidden-section">pytorch_tensor_to_numpy</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#float-to-pytorch-tensor"><span class="hidden-section">float_to_pytorch_tensor</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#create-optims-default-pytorch"><span class="hidden-section">create_optims_default_pytorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#create-optims-gan-default-pytorch"><span class="hidden-section">create_optims_gan_default_pytorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#create-optims-default-tf"><span class="hidden-section">create_optims_default_tf</span></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../delira.utils.html">Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../class_hierarchy.html">Class Hierarchy Diagrams</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/justusschock/delira">GitHub</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">delira</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../modules.html">API Documentation</a> &raquo;</li>
+        
+          <li><a href="../delira.html">Delira</a> &raquo;</li>
+        
+          <li><a href="training.html">Training</a> &raquo;</li>
+        
+      <li><span class="hidden-section">AurocMetricPyTorch</span></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../../_sources/_api/_build/delira/training/utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="aurocmetricpytorch">
+<h1><span class="hidden-section">AurocMetricPyTorch</span><a class="headerlink" href="#aurocmetricpytorch" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="delira.training.AurocMetricPyTorch">
+<em class="property">class </em><code class="descname">AurocMetricPyTorch</code><a class="reference internal" href="../../../../_modules/delira/training/metrics.html#AurocMetricPyTorch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AurocMetricPyTorch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Metric to Calculate AuROC</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.1: </span><a class="reference internal" href="#delira.training.AurocMetricPyTorch" title="delira.training.AurocMetricPyTorch"><code class="xref py py-class docutils literal notranslate"><span class="pre">AurocMetricPyTorch</span></code></a> will be removed in next release and is
+deprecated in favor of <code class="docutils literal notranslate"><span class="pre">trixi.logging</span></code> Modules</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><a class="reference internal" href="#delira.training.AurocMetricPyTorch" title="delira.training.AurocMetricPyTorch"><code class="xref py py-class docutils literal notranslate"><span class="pre">AurocMetricPyTorch</span></code></a> will be removed in next release</p>
+</div>
+<dl class="method">
+<dt id="delira.training.AurocMetricPyTorch.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>outputs: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f746b0c87f0&gt;</em>, <em>targets: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f746b0c89b0&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/metrics.html#AurocMetricPyTorch.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AurocMetricPyTorch.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Actual AuROC calculation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>outputs</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.0.0a0+18eef1d ))"><em>torch.Tensor</em></a>) – predictions from network</li>
+<li><strong>targets</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.0.0a0+18eef1d ))"><em>torch.Tensor</em></a>) – training targets</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">auroc value</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.0.0a0+18eef1d ))">torch.Tensor</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="accurarcymetricpytorch">
+<h1><span class="hidden-section">AccurarcyMetricPyTorch</span><a class="headerlink" href="#accurarcymetricpytorch" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="delira.training.AccuracyMetricPyTorch">
+<em class="property">class </em><code class="descname">AccuracyMetricPyTorch</code><a class="reference internal" href="../../../../_modules/delira/training/metrics.html#AccuracyMetricPyTorch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AccuracyMetricPyTorch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Metric to Calculate Accuracy</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.1: </span><a class="reference internal" href="#delira.training.AccuracyMetricPyTorch" title="delira.training.AccuracyMetricPyTorch"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccuracyMetricPyTorch</span></code></a> will be removed in next release and is
+deprecated in favor of <code class="docutils literal notranslate"><span class="pre">trixi.logging</span></code> Modules</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">class:<cite>AccuracyMetricPyTorch</cite> will be removed in next release</p>
+</div>
+<dl class="method">
+<dt id="delira.training.AccuracyMetricPyTorch.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>outputs: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f746b0c8a20&gt;</em>, <em>targets: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f746b0c8358&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/metrics.html#AccuracyMetricPyTorch.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AccuracyMetricPyTorch.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Actual accuracy calcuation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>outputs</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.0.0a0+18eef1d ))"><em>torch.Tensor</em></a>) – predictions from network</li>
+<li><strong>targets</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.0.0a0+18eef1d ))"><em>torch.Tensor</em></a>) – training targets</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">accuracy value</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.0.0a0+18eef1d ))">torch.Tensor</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="pytorch-batch-to-numpy">
+<h1><span class="hidden-section">pytorch_batch_to_numpy</span><a class="headerlink" href="#pytorch-batch-to-numpy" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="delira.training.train_utils.pytorch_batch_to_numpy">
+<code class="descname">pytorch_batch_to_numpy</code><span class="sig-paren">(</span><em>tensor: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f746b193ef0&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/train_utils.html#pytorch_batch_to_numpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.train_utils.pytorch_batch_to_numpy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility Function to cast a whole PyTorch batch to numpy</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tensor</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.0.0a0+18eef1d ))"><em>torch.Tensor</em></a>) – the batch to convert</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the converted batch</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="pytorch-tensor-to-numpy">
+<h1><span class="hidden-section">pytorch_tensor_to_numpy</span><a class="headerlink" href="#pytorch-tensor-to-numpy" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="delira.training.train_utils.pytorch_tensor_to_numpy">
+<code class="descname">pytorch_tensor_to_numpy</code><span class="sig-paren">(</span><em>tensor: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f746b193ba8&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/train_utils.html#pytorch_tensor_to_numpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.train_utils.pytorch_tensor_to_numpy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility Function to cast a single PyTorch Tensor to numpy</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tensor</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.0.0a0+18eef1d ))"><em>torch.Tensor</em></a>) – the tensor to convert</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the converted tensor</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="float-to-pytorch-tensor">
+<h1><span class="hidden-section">float_to_pytorch_tensor</span><a class="headerlink" href="#float-to-pytorch-tensor" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="delira.training.train_utils.float_to_pytorch_tensor">
+<code class="descname">float_to_pytorch_tensor</code><span class="sig-paren">(</span><em>f: float</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/train_utils.html#float_to_pytorch_tensor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.train_utils.float_to_pytorch_tensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a single float to a PyTorch Float-Tensor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>f</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – float to convert</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">converted float</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.0.0a0+18eef1d ))">torch.Tensor</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="create-optims-default-pytorch">
+<h1><span class="hidden-section">create_optims_default_pytorch</span><a class="headerlink" href="#create-optims-default-pytorch" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="delira.training.train_utils.create_optims_default_pytorch">
+<code class="descname">create_optims_default_pytorch</code><span class="sig-paren">(</span><em>model</em>, <em>optim_cls</em>, <em>**optim_params</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/train_utils.html#create_optims_default_pytorch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.train_utils.create_optims_default_pytorch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to create a optimizer dictionary
+(in this case only one optimizer for the whole network)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractPyTorchNetwork</span></code>) – model whose parameters should be updated by the optimizer</li>
+<li><strong>optim_cls</strong> – Class implementing an optimization algorithm</li>
+<li><strong>**optim_params</strong> – Additional keyword arguments (passed to the optimizer class</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dictionary containing all created optimizers</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="create-optims-gan-default-pytorch">
+<h1><span class="hidden-section">create_optims_gan_default_pytorch</span><a class="headerlink" href="#create-optims-gan-default-pytorch" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="delira.training.train_utils.create_optims_gan_default_pytorch">
+<code class="descname">create_optims_gan_default_pytorch</code><span class="sig-paren">(</span><em>model</em>, <em>optim_cls</em>, <em>**optim_params</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/train_utils.html#create_optims_gan_default_pytorch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.train_utils.create_optims_gan_default_pytorch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to create a optimizer dictionary
+(in this case two optimizers: One for the generator,
+one for the discriminator)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractPyTorchNetwork</span></code>) – model whose parameters should be updated by the optimizer</li>
+<li><strong>optim_cls</strong> – Class implementing an optimization algorithm</li>
+<li><strong>optim_params</strong> – Additional keyword arguments (passed to the optimizer class</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dictionary containing all created optimizers</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="create-optims-default-tf">
+<h1><span class="hidden-section">create_optims_default_tf</span><a class="headerlink" href="#create-optims-default-tf" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="delira.training.train_utils.create_optims_default_tf">
+<code class="descname">create_optims_default_tf</code><span class="sig-paren">(</span><em>optim_cls</em>, <em>**optim_params</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/train_utils.html#create_optims_default_tf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.train_utils.create_optims_default_tf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to create a optimizer dictionary
+(in this case only one optimizer)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>optim_cls</strong> – Class implementing an optimization algorithm</li>
+<li><strong>**optim_params</strong> – Additional keyword arguments (passed to the optimizer class)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dictionary containing all created optimizers</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../delira.utils.html" class="btn btn-neutral float-right" title="Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="losses.html" class="btn btn-neutral" title="Custom Loss Functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Justus Schock, Oliver Rippel, Christoph Haarburger
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

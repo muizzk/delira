@@ -1,0 +1,383 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>delira.logging.multistream_handler &mdash; delira 0.2.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/delira.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting_started.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../getting_started.html#backends">Backends</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial_delira.html">Delira Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#loading-data">Loading Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#the-dataset">The Dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#the-dataloader">The Dataloader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#the-datamanager">The Datamanager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#sampler">Sampler</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#models">Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#init"><code class="docutils literal notranslate"><span class="pre">__init__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#closure"><code class="docutils literal notranslate"><span class="pre">closure</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#prepare-batch"><code class="docutils literal notranslate"><span class="pre">prepare_batch</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#abstract-networks-for-specific-backends">Abstract Networks for specific Backends</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#pytorch">PyTorch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../tutorial_delira.html#forward"><code class="docutils literal notranslate"><span class="pre">forward</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../tutorial_delira.html#id1"><code class="docutils literal notranslate"><span class="pre">prepare_batch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../tutorial_delira.html#closure-example"><code class="docutils literal notranslate"><span class="pre">closure</span> <span class="pre">example</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#other-examples">Other examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#training">Training</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#parameters">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#trainer">Trainer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#experiment">Experiment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#logging">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#multistreamhandler"><code class="docutils literal notranslate"><span class="pre">MultiStreamHandler</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#logging-with-visdom-the-trixi-loggers">Logging with <code class="docutils literal notranslate"><span class="pre">Visdom</span></code> - The <code class="docutils literal notranslate"><span class="pre">trixi</span></code> Loggers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../tutorial_delira.html#types-of-visdomhandlers">Types of VisdomHandlers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#more-examples">More Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../classification_pytorch.html">Classification with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../classification_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../classification_pytorch.html#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../classification_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../classification_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../classification_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../classification_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gan_pytorch.html">Generative Adversarial Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../gan_pytorch.html#hyperparameters">HyperParameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gan_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gan_pytorch.html#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gan_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gan_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gan_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gan_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../segmentation_2d_pytorch.html">Segmentation in 2D using U-Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#data-praparation">Data Praparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../segmentation_3d_pytorch.html">Segmentation in 3D using U-Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#data-praparation">Data Praparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">API Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_api/_build/modules.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../_api/_build/delira/delira.html">Delira</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/data_loading/data_loading.html">Data Loading</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/data_loading/arbitrary_data.html">Arbitrary Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/data_loading/nii.html">Nii</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/data_loading/sampler.html">Sampler</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/delira.io.html">IO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/logging/logging.html">Logging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/logging/handlers.html"><span class="hidden-section">MultiStreamHandler</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/logging/handlers.html#trixihandler"><span class="hidden-section">TrixiHandler</span></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/models/models.html">Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/models/classification.html">Classification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/models/gan.html">Generative Adversarial Networks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/models/segmentation.html">Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/training/training.html">Training</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/parameters.html">Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/trainer.html">Network Trainer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/experiment.html">Experiment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/callbacks.html">Callbacks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/losses.html">Losses</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html"><span class="hidden-section">AurocMetricPyTorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#accurarcymetricpytorch"><span class="hidden-section">AccurarcyMetricPyTorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#pytorch-batch-to-numpy"><span class="hidden-section">pytorch_batch_to_numpy</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#pytorch-tensor-to-numpy"><span class="hidden-section">pytorch_tensor_to_numpy</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#float-to-pytorch-tensor"><span class="hidden-section">float_to_pytorch_tensor</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#create-optims-default-pytorch"><span class="hidden-section">create_optims_default_pytorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#create-optims-gan-default-pytorch"><span class="hidden-section">create_optims_gan_default_pytorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#create-optims-default-tf"><span class="hidden-section">create_optims_default_tf</span></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/delira.utils.html">Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/class_hierarchy.html">Class Hierarchy Diagrams</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/justusschock/delira">GitHub</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">delira</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>delira.logging.multistream_handler</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for delira.logging.multistream_handler</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+
+
+<div class="viewcode-block" id="MultiStreamHandler"><a class="viewcode-back" href="../../../_api/_build/delira/logging/handlers.html#delira.logging.MultiStreamHandler">[docs]</a><span class="k">class</span> <span class="nc">MultiStreamHandler</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Handler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logging Handler which accepts multiple streams and creates StreamHandlers</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">streams</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        streams : streams with write()-attribute</span>
+<span class="sd">            streams which are passed to StreamHandlers</span>
+<span class="sd">        level : int (default: logging.NOTSET)</span>
+<span class="sd">            logging level</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stream_handlers</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">_stream</span> <span class="ow">in</span> <span class="n">streams</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stream_handlers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">_stream</span><span class="p">))</span>
+
+<div class="viewcode-block" id="MultiStreamHandler.emit"><a class="viewcode-back" href="../../../_api/_build/delira/logging/handlers.html#delira.logging.MultiStreamHandler.emit">[docs]</a>    <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        logs the record entity to streams</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        record : LogRecord</span>
+<span class="sd">            record to log</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">_handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stream_handlers</span><span class="p">:</span>
+            <span class="n">_handler</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">record</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Justus Schock, Oliver Rippel, Christoph Haarburger
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

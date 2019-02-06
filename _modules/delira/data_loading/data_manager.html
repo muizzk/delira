@@ -1,0 +1,849 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>delira.data_loading.data_manager &mdash; delira 0.2.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/delira.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting_started.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../getting_started.html#backends">Backends</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial_delira.html">Delira Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#loading-data">Loading Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#the-dataset">The Dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#the-dataloader">The Dataloader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#the-datamanager">The Datamanager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#sampler">Sampler</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#models">Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#init"><code class="docutils literal notranslate"><span class="pre">__init__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#closure"><code class="docutils literal notranslate"><span class="pre">closure</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#prepare-batch"><code class="docutils literal notranslate"><span class="pre">prepare_batch</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#abstract-networks-for-specific-backends">Abstract Networks for specific Backends</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#pytorch">PyTorch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../tutorial_delira.html#forward"><code class="docutils literal notranslate"><span class="pre">forward</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../tutorial_delira.html#id1"><code class="docutils literal notranslate"><span class="pre">prepare_batch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../tutorial_delira.html#closure-example"><code class="docutils literal notranslate"><span class="pre">closure</span> <span class="pre">example</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#other-examples">Other examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#training">Training</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#parameters">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#trainer">Trainer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#experiment">Experiment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#logging">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#multistreamhandler"><code class="docutils literal notranslate"><span class="pre">MultiStreamHandler</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial_delira.html#logging-with-visdom-the-trixi-loggers">Logging with <code class="docutils literal notranslate"><span class="pre">Visdom</span></code> - The <code class="docutils literal notranslate"><span class="pre">trixi</span></code> Loggers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../tutorial_delira.html#types-of-visdomhandlers">Types of VisdomHandlers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial_delira.html#more-examples">More Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../classification_pytorch.html">Classification with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../classification_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../classification_pytorch.html#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../classification_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../classification_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../classification_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../classification_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gan_pytorch.html">Generative Adversarial Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../gan_pytorch.html#hyperparameters">HyperParameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gan_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gan_pytorch.html#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gan_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gan_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gan_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gan_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../segmentation_2d_pytorch.html">Segmentation in 2D using U-Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#data-praparation">Data Praparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_2d_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../segmentation_3d_pytorch.html">Segmentation in 3D using U-Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#data-praparation">Data Praparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../segmentation_3d_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">API Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_api/_build/modules.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../_api/_build/delira/delira.html">Delira</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/data_loading/data_loading.html">Data Loading</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/data_loading/arbitrary_data.html">Arbitrary Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/data_loading/nii.html">Nii</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/data_loading/sampler.html">Sampler</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/delira.io.html">IO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/logging/logging.html">Logging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/logging/handlers.html"><span class="hidden-section">MultiStreamHandler</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/logging/handlers.html#trixihandler"><span class="hidden-section">TrixiHandler</span></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/models/models.html">Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/models/classification.html">Classification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/models/gan.html">Generative Adversarial Networks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/models/segmentation.html">Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/training/training.html">Training</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/parameters.html">Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/trainer.html">Network Trainer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/experiment.html">Experiment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/callbacks.html">Callbacks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/losses.html">Losses</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html"><span class="hidden-section">AurocMetricPyTorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#accurarcymetricpytorch"><span class="hidden-section">AccurarcyMetricPyTorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#pytorch-batch-to-numpy"><span class="hidden-section">pytorch_batch_to_numpy</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#pytorch-tensor-to-numpy"><span class="hidden-section">pytorch_tensor_to_numpy</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#float-to-pytorch-tensor"><span class="hidden-section">float_to_pytorch_tensor</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#create-optims-default-pytorch"><span class="hidden-section">create_optims_default_pytorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#create-optims-gan-default-pytorch"><span class="hidden-section">create_optims_gan_default_pytorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_api/_build/delira/training/utils.html#create-optims-default-tf"><span class="hidden-section">create_optims_default_tf</span></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/delira.utils.html">Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/_build/delira/class_hierarchy.html">Class Hierarchy Diagrams</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/justusschock/delira">GitHub</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">delira</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>delira.data_loading.data_manager</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for delira.data_loading.data_manager</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">batchgenerators.dataloading</span> <span class="k">import</span> <span class="n">SlimDataLoaderBase</span><span class="p">,</span> \
+    <span class="n">MultiThreadedAugmenter</span>
+<span class="kn">from</span> <span class="nn">batchgenerators.transforms</span> <span class="k">import</span> <span class="n">AbstractTransform</span>
+<span class="kn">from</span> <span class="nn">.dataset</span> <span class="k">import</span> <span class="n">AbstractDataset</span><span class="p">,</span> <span class="n">BaseCacheDataset</span><span class="p">,</span> <span class="n">BaseLazyDataset</span><span class="p">,</span> \
+    <span class="n">ConcatDataset</span>
+<span class="kn">from</span> <span class="nn">.data_loader</span> <span class="k">import</span> <span class="n">BaseDataLoader</span>
+<span class="kn">from</span> <span class="nn">.load_utils</span> <span class="k">import</span> <span class="n">default_load_fn_2d</span>
+<span class="kn">from</span> <span class="nn">.sampler</span> <span class="k">import</span> <span class="n">SequentialSampler</span><span class="p">,</span> <span class="n">AbstractSampler</span>
+<span class="kn">from</span> <span class="nn">..utils.decorators</span> <span class="k">import</span> <span class="n">make_deprecated</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="BaseDataManager"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/datamanager.html#delira.data_loading.BaseDataManager">[docs]</a><span class="k">class</span> <span class="nc">BaseDataManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to Handle Data</span>
+<span class="sd">    Creates Dataset , Dataloader and BatchGenerator</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">n_process_augmentation</span><span class="p">,</span>
+                 <span class="n">transforms</span><span class="p">,</span> <span class="n">sampler_cls</span><span class="o">=</span><span class="n">SequentialSampler</span><span class="p">,</span>
+                 <span class="n">sampler_kwargs</span><span class="o">=</span><span class="p">{},</span>
+                 <span class="n">data_loader_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dataset_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">load_fn</span><span class="o">=</span><span class="n">default_load_fn_2d</span><span class="p">,</span> <span class="n">from_disc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : str or Dataset</span>
+<span class="sd">            if str: Path to data samples</span>
+<span class="sd">            if dataset: Dataset</span>
+<span class="sd">        batch_size : int</span>
+<span class="sd">            Number of samples per batch</span>
+<span class="sd">        n_process_augmentation : int</span>
+<span class="sd">            Number of processes for augmentations</span>
+<span class="sd">        transforms :</span>
+<span class="sd">            Data transformations for augmentation</span>
+<span class="sd">        sampler_cls : AbstractSampler</span>
+<span class="sd">            class defining the sampling strategy</span>
+<span class="sd">        sampler_kwargs : dict</span>
+<span class="sd">            keyword arguments for sampling</span>
+<span class="sd">        data_loader_cls : subclass of SlimDataLoaderBase</span>
+<span class="sd">            DataLoader class</span>
+<span class="sd">        dataset_cls : subclass of AbstractDataset</span>
+<span class="sd">            Dataset class</span>
+<span class="sd">        load_fn : function</span>
+<span class="sd">            function to load simple sample</span>
+<span class="sd">        from_disc : bool</span>
+<span class="sd">            whether or not to load data from disc just the time it is needed</span>
+<span class="sd">        **kwargs :</span>
+<span class="sd">            other keyword arguments (needed for dataloading and passed to</span>
+<span class="sd">            dataset_cls)</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        AssertionError</span>
+<span class="sd">            * `data_loader_cls` is not :obj:`None` and not a subclass of</span>
+<span class="sd">            `SlimDataLoaderBase`</span>
+<span class="sd">            * `dataset_cls` is not :obj:`None` and not a subclass of</span>
+<span class="sd">            :class:`.AbstractDataset`</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`AbstractDataset`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Instantiate Hidden variables for property access</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_process_augmentation</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transforms</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_loader_cls</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># set actual values to properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_process_augmentation</span> <span class="o">=</span> <span class="n">n_process_augmentation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">transforms</span>
+
+        <span class="k">if</span> <span class="n">data_loader_cls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No DataLoader Class specified. Using BaseDataLoader&quot;</span><span class="p">)</span>
+            <span class="n">data_loader_cls</span> <span class="o">=</span> <span class="n">BaseDataLoader</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">data_loader_cls</span><span class="p">),</span> \
+                <span class="s2">&quot;data_loader_cls must be class not instance of class&quot;</span>
+            <span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">data_loader_cls</span><span class="p">,</span> <span class="n">SlimDataLoaderBase</span><span class="p">),</span> \
+                <span class="s2">&quot;dater_loader_cls must be subclass of SlimDataLoaderBase&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_loader_cls</span> <span class="o">=</span> <span class="n">data_loader_cls</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">AbstractDataset</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">dataset_cls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">from_disc</span><span class="p">:</span>
+                    <span class="n">dataset_cls</span> <span class="o">=</span> <span class="n">BaseLazyDataset</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">dataset_cls</span> <span class="o">=</span> <span class="n">BaseCacheDataset</span>
+
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No DataSet Class specified. Using </span><span class="si">%s</span><span class="s2"> instead&quot;</span> <span class="o">%</span>
+                            <span class="n">dataset_cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">dataset_cls</span><span class="p">,</span> <span class="n">AbstractDataset</span><span class="p">),</span> \
+                    <span class="s2">&quot;dataset_cls must be subclass of AbstractDataset&quot;</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset_cls</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+        <span class="k">assert</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">sampler_cls</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">sampler_cls</span><span class="p">,</span>
+                                                            <span class="n">AbstractSampler</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span> <span class="o">=</span> <span class="n">sampler_cls</span><span class="o">.</span><span class="n">from_dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="o">**</span><span class="n">sampler_kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BaseDataManager.get_batchgen"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/datamanager.html#delira.data_loading.BaseDataManager.get_batchgen">[docs]</a>    <span class="k">def</span> <span class="nf">get_batchgen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create DataLoader and Batchgenerator</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        seed : int</span>
+<span class="sd">            seed for Random Number Generator</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        MultiThreadedAugmenter</span>
+<span class="sd">            Batchgenerator</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        AssertionError</span>
+<span class="sd">            :attr:`BaseDataManager.n_batches` is smaller than or equal to zero</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_batches</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+        <span class="n">data_loader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_loader_cls</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span>
+                                           <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+                                           <span class="n">num_batches</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_batches</span><span class="p">,</span>
+                                           <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+                                           <span class="n">sampler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sampler</span>
+                                           <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">MultiThreadedAugmenter</span><span class="p">(</span><span class="n">data_loader</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">n_process_augmentation</span><span class="p">,</span>
+                                      <span class="n">num_cached_per_queue</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                      <span class="n">seeds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_process_augmentation</span><span class="o">*</span><span class="p">[</span><span class="n">seed</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="BaseDataManager.get_subset"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/datamanager.html#delira.data_loading.BaseDataManager.get_subset">[docs]</a>    <span class="k">def</span> <span class="nf">get_subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a Subset of the current datamanager based on given indices</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        indices : iterable</span>
+<span class="sd">            valid indices to extract subset from current dataset</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`BaseDataManager`</span>
+<span class="sd">            manager containing the subset</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">subset_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;batch_size&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="s2">&quot;n_process_augmentation&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_process_augmentation</span><span class="p">,</span>
+            <span class="s2">&quot;transforms&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">,</span>
+            <span class="s2">&quot;sampler_cls&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+            <span class="s2">&quot;data_loader_cls&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_loader_cls</span><span class="p">,</span>
+            <span class="s2">&quot;dataset_cls&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;load_fn&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;from_disc&quot;</span><span class="p">:</span> <span class="kc">True</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">indices</span><span class="p">),</span> <span class="o">**</span><span class="n">subset_kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BaseDataManager.update_state_from_dict"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/datamanager.html#delira.data_loading.BaseDataManager.update_state_from_dict">[docs]</a>    <span class="k">def</span> <span class="nf">update_state_from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_state</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates internal state and therfore the behavior from dict.</span>
+<span class="sd">        If a key is not specified, the old attribute value will be used</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        new_state : dict</span>
+<span class="sd">            The dict to update the state from.</span>
+<span class="sd">            Valid keys are:</span>
+
+<span class="sd">                * ``batch_size``</span>
+<span class="sd">                * ``n_process_augmentation``</span>
+<span class="sd">                * ``data_loader_cls``</span>
+<span class="sd">                * ``sampler``</span>
+<span class="sd">                * ``sampling_kwargs``</span>
+<span class="sd">                * ``transforms``</span>
+
+<span class="sd">            If a key is not specified, the old value of the corresponding </span>
+<span class="sd">            attribute will be used</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        KeyError</span>
+<span class="sd">            Invalid keys are specified</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># update batch_size if specified</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">new_state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;batch_size&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="c1"># update n_process_augmentation if specified</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_process_augmentation</span> <span class="o">=</span> <span class="n">new_state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;n_process_augmentation&quot;</span><span class="p">,</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">n_process_augmentation</span><span class="p">)</span>
+        <span class="c1"># update data_loader_cls if specified</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_loader_cls</span> <span class="o">=</span> <span class="n">new_state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;data_loader_cls&quot;</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">data_loader_cls</span><span class="p">)</span>
+        <span class="c1"># update</span>
+        <span class="n">new_sampler</span> <span class="o">=</span> <span class="n">new_state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;sampler&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">new_sampler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span> <span class="o">=</span> <span class="n">new_sampler</span><span class="o">.</span><span class="n">from_dataset</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">new_state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;sampling_kwargs&quot;</span><span class="p">,</span> <span class="p">{}))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">new_state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;transforms&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">new_state</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Invalid Keys in new_state given: </span><span class="si">%s</span><span class="s2">&quot;</span>
+                            <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">new_state</span><span class="o">.</span><span class="n">keys</span><span class="p">()))))</span></div>
+
+<div class="viewcode-block" id="BaseDataManager.train_test_split"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/datamanager.html#delira.data_loading.BaseDataManager.train_test_split">[docs]</a>    <span class="nd">@make_deprecated</span><span class="p">(</span><span class="s2">&quot;BaseDataManager.get_subset&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">train_test_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calls :method:`AbstractDataset.train_test_split` and returns </span>
+<span class="sd">        a manager for each subset with same configuration as current manager</span>
+
+<span class="sd">        .. deprecation:: 0.3</span>
+<span class="sd">            method will be removed in next major release</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *args : </span>
+<span class="sd">            positional arguments for </span>
+<span class="sd">            ``sklearn.model_selection.train_test_split``</span>
+<span class="sd">        **kwargs :</span>
+<span class="sd">            keyword arguments for </span>
+<span class="sd">            ``sklearn.model_selection.train_test_split``</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">trainset</span><span class="p">,</span> <span class="n">valset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">train_test_split</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">subset_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;batch_size&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="s2">&quot;n_process_augmentation&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_process_augmentation</span><span class="p">,</span>
+            <span class="s2">&quot;transforms&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">,</span>
+            <span class="s2">&quot;sampler_cls&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+            <span class="s2">&quot;data_loader_cls&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_loader_cls</span><span class="p">,</span>
+            <span class="s2">&quot;dataset_cls&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;load_fn&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;from_disc&quot;</span><span class="p">:</span> <span class="kc">True</span>
+        <span class="p">}</span>
+
+        <span class="n">train_mgr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">trainset</span><span class="p">,</span> <span class="o">**</span><span class="n">subset_kwargs</span><span class="p">)</span>
+        <span class="n">val_mgr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">valset</span><span class="p">,</span> <span class="o">**</span><span class="n">subset_kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">train_mgr</span><span class="p">,</span> <span class="n">val_mgr</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">batch_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Property to access the batchsize</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            the batchsize</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span>
+
+    <span class="nd">@batch_size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">batch_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_batch_size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setter for current batchsize, casts to int before setting the attribute</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        new_batch_size : int, Any</span>
+<span class="sd">            the new batchsize; should be int but can be of any type that can be </span>
+<span class="sd">            casted to an int</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">new_batch_size</span><span class="p">)</span>
+       
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_process_augmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Property to access the number of augmentation processes</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            number of augmentation processes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_process_augmentation</span>
+
+    <span class="nd">@n_process_augmentation</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">n_process_augmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_process_number</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setter for number of augmentation processes, casts to int before setting</span>
+<span class="sd">        the attribute</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        new_process_number : int, Any</span>
+<span class="sd">            new number of augmentation processes; should be int but can be of </span>
+<span class="sd">            any type that can be casted to an int</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_process_augmentation</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">new_process_number</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">transforms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Property to access the current data transforms</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None, ``AbstractTransform``</span>
+<span class="sd">            The transformation, can either be None or an instance of </span>
+<span class="sd">            ``AbstractTransform``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transforms</span>
+    
+    <span class="nd">@transforms</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">transforms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_transforms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setter for data transforms, assert if transforms are of valid type </span>
+<span class="sd">        (either None or instance of ``AbstractTransform``)</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        new_transforms : None, ``AbstractTransform``</span>
+<span class="sd">            the new transforms</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="n">new_transforms</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_transforms</span><span class="p">,</span>
+                                                    <span class="n">AbstractTransform</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transforms</span> <span class="o">=</span> <span class="n">new_transforms</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data_loader_cls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Property to access the current data loader class</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        type</span>
+<span class="sd">            Subclass of ``SlimDataLoaderBase``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_loader_cls</span>
+
+    <span class="nd">@data_loader_cls</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data_loader_cls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_loader_cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setter for current data loader class, asserts if class is of valid type</span>
+<span class="sd">        (must be a class and a subclass of ``SlimDataLoaderBase``)</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        new_loader_cls : type</span>
+<span class="sd">            the new data loader class</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">new_loader_cls</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">new_loader_cls</span><span class="p">,</span>
+                                                        <span class="n">SlimDataLoaderBase</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_loader_cls</span> <span class="o">=</span> <span class="n">new_loader_cls</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Property to access the current dataset</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`AbstractDataset`</span>
+<span class="sd">            the current dataset</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span>
+
+    <span class="nd">@dataset</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_dataset</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setter for new dataset</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        new_dataset : :class:`AbstractDataset`</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_dataset</span><span class="p">,</span> <span class="n">AbstractDataset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span> <span class="o">=</span> <span class="n">new_dataset</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sampler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Property to access the current sampler</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        :class:`AbstractSampler`</span>
+<span class="sd">            the current sampler</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span>
+
+    <span class="nd">@sampler</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sampler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_sampler</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setter for current sampler.</span>
+<span class="sd">        If a valid class instance is passed, the sampler is simply assigned, if </span>
+<span class="sd">        a valid class type is passed, the sampler is created from the dataset</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        new_sampler : :class:`AbstractSampler`, type</span>
+<span class="sd">            instance or class object of new sampler</span>
+<span class="sd">        </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            Neither a valid class instance nor a valid class type is given</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">new_sampler</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">new_sampler</span><span class="p">,</span>
+                                                        <span class="n">AbstractSampler</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span> <span class="o">=</span> <span class="n">new_sampler</span><span class="o">.</span><span class="n">from_dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_sampler</span><span class="p">,</span> <span class="n">AbstractSampler</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span> <span class="o">=</span> <span class="n">new_sampler</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Given Sampler is neither a subclass of </span><span class="se">\</span>
+<span class="s2">                            AbstractSampler, nor an instance of a sampler &quot;</span><span class="p">)</span>
+                            
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Number of Samples</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            Number of Samples</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_batches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns Number of Batches based on batchsize,</span>
+<span class="sd">        number of samples and number of processes</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            Number of Batches</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        AssertionError</span>
+<span class="sd">            :attr:`BaseDataManager.n_samples` is smaller than or equal to zero</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_process_augmentation</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">n_batches</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_process_augmentation</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_process_augmentation</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_process_augmentation</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Too few samples for n_process_augmentation=</span><span class="si">{}</span><span class="s1">. &#39;</span>
+                               <span class="s1">&#39;Forcing n_process_augmentation=</span><span class="si">{}</span><span class="s1"> &#39;</span>
+                               <span class="s1">&#39;instead&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_process_augmentation</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">n_batches</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">/</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">n_process_augmentation</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid value for n_process_augmentation&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">n_batches</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Justus Schock, Oliver Rippel, Christoph Haarburger
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

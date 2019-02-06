@@ -1,0 +1,1263 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>delira.models.segmentation.unet &mdash; delira 0.2.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html">
+          
+
+          
+            
+            <img src="../../../../_static/delira.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#backends">Backends</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial_delira.html">Delira Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#loading-data">Loading Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#the-dataset">The Dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#the-dataloader">The Dataloader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#the-datamanager">The Datamanager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#sampler">Sampler</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#models">Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#init"><code class="docutils literal notranslate"><span class="pre">__init__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#closure"><code class="docutils literal notranslate"><span class="pre">closure</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#prepare-batch"><code class="docutils literal notranslate"><span class="pre">prepare_batch</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#abstract-networks-for-specific-backends">Abstract Networks for specific Backends</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#pytorch">PyTorch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial_delira.html#forward"><code class="docutils literal notranslate"><span class="pre">forward</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial_delira.html#id1"><code class="docutils literal notranslate"><span class="pre">prepare_batch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial_delira.html#closure-example"><code class="docutils literal notranslate"><span class="pre">closure</span> <span class="pre">example</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#other-examples">Other examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#training">Training</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#parameters">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#trainer">Trainer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#experiment">Experiment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#logging">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#multistreamhandler"><code class="docutils literal notranslate"><span class="pre">MultiStreamHandler</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#logging-with-visdom-the-trixi-loggers">Logging with <code class="docutils literal notranslate"><span class="pre">Visdom</span></code> - The <code class="docutils literal notranslate"><span class="pre">trixi</span></code> Loggers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial_delira.html#types-of-visdomhandlers">Types of VisdomHandlers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#more-examples">More Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../classification_pytorch.html">Classification with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../classification_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../classification_pytorch.html#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../classification_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../classification_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../classification_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../classification_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../gan_pytorch.html">Generative Adversarial Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gan_pytorch.html#hyperparameters">HyperParameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gan_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gan_pytorch.html#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gan_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gan_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gan_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gan_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html">Segmentation in 2D using U-Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#data-praparation">Data Praparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html">Segmentation in 3D using U-Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#data-praparation">Data Praparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">API Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_api/_build/modules.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../_api/_build/delira/delira.html">Delira</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../_api/_build/delira/data_loading/data_loading.html">Data Loading</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/data_loading/arbitrary_data.html">Arbitrary Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/data_loading/nii.html">Nii</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/data_loading/sampler.html">Sampler</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../_api/_build/delira/delira.io.html">IO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../_api/_build/delira/logging/logging.html">Logging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/logging/handlers.html"><span class="hidden-section">MultiStreamHandler</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/logging/handlers.html#trixihandler"><span class="hidden-section">TrixiHandler</span></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../_api/_build/delira/models/models.html">Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/models/classification.html">Classification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/models/gan.html">Generative Adversarial Networks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/models/segmentation.html">Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../_api/_build/delira/training/training.html">Training</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/training/parameters.html">Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/training/trainer.html">Network Trainer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/training/experiment.html">Experiment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/training/callbacks.html">Callbacks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/training/losses.html">Losses</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/training/utils.html"><span class="hidden-section">AurocMetricPyTorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/training/utils.html#accurarcymetricpytorch"><span class="hidden-section">AccurarcyMetricPyTorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/training/utils.html#pytorch-batch-to-numpy"><span class="hidden-section">pytorch_batch_to_numpy</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/training/utils.html#pytorch-tensor-to-numpy"><span class="hidden-section">pytorch_tensor_to_numpy</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/training/utils.html#float-to-pytorch-tensor"><span class="hidden-section">float_to_pytorch_tensor</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/training/utils.html#create-optims-default-pytorch"><span class="hidden-section">create_optims_default_pytorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/training/utils.html#create-optims-gan-default-pytorch"><span class="hidden-section">create_optims_gan_default_pytorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../_api/_build/delira/training/utils.html#create-optims-default-tf"><span class="hidden-section">create_optims_default_tf</span></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../_api/_build/delira/delira.utils.html">Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../_api/_build/delira/class_hierarchy.html">Class Hierarchy Diagrams</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/justusschock/delira">GitHub</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">delira</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>delira.models.segmentation.unet</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for delira.models.segmentation.unet</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Adapted from https://github.com/jaxony/unet-pytorch/blob/master/model.py</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="k">if</span> <span class="s2">&quot;torch&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;DELIRA_BACKEND&quot;</span><span class="p">]:</span>
+    <span class="kn">import</span> <span class="nn">torch</span>
+    <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+    <span class="kn">from</span> <span class="nn">torch.nn</span> <span class="k">import</span> <span class="n">init</span>
+    <span class="kn">import</span> <span class="nn">logging</span>
+    <span class="kn">from</span> <span class="nn">..abstract_network</span> <span class="k">import</span> <span class="n">AbstractPyTorchNetwork</span>
+
+
+<div class="viewcode-block" id="UNet2dPyTorch"><a class="viewcode-back" href="../../../../_api/_build/delira/models/segmentation.html#delira.models.segmentation.UNet2dPyTorch">[docs]</a>    <span class="k">class</span> <span class="nc">UNet2dPyTorch</span><span class="p">(</span><span class="n">AbstractPyTorchNetwork</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The :class:`UNet2dPyTorch` is a convolutional encoder-decoder neural</span>
+<span class="sd">        network.</span>
+<span class="sd">        Contextual spatial information (from the decoding,</span>
+<span class="sd">        expansive pathway) about an input tensor is merged with</span>
+<span class="sd">        information representing the localization of details</span>
+<span class="sd">        (from the encoding, compressive pathway).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Differences to the original paper:</span>
+
+<span class="sd">            * padding is used in 3x3 convolutions to prevent loss of border pixels</span>
+<span class="sd">            * merging outputs does not require cropping due to (1)</span>
+<span class="sd">            * residual connections can be used by specifying ``merge_mode=&#39;add&#39;``</span>
+<span class="sd">            * if non-parametric upsampling is used in the decoder pathway (</span>
+<span class="sd">                specified by upmode=&#39;upsample&#39;), then an additional 1x1 2d</span>
+<span class="sd">                convolution occurs after upsampling to reduce channel</span>
+<span class="sd">                dimensionality by a factor of 2. This channel halving happens</span>
+<span class="sd">                with the convolution in the tranpose convolution (specified by</span>
+<span class="sd">                ``upmode=&#39;transpose&#39;``)</span>
+
+<span class="sd">        References</span>
+<span class="sd">        ----------</span>
+<span class="sd">        https://arxiv.org/abs/1505.04597</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`UNet3dPyTorch`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">in_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                    <span class="n">start_filts</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">up_mode</span><span class="o">=</span><span class="s1">&#39;transpose&#39;</span><span class="p">,</span>
+                    <span class="n">merge_mode</span><span class="o">=</span><span class="s1">&#39;concat&#39;</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            num_classes : int</span>
+<span class="sd">                number of output classes</span>
+<span class="sd">            in_channels : int</span>
+<span class="sd">                number of channels for the input tensor (default: 1)</span>
+<span class="sd">            depth : int</span>
+<span class="sd">                number of MaxPools in the U-Net (default: 5)</span>
+<span class="sd">            start_filts : int</span>
+<span class="sd">                number of convolutional filters for the first conv (affects all</span>
+<span class="sd">                other conv-filter numbers too; default: 64)</span>
+<span class="sd">            up_mode : str</span>
+<span class="sd">                type of upconvolution. Must be one of [&#39;transpose&#39;, &#39;upsample&#39;]</span>
+<span class="sd">                if &#39;transpose&#39;:</span>
+<span class="sd">                    Use transpose convolution for upsampling</span>
+<span class="sd">                if &#39;upsample&#39;:</span>
+<span class="sd">                    Use bilinear Interpolation for upsampling (no additional</span>
+<span class="sd">                    trainable parameters)</span>
+<span class="sd">                default: &#39;transpose&#39;</span>
+<span class="sd">            merge_mode : str</span>
+<span class="sd">                mode of merging the two paths (with and without pooling). Must</span>
+<span class="sd">                be one of [&#39;merge&#39;, &#39;add&#39;]</span>
+<span class="sd">                if &#39;merge&#39;:</span>
+<span class="sd">                    Concatenates along the channel dimension (Original UNet)</span>
+<span class="sd">                if &#39;add&#39;:</span>
+<span class="sd">                    Adds both tensors (Residual behaviour)</span>
+<span class="sd">                default: &#39;merge&#39;</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">up_mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;transpose&#39;</span><span class="p">,</span> <span class="s1">&#39;upsample&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">up_mode</span> <span class="o">=</span> <span class="n">up_mode</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2"> is not a valid mode for &quot;</span>
+                                <span class="s2">&quot;upsampling. Only </span><span class="se">\&quot;</span><span class="s2">transpose</span><span class="se">\&quot;</span><span class="s2"> and &quot;</span>
+                                <span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">upsample</span><span class="se">\&quot;</span><span class="s2"> are allowed.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">up_mode</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">merge_mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;concat&#39;</span><span class="p">,</span> <span class="s1">&#39;add&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">merge_mode</span> <span class="o">=</span> <span class="n">merge_mode</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2"> is not a valid mode for&quot;</span>
+                                <span class="s2">&quot;merging up and down paths. &quot;</span>
+                                <span class="s2">&quot;Only </span><span class="se">\&quot;</span><span class="s2">concat</span><span class="se">\&quot;</span><span class="s2"> and &quot;</span>
+                                <span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">add</span><span class="se">\&quot;</span><span class="s2"> are allowed.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">up_mode</span><span class="p">))</span>
+
+            <span class="c1"># NOTE: up_mode &#39;upsample&#39; is incompatible with merge_mode &#39;add&#39;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">up_mode</span> <span class="o">==</span> <span class="s1">&#39;upsample&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_mode</span> <span class="o">==</span> <span class="s1">&#39;add&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;up_mode </span><span class="se">\&quot;</span><span class="s2">upsample</span><span class="se">\&quot;</span><span class="s2"> is incompatible &quot;</span>
+                                <span class="s2">&quot;with merge_mode </span><span class="se">\&quot;</span><span class="s2">add</span><span class="se">\&quot;</span><span class="s2"> at the moment &quot;</span>
+                                <span class="s2">&quot;because it doesn&#39;t make sense to use &quot;</span>
+                                <span class="s2">&quot;nearest neighbour to reduce &quot;</span>
+                                <span class="s2">&quot;depth channels (by half).&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="n">num_classes</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_channels</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_filts</span> <span class="o">=</span> <span class="n">start_filts</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">down_convs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">up_convs</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv_final</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_build_model</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">start_filts</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">reset_params</span><span class="p">()</span>
+
+<div class="viewcode-block" id="UNet2dPyTorch.weight_init"><a class="viewcode-back" href="../../../../_api/_build/delira/models/segmentation.html#delira.models.segmentation.UNet2dPyTorch.weight_init">[docs]</a>        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">weight_init</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Initializes weights with xavier_normal and bias with zeros</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            m : torch.nn.Module</span>
+<span class="sd">                module to initialize</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">):</span>
+                <span class="n">init</span><span class="o">.</span><span class="n">xavier_normal_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+                <span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UNet2dPyTorch.reset_params"><a class="viewcode-back" href="../../../../_api/_build/delira/models/segmentation.html#delira.models.segmentation.UNet2dPyTorch.reset_params">[docs]</a>        <span class="k">def</span> <span class="nf">reset_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Initialize all parameters</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modules</span><span class="p">()):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">weight_init</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UNet2dPyTorch.forward"><a class="viewcode-back" href="../../../../_api/_build/delira/models/segmentation.html#delira.models.segmentation.UNet2dPyTorch.forward">[docs]</a>        <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Feed tensor through network</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            x : torch.Tensor</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            torch.Tensor</span>
+<span class="sd">                Prediction</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">encoder_outs</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="c1"># encoder pathway, save outputs for merging</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">down_convs</span><span class="p">):</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">before_pool</span> <span class="o">=</span> <span class="n">module</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">encoder_outs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">before_pool</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">up_convs</span><span class="p">):</span>
+                <span class="n">before_pool</span> <span class="o">=</span> <span class="n">encoder_outs</span><span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)]</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">module</span><span class="p">(</span><span class="n">before_pool</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+            <span class="c1"># No softmax is used. This means you need to use</span>
+            <span class="c1"># torch.nn.CrossEntropyLoss is your training script,</span>
+            <span class="c1"># as this module includes a softmax already.</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv_final</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">x</span></div>
+
+<div class="viewcode-block" id="UNet2dPyTorch.closure"><a class="viewcode-back" href="../../../../_api/_build/delira/models/segmentation.html#delira.models.segmentation.UNet2dPyTorch.closure">[docs]</a>        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">closure</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">optimizers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">criterions</span><span class="o">=</span><span class="p">{},</span>
+                    <span class="n">metrics</span><span class="o">=</span><span class="p">{},</span> <span class="n">fold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            closure method to do a single backpropagation step</span>
+
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            model : :class:`ClassificationNetworkBasePyTorch`</span>
+<span class="sd">                trainable model</span>
+<span class="sd">            data_dict : dict</span>
+<span class="sd">                dictionary containing the data</span>
+<span class="sd">            optimizers : dict</span>
+<span class="sd">                dictionary of optimizers to optimize model&#39;s parameters</span>
+<span class="sd">            criterions : dict</span>
+<span class="sd">                dict holding the criterions to calculate errors</span>
+<span class="sd">                (gradients from different criterions will be accumulated)</span>
+<span class="sd">            metrics : dict</span>
+<span class="sd">                dict holding the metrics to calculate</span>
+<span class="sd">            fold : int</span>
+<span class="sd">                Current Fold in Crossvalidation (default: 0)</span>
+<span class="sd">            **kwargs:</span>
+<span class="sd">                additional keyword arguments</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            dict</span>
+<span class="sd">                Metric values (with same keys as input dict metrics)</span>
+<span class="sd">            dict</span>
+<span class="sd">                Loss values (with same keys as input dict criterions)</span>
+<span class="sd">            list</span>
+<span class="sd">                Arbitrary number of predictions as torch.Tensor</span>
+
+<span class="sd">            Raises</span>
+<span class="sd">            ------</span>
+<span class="sd">            AssertionError</span>
+<span class="sd">                if optimizers or criterions are empty or the optimizers are not</span>
+<span class="sd">                specified</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">assert</span> <span class="p">(</span><span class="n">optimizers</span> <span class="ow">and</span> <span class="n">criterions</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">optimizers</span><span class="p">,</span> \
+                <span class="s2">&quot;Criterion dict cannot be emtpy, if optimizers are passed&quot;</span>
+
+            <span class="n">loss_vals</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">metric_vals</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># choose suitable context manager:</span>
+            <span class="k">if</span> <span class="n">optimizers</span><span class="p">:</span>
+                <span class="n">context_man</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">enable_grad</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">context_man</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span>
+
+            <span class="k">with</span> <span class="n">context_man</span><span class="p">():</span>
+
+                <span class="n">inputs</span> <span class="o">=</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
+                <span class="n">preds</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">data_dict</span><span class="p">:</span>
+
+                    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">crit_fn</span> <span class="ow">in</span> <span class="n">criterions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="n">_loss_val</span> <span class="o">=</span> <span class="n">crit_fn</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="o">*</span><span class="n">data_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                        <span class="n">loss_vals</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_loss_val</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+                        <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">_loss_val</span>
+
+                    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">metric_fn</span> <span class="ow">in</span> <span class="n">metrics</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="n">metric_vals</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">metric_fn</span><span class="p">(</span>
+                                <span class="n">preds</span><span class="p">,</span> <span class="o">*</span><span class="n">data_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+            <span class="k">if</span> <span class="n">optimizers</span><span class="p">:</span>
+                <span class="n">optimizers</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+                <span class="c1"># perform loss scaling via apex if half precision is enabled</span>
+                <span class="k">with</span> <span class="n">optimizers</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">scale_loss</span><span class="p">(</span><span class="n">total_loss</span><span class="p">)</span> <span class="k">as</span> <span class="n">scaled_loss</span><span class="p">:</span>
+                    <span class="n">scaled_loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+                <span class="n">optimizers</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="c1"># add prefix &quot;val&quot; in validation mode</span>
+                <span class="n">eval_loss_vals</span><span class="p">,</span> <span class="n">eval_metrics_vals</span> <span class="o">=</span> <span class="p">{},</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">loss_vals</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">eval_loss_vals</span><span class="p">[</span><span class="s2">&quot;val_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="n">loss_vals</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">metric_vals</span><span class="p">:</span>
+                    <span class="n">eval_metrics_vals</span><span class="p">[</span><span class="s2">&quot;val_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="n">metric_vals</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+                <span class="n">loss_vals</span> <span class="o">=</span> <span class="n">eval_loss_vals</span>
+                <span class="n">metric_vals</span> <span class="o">=</span> <span class="n">eval_metrics_vals</span>
+
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">{</span><span class="o">**</span><span class="n">metric_vals</span><span class="p">,</span> <span class="o">**</span><span class="n">loss_vals</span><span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">({</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">val</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
+                                        <span class="s2">&quot;env_appendix&quot;</span><span class="p">:</span> <span class="s2">&quot;_</span><span class="si">%02d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">fold</span>
+                                        <span class="p">}})</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">({</span><span class="s1">&#39;image_grid&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;images&quot;</span><span class="p">:</span> <span class="n">inputs</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;input_images&quot;</span><span class="p">,</span>
+                                        <span class="s2">&quot;env_appendix&quot;</span><span class="p">:</span> <span class="s2">&quot;_</span><span class="si">%02d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">fold</span><span class="p">}})</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">({</span><span class="s1">&#39;image_grid&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;images&quot;</span><span class="p">:</span> <span class="n">preds</span><span class="p">,</span>
+                                        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;predicted_images&quot;</span><span class="p">,</span>
+                                        <span class="s2">&quot;env_appendix&quot;</span><span class="p">:</span> <span class="s2">&quot;_</span><span class="si">%02d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">fold</span><span class="p">}})</span>
+
+            <span class="k">return</span> <span class="n">metric_vals</span><span class="p">,</span> <span class="n">loss_vals</span><span class="p">,</span> <span class="p">[</span><span class="n">preds</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="UNet2dPyTorch._build_model"><a class="viewcode-back" href="../../../../_api/_build/delira/models/segmentation.html#delira.models.segmentation.UNet2dPyTorch._build_model">[docs]</a>        <span class="k">def</span> <span class="nf">_build_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">in_channels</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                        <span class="n">start_filts</span><span class="o">=</span><span class="mi">64</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Builds the actual model</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            num_classes : int</span>
+<span class="sd">                number of output classes</span>
+<span class="sd">            in_channels : int</span>
+<span class="sd">                number of channels for the input tensor (default: 1)</span>
+<span class="sd">            depth : int</span>
+<span class="sd">                number of MaxPools in the U-Net (default: 5)</span>
+<span class="sd">            start_filts : int</span>
+<span class="sd">                number of convolutional filters for the first conv (affects all</span>
+<span class="sd">                other conv-filter numbers too; default: 64)</span>
+
+<span class="sd">            Notes</span>
+<span class="sd">            -----</span>
+<span class="sd">            The Helper functions and classes are defined within this function</span>
+<span class="sd">            because ``delira`` offers a possibility to save the source code</span>
+<span class="sd">            along the weights to completely recover the network without needing</span>
+<span class="sd">            a manually created network instance and these helper functions have</span>
+<span class="sd">            to be saved too.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">def</span> <span class="nf">conv3x3</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span>
+                    <span class="n">in_channels</span><span class="p">,</span>
+                    <span class="n">out_channels</span><span class="p">,</span>
+                    <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                    <span class="n">stride</span><span class="o">=</span><span class="n">stride</span><span class="p">,</span>
+                    <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">,</span>
+                    <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">,</span>
+                    <span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">upconv2x2</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;transpose&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;transpose&#39;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ConvTranspose2d</span><span class="p">(</span>
+                        <span class="n">in_channels</span><span class="p">,</span>
+                        <span class="n">out_channels</span><span class="p">,</span>
+                        <span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                        <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># out_channels is always going to be the same</span>
+                    <span class="c1"># as in_channels</span>
+                    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                        <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Upsample</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;bilinear&#39;</span><span class="p">,</span> <span class="n">scale_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+                        <span class="n">conv1x1</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">))</span>
+
+            <span class="k">def</span> <span class="nf">conv1x1</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span>
+                    <span class="n">in_channels</span><span class="p">,</span>
+                    <span class="n">out_channels</span><span class="p">,</span>
+                    <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">,</span>
+                    <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">class</span> <span class="nc">DownConv</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                A helper Module that performs 2 convolutions and 1 MaxPool.</span>
+<span class="sd">                A ReLU activation follows each convolution.</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+
+                <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">pooling</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                    <span class="nb">super</span><span class="p">(</span><span class="n">DownConv</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_channels</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span> <span class="o">=</span> <span class="n">out_channels</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span> <span class="o">=</span> <span class="n">pooling</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">conv3x3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">conv2</span> <span class="o">=</span> <span class="n">conv3x3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+                <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv2</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                    <span class="n">before_pool</span> <span class="o">=</span> <span class="n">x</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span><span class="p">:</span>
+                        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">before_pool</span>
+
+            <span class="k">class</span> <span class="nc">UpConv</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                A helper Module that performs 2 convolutions and 1 UpConvolution.</span>
+<span class="sd">                A ReLU activation follows each convolution.</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+
+                <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span>
+                            <span class="n">merge_mode</span><span class="o">=</span><span class="s1">&#39;concat&#39;</span><span class="p">,</span> <span class="n">up_mode</span><span class="o">=</span><span class="s1">&#39;transpose&#39;</span><span class="p">):</span>
+                    <span class="nb">super</span><span class="p">(</span><span class="n">UpConv</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_channels</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span> <span class="o">=</span> <span class="n">out_channels</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">merge_mode</span> <span class="o">=</span> <span class="n">merge_mode</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">up_mode</span> <span class="o">=</span> <span class="n">up_mode</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">upconv</span> <span class="o">=</span> <span class="n">upconv2x2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">,</span>
+                                            <span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">up_mode</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_mode</span> <span class="o">==</span> <span class="s1">&#39;concat&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">conv3x3</span><span class="p">(</span>
+                            <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># num of input channels to conv2 is same</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">conv3x3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">conv2</span> <span class="o">=</span> <span class="n">conv3x3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">)</span>
+
+                <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_down</span><span class="p">,</span> <span class="n">from_up</span><span class="p">):</span>
+                    <span class="n">from_up</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">upconv</span><span class="p">(</span><span class="n">from_up</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_mode</span> <span class="o">==</span> <span class="s1">&#39;concat&#39;</span><span class="p">:</span>
+                        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">from_up</span><span class="p">,</span> <span class="n">from_down</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">x</span> <span class="o">=</span> <span class="n">from_up</span> <span class="o">+</span> <span class="n">from_down</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv2</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                    <span class="k">return</span> <span class="n">x</span>
+
+            <span class="n">outs</span> <span class="o">=</span> <span class="n">in_channels</span>
+            <span class="c1"># create the encoder pathway and add to a list</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
+                <span class="n">ins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">outs</span>
+                <span class="n">outs</span> <span class="o">=</span> <span class="n">start_filts</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">i</span><span class="p">)</span>
+                <span class="n">pooling</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">depth</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">False</span>
+
+                <span class="n">down_conv</span> <span class="o">=</span> <span class="n">DownConv</span><span class="p">(</span><span class="n">ins</span><span class="p">,</span> <span class="n">outs</span><span class="p">,</span> <span class="n">pooling</span><span class="o">=</span><span class="n">pooling</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">down_convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">down_conv</span><span class="p">)</span>
+
+            <span class="c1"># create the decoder pathway and add to a list</span>
+            <span class="c1"># - careful! decoding only requires depth-1 blocks</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">depth</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">ins</span> <span class="o">=</span> <span class="n">outs</span>
+                <span class="n">outs</span> <span class="o">=</span> <span class="n">ins</span> <span class="o">//</span> <span class="mi">2</span>
+                <span class="n">up_conv</span> <span class="o">=</span> <span class="n">UpConv</span><span class="p">(</span><span class="n">ins</span><span class="p">,</span> <span class="n">outs</span><span class="p">,</span> <span class="n">up_mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">up_mode</span><span class="p">,</span>
+                                <span class="n">merge_mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">merge_mode</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">up_convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">up_conv</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv_final</span> <span class="o">=</span> <span class="n">conv1x1</span><span class="p">(</span><span class="n">outs</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+
+            <span class="c1"># add the list of modules to current module</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">down_convs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">down_convs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">up_convs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">up_convs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UNet2dPyTorch.prepare_batch"><a class="viewcode-back" href="../../../../_api/_build/delira/models/segmentation.html#delira.models.segmentation.UNet2dPyTorch.prepare_batch">[docs]</a>        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">prepare_batch</span><span class="p">(</span><span class="n">batch</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">input_device</span><span class="p">,</span> <span class="n">output_device</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Helper Function to prepare Network Inputs and Labels (convert them to</span>
+<span class="sd">            correct type and shape and push them to correct devices)</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            batch : dict</span>
+<span class="sd">                dictionary containing all the data</span>
+<span class="sd">            input_device : torch.device</span>
+<span class="sd">                device for network inputs</span>
+<span class="sd">            output_device : torch.device</span>
+<span class="sd">                device for network outputs</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            dict</span>
+<span class="sd">                dictionary containing data in correct type and shape and on correct</span>
+<span class="sd">                device</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">return_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+                <span class="n">input_device</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)}</span>
+
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;label&quot;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                    <span class="n">vals</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># remove first axis if to many axis</span>
+                                    <span class="c1"># (channel dimension)</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">output_device</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">return_dict</span></div></div>
+
+
+<div class="viewcode-block" id="UNet3dPyTorch"><a class="viewcode-back" href="../../../../_api/_build/delira/models/segmentation.html#delira.models.segmentation.UNet3dPyTorch">[docs]</a>    <span class="k">class</span> <span class="nc">UNet3dPyTorch</span><span class="p">(</span><span class="n">AbstractPyTorchNetwork</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The :class:`UNet3dPyTorch` is a convolutional encoder-decoder neural</span>
+<span class="sd">        network.</span>
+<span class="sd">        Contextual spatial information (from the decoding,</span>
+<span class="sd">        expansive pathway) about an input tensor is merged with</span>
+<span class="sd">        information representing the localization of details</span>
+<span class="sd">        (from the encoding, compressive pathway).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Differences to the original paper:</span>
+<span class="sd">            * Working on 3D data instead of 2D slices</span>
+<span class="sd">            * padding is used in 3x3x3 convolutions to prevent loss of border</span>
+<span class="sd">                pixels</span>
+<span class="sd">            * merging outputs does not require cropping due to (1)</span>
+<span class="sd">            * residual connections can be used by specifying ``merge_mode=&#39;add&#39;``</span>
+<span class="sd">            * if non-parametric upsampling is used in the decoder pathway (</span>
+<span class="sd">                specified by upmode=&#39;upsample&#39;), then an additional 1x1x1 3d</span>
+<span class="sd">                convolution occurs after upsampling to reduce channel</span>
+<span class="sd">                dimensionality by a factor of 2. This channel halving happens</span>
+<span class="sd">                with the convolution in the tranpose convolution (specified by</span>
+<span class="sd">                ``upmode=&#39;transpose&#39;``)</span>
+
+<span class="sd">        References</span>
+<span class="sd">        ----------</span>
+<span class="sd">        https://arxiv.org/abs/1505.04597</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`UNet2dPyTorch`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">in_channels</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                    <span class="n">start_filts</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">up_mode</span><span class="o">=</span><span class="s1">&#39;transpose&#39;</span><span class="p">,</span>
+                    <span class="n">merge_mode</span><span class="o">=</span><span class="s1">&#39;concat&#39;</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            num_classes : int</span>
+<span class="sd">                number of output classes</span>
+<span class="sd">            in_channels : int</span>
+<span class="sd">                number of channels for the input tensor (default: 1)</span>
+<span class="sd">            depth : int</span>
+<span class="sd">                number of MaxPools in the U-Net (default: 5)</span>
+<span class="sd">            start_filts : int</span>
+<span class="sd">                number of convolutional filters for the first conv (affects all</span>
+<span class="sd">                other conv-filter numbers too; default: 64)</span>
+<span class="sd">            up_mode : str</span>
+<span class="sd">                type of upconvolution. Must be one of [&#39;transpose&#39;, &#39;upsample&#39;]</span>
+<span class="sd">                if &#39;transpose&#39;:</span>
+<span class="sd">                    Use transpose convolution for upsampling</span>
+<span class="sd">                if &#39;upsample&#39;:</span>
+<span class="sd">                    Use trilinear Interpolation for upsampling (no additional</span>
+<span class="sd">                    trainable parameters)</span>
+<span class="sd">                default: &#39;transpose&#39;</span>
+<span class="sd">            merge_mode : str</span>
+<span class="sd">                mode of merging the two paths (with and without pooling). Must</span>
+<span class="sd">                be one of [&#39;merge&#39;, &#39;add&#39;]</span>
+<span class="sd">                if &#39;merge&#39;:</span>
+<span class="sd">                    Concatenates along the channel dimension (Original UNet)</span>
+<span class="sd">                if &#39;add&#39;:</span>
+<span class="sd">                    Adds both tensors (Residual behaviour)</span>
+<span class="sd">                default: &#39;merge&#39;</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">up_mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;transpose&#39;</span><span class="p">,</span> <span class="s1">&#39;upsample&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">up_mode</span> <span class="o">=</span> <span class="n">up_mode</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2"> is not a valid mode for &quot;</span>
+                                <span class="s2">&quot;upsampling. Only </span><span class="se">\&quot;</span><span class="s2">transpose</span><span class="se">\&quot;</span><span class="s2"> and &quot;</span>
+                                <span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">upsample</span><span class="se">\&quot;</span><span class="s2"> are allowed.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">up_mode</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">merge_mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;concat&#39;</span><span class="p">,</span> <span class="s1">&#39;add&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">merge_mode</span> <span class="o">=</span> <span class="n">merge_mode</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2"> is not a valid mode for&quot;</span>
+                                <span class="s2">&quot;merging up and down paths. &quot;</span>
+                                <span class="s2">&quot;Only </span><span class="se">\&quot;</span><span class="s2">concat</span><span class="se">\&quot;</span><span class="s2"> and &quot;</span>
+                                <span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">add</span><span class="se">\&quot;</span><span class="s2"> are allowed.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">up_mode</span><span class="p">))</span>
+
+            <span class="c1"># NOTE: up_mode &#39;upsample&#39; is incompatible with merge_mode &#39;add&#39;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">up_mode</span> <span class="o">==</span> <span class="s1">&#39;upsample&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_mode</span> <span class="o">==</span> <span class="s1">&#39;add&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;up_mode </span><span class="se">\&quot;</span><span class="s2">upsample</span><span class="se">\&quot;</span><span class="s2"> is incompatible &quot;</span>
+                                <span class="s2">&quot;with merge_mode </span><span class="se">\&quot;</span><span class="s2">add</span><span class="se">\&quot;</span><span class="s2"> at the moment &quot;</span>
+                                <span class="s2">&quot;because it doesn&#39;t make sense to use &quot;</span>
+                                <span class="s2">&quot;nearest neighbour to reduce &quot;</span>
+                                <span class="s2">&quot;depth channels (by half).&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="n">num_classes</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_channels</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_filts</span> <span class="o">=</span> <span class="n">start_filts</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">down_convs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">up_convs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv_final</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_build_model</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">start_filts</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">reset_params</span><span class="p">()</span>
+
+<div class="viewcode-block" id="UNet3dPyTorch.weight_init"><a class="viewcode-back" href="../../../../_api/_build/delira/models/segmentation.html#delira.models.segmentation.UNet3dPyTorch.weight_init">[docs]</a>        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">weight_init</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Initializes weights with xavier_normal and bias with zeros</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            m : torch.nn.Module</span>
+<span class="sd">                module to initialize</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv3d</span><span class="p">):</span>
+                <span class="n">init</span><span class="o">.</span><span class="n">xavier_normal_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+                <span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UNet3dPyTorch.reset_params"><a class="viewcode-back" href="../../../../_api/_build/delira/models/segmentation.html#delira.models.segmentation.UNet3dPyTorch.reset_params">[docs]</a>        <span class="k">def</span> <span class="nf">reset_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Initialize all parameters</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modules</span><span class="p">()):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">weight_init</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UNet3dPyTorch.forward"><a class="viewcode-back" href="../../../../_api/_build/delira/models/segmentation.html#delira.models.segmentation.UNet3dPyTorch.forward">[docs]</a>        <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Feed tensor through network</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            x : torch.Tensor</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            torch.Tensor</span>
+<span class="sd">                Prediction</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">encoder_outs</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="c1"># encoder pathway, save outputs for merging</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">down_convs</span><span class="p">):</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">before_pool</span> <span class="o">=</span> <span class="n">module</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">encoder_outs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">before_pool</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">up_convs</span><span class="p">):</span>
+                <span class="n">before_pool</span> <span class="o">=</span> <span class="n">encoder_outs</span><span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)]</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">module</span><span class="p">(</span><span class="n">before_pool</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+            <span class="c1"># No softmax is used. This means you need to use</span>
+            <span class="c1"># torch.nn.CrossEntropyLoss is your training script,</span>
+            <span class="c1"># as this module includes a softmax already.</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv_final</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">x</span></div>
+
+<div class="viewcode-block" id="UNet3dPyTorch.closure"><a class="viewcode-back" href="../../../../_api/_build/delira/models/segmentation.html#delira.models.segmentation.UNet3dPyTorch.closure">[docs]</a>        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">closure</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">optimizers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">criterions</span><span class="o">=</span><span class="p">{},</span>
+                    <span class="n">metrics</span><span class="o">=</span><span class="p">{},</span> <span class="n">fold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            closure method to do a single backpropagation step</span>
+
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            model : :class:`ClassificationNetworkBasePyTorch`</span>
+<span class="sd">                trainable model</span>
+<span class="sd">            data_dict : dict</span>
+<span class="sd">                dictionary containing the data</span>
+<span class="sd">            optimizers : dict</span>
+<span class="sd">                dictionary of optimizers to optimize model&#39;s parameters</span>
+<span class="sd">            criterions : dict</span>
+<span class="sd">                dict holding the criterions to calculate errors</span>
+<span class="sd">                (gradients from different criterions will be accumulated)</span>
+<span class="sd">            metrics : dict</span>
+<span class="sd">                dict holding the metrics to calculate</span>
+<span class="sd">            fold : int</span>
+<span class="sd">                Current Fold in Crossvalidation (default: 0)</span>
+<span class="sd">            **kwargs:</span>
+<span class="sd">                additional keyword arguments</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            dict</span>
+<span class="sd">                Metric values (with same keys as input dict metrics)</span>
+<span class="sd">            dict</span>
+<span class="sd">                Loss values (with same keys as input dict criterions)</span>
+<span class="sd">            list</span>
+<span class="sd">                Arbitrary number of predictions as torch.Tensor</span>
+
+<span class="sd">            Raises</span>
+<span class="sd">            ------</span>
+<span class="sd">            AssertionError</span>
+<span class="sd">                if optimizers or criterions are empty or the optimizers are not</span>
+<span class="sd">                specified</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">assert</span> <span class="p">(</span><span class="n">optimizers</span> <span class="ow">and</span> <span class="n">criterions</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">optimizers</span><span class="p">,</span> \
+                <span class="s2">&quot;Criterion dict cannot be emtpy, if optimizers are passed&quot;</span>
+
+            <span class="n">loss_vals</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">metric_vals</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># choose suitable context manager:</span>
+            <span class="k">if</span> <span class="n">optimizers</span><span class="p">:</span>
+                <span class="n">context_man</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">enable_grad</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">context_man</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span>
+
+            <span class="k">with</span> <span class="n">context_man</span><span class="p">():</span>
+
+                <span class="n">inputs</span> <span class="o">=</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
+                <span class="n">preds</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">data_dict</span><span class="p">:</span>
+
+                    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">crit_fn</span> <span class="ow">in</span> <span class="n">criterions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="n">_loss_val</span> <span class="o">=</span> <span class="n">crit_fn</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="o">*</span><span class="n">data_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                        <span class="n">loss_vals</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_loss_val</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+                        <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">_loss_val</span>
+
+                    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">metric_fn</span> <span class="ow">in</span> <span class="n">metrics</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="n">metric_vals</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">metric_fn</span><span class="p">(</span>
+                                <span class="n">preds</span><span class="p">,</span> <span class="o">*</span><span class="n">data_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+            <span class="k">if</span> <span class="n">optimizers</span><span class="p">:</span>
+                <span class="n">optimizers</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+                <span class="c1"># perform loss scaling via apex if half precision is enabled</span>
+                <span class="k">with</span> <span class="n">optimizers</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">scale_loss</span><span class="p">(</span><span class="n">total_loss</span><span class="p">)</span> <span class="k">as</span> <span class="n">scaled_loss</span><span class="p">:</span>
+                    <span class="n">scaled_loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+                <span class="n">optimizers</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="c1"># add prefix &quot;val&quot; in validation mode</span>
+                <span class="n">eval_loss_vals</span><span class="p">,</span> <span class="n">eval_metrics_vals</span> <span class="o">=</span> <span class="p">{},</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">loss_vals</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">eval_loss_vals</span><span class="p">[</span><span class="s2">&quot;val_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="n">loss_vals</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">metric_vals</span><span class="p">:</span>
+                    <span class="n">eval_metrics_vals</span><span class="p">[</span><span class="s2">&quot;val_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="o">=</span> <span class="n">metric_vals</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+                <span class="n">loss_vals</span> <span class="o">=</span> <span class="n">eval_loss_vals</span>
+                <span class="n">metric_vals</span> <span class="o">=</span> <span class="n">eval_metrics_vals</span>
+
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">{</span><span class="o">**</span><span class="n">metric_vals</span><span class="p">,</span> <span class="o">**</span><span class="n">loss_vals</span><span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">({</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">val</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
+                                        <span class="s2">&quot;env_appendix&quot;</span><span class="p">:</span> <span class="s2">&quot;_</span><span class="si">%02d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">fold</span>
+                                        <span class="p">}})</span>
+
+            <span class="n">slicing_dim</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>  <span class="c1"># visualize slice in mid of volume</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">({</span><span class="s1">&#39;image_grid&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="n">inputs</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slicing_dim</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+                                        <span class="s2">&quot;name&quot;</span><span class="p">:</span>
+                                            <span class="s2">&quot;input_images&quot;</span><span class="p">,</span>
+                                        <span class="s2">&quot;env_appendix&quot;</span><span class="p">:</span> <span class="s2">&quot;_</span><span class="si">%02d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">fold</span><span class="p">}})</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">({</span><span class="s1">&#39;image_grid&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="n">preds</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">slicing_dim</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+                                        <span class="s2">&quot;name&quot;</span><span class="p">:</span>
+                                            <span class="s2">&quot;predicted_images&quot;</span><span class="p">,</span>
+                                        <span class="s2">&quot;env_appendix&quot;</span><span class="p">:</span> <span class="s2">&quot;_</span><span class="si">%02d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">fold</span><span class="p">}})</span>
+
+            <span class="k">return</span> <span class="n">metric_vals</span><span class="p">,</span> <span class="n">loss_vals</span><span class="p">,</span> <span class="p">[</span><span class="n">preds</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="UNet3dPyTorch._build_model"><a class="viewcode-back" href="../../../../_api/_build/delira/models/segmentation.html#delira.models.segmentation.UNet3dPyTorch._build_model">[docs]</a>        <span class="k">def</span> <span class="nf">_build_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">in_channels</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                        <span class="n">start_filts</span><span class="o">=</span><span class="mi">64</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Builds the actual model</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            num_classes : int</span>
+<span class="sd">                number of output classes</span>
+<span class="sd">            in_channels : int</span>
+<span class="sd">                number of channels for the input tensor (default: 1)</span>
+<span class="sd">            depth : int</span>
+<span class="sd">                number of MaxPools in the U-Net (default: 5)</span>
+<span class="sd">            start_filts : int</span>
+<span class="sd">                number of convolutional filters for the first conv (affects all</span>
+<span class="sd">                other conv-filter numbers too; default: 64)</span>
+
+<span class="sd">            Notes</span>
+<span class="sd">            -----</span>
+<span class="sd">            The Helper functions and classes are defined within this function</span>
+<span class="sd">            because ``delira`` offers a possibility to save the source code</span>
+<span class="sd">            along the weights to completely recover the network without needing</span>
+<span class="sd">            a manually created network instance and these helper functions have</span>
+<span class="sd">            to be saved too.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">def</span> <span class="nf">conv3x3x3</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv3d</span><span class="p">(</span>
+                    <span class="n">in_channels</span><span class="p">,</span>
+                    <span class="n">out_channels</span><span class="p">,</span>
+                    <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                    <span class="n">stride</span><span class="o">=</span><span class="n">stride</span><span class="p">,</span>
+                    <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">,</span>
+                    <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">,</span>
+                    <span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">upconv2x2x2</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;transpose&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;transpose&#39;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ConvTranspose3d</span><span class="p">(</span>
+                        <span class="n">in_channels</span><span class="p">,</span>
+                        <span class="n">out_channels</span><span class="p">,</span>
+                        <span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                        <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># out_channels is always going to be the same</span>
+                    <span class="c1"># as in_channels</span>
+                    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                        <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Upsample</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;trilinear&#39;</span><span class="p">,</span> <span class="n">scale_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+                        <span class="n">conv1x1x1</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">))</span>
+
+            <span class="k">def</span> <span class="nf">conv1x1x1</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv3d</span><span class="p">(</span>
+                    <span class="n">in_channels</span><span class="p">,</span>
+                    <span class="n">out_channels</span><span class="p">,</span>
+                    <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">,</span>
+                    <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">class</span> <span class="nc">DownConv</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                A helper Module that performs 2 convolutions and 1 MaxPool.</span>
+<span class="sd">                A ReLU activation follows each convolution.</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+
+                <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">pooling</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                    <span class="nb">super</span><span class="p">(</span><span class="n">DownConv</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_channels</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span> <span class="o">=</span> <span class="n">out_channels</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span> <span class="o">=</span> <span class="n">pooling</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">conv3x3x3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">conv2</span> <span class="o">=</span> <span class="n">conv3x3x3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MaxPool3d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+                <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv2</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                    <span class="n">before_pool</span> <span class="o">=</span> <span class="n">x</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span><span class="p">:</span>
+                        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">before_pool</span>
+
+            <span class="k">class</span> <span class="nc">UpConv</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                A helper Module that performs 2 convolutions and 1 UpConvolution.</span>
+<span class="sd">                A ReLU activation follows each convolution.</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+
+                <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span>
+                            <span class="n">merge_mode</span><span class="o">=</span><span class="s1">&#39;concat&#39;</span><span class="p">,</span> <span class="n">up_mode</span><span class="o">=</span><span class="s1">&#39;transpose&#39;</span><span class="p">):</span>
+                    <span class="nb">super</span><span class="p">(</span><span class="n">UpConv</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_channels</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span> <span class="o">=</span> <span class="n">out_channels</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">merge_mode</span> <span class="o">=</span> <span class="n">merge_mode</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">up_mode</span> <span class="o">=</span> <span class="n">up_mode</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">upconv</span> <span class="o">=</span> <span class="n">upconv2x2x2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">,</span>
+                                            <span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">up_mode</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_mode</span> <span class="o">==</span> <span class="s1">&#39;concat&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">conv3x3x3</span><span class="p">(</span>
+                            <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># num of input channels to conv2 is same</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">conv3x3x3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">conv2</span> <span class="o">=</span> <span class="n">conv3x3x3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">)</span>
+
+                <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_down</span><span class="p">,</span> <span class="n">from_up</span><span class="p">):</span>
+                    <span class="n">from_up</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">upconv</span><span class="p">(</span><span class="n">from_up</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_mode</span> <span class="o">==</span> <span class="s1">&#39;concat&#39;</span><span class="p">:</span>
+                        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">from_up</span><span class="p">,</span> <span class="n">from_down</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">x</span> <span class="o">=</span> <span class="n">from_up</span> <span class="o">+</span> <span class="n">from_down</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv2</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                    <span class="k">return</span> <span class="n">x</span>
+
+            <span class="n">outs</span> <span class="o">=</span> <span class="n">in_channels</span>
+            <span class="c1"># create the encoder pathway and add to a list</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
+                <span class="n">ins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">outs</span>
+                <span class="n">outs</span> <span class="o">=</span> <span class="n">start_filts</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">i</span><span class="p">)</span>
+                <span class="n">pooling</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">depth</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">False</span>
+
+                <span class="n">down_conv</span> <span class="o">=</span> <span class="n">DownConv</span><span class="p">(</span><span class="n">ins</span><span class="p">,</span> <span class="n">outs</span><span class="p">,</span> <span class="n">pooling</span><span class="o">=</span><span class="n">pooling</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">down_convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">down_conv</span><span class="p">)</span>
+
+            <span class="c1"># create the decoder pathway and add to a list</span>
+            <span class="c1"># - careful! decoding only requires depth-1 blocks</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">depth</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">ins</span> <span class="o">=</span> <span class="n">outs</span>
+                <span class="n">outs</span> <span class="o">=</span> <span class="n">ins</span> <span class="o">//</span> <span class="mi">2</span>
+                <span class="n">up_conv</span> <span class="o">=</span> <span class="n">UpConv</span><span class="p">(</span><span class="n">ins</span><span class="p">,</span> <span class="n">outs</span><span class="p">,</span> <span class="n">up_mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">up_mode</span><span class="p">,</span>
+                                <span class="n">merge_mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">merge_mode</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">up_convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">up_conv</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv_final</span> <span class="o">=</span> <span class="n">conv1x1x1</span><span class="p">(</span><span class="n">outs</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+
+            <span class="c1"># add the list of modules to current module</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">down_convs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">down_convs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">up_convs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">up_convs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UNet3dPyTorch.prepare_batch"><a class="viewcode-back" href="../../../../_api/_build/delira/models/segmentation.html#delira.models.segmentation.UNet3dPyTorch.prepare_batch">[docs]</a>        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">prepare_batch</span><span class="p">(</span><span class="n">batch</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">input_device</span><span class="p">,</span> <span class="n">output_device</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Helper Function to prepare Network Inputs and Labels (convert them to</span>
+<span class="sd">            correct type and shape and push them to correct devices)</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            batch : dict</span>
+<span class="sd">                dictionary containing all the data</span>
+<span class="sd">            input_device : torch.device</span>
+<span class="sd">                device for network inputs</span>
+<span class="sd">            output_device : torch.device</span>
+<span class="sd">                device for network outputs</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            dict</span>
+<span class="sd">                dictionary containing data in correct type and shape and on correct</span>
+<span class="sd">                device</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">return_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+                <span class="n">input_device</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)}</span>
+
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;label&quot;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="n">vals</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># remove first axis if to many axis</span>
+                    <span class="c1"># (channel dimension)</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">output_device</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">return_dict</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Justus Schock, Oliver Rippel, Christoph Haarburger
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

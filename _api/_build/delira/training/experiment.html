@@ -1,0 +1,971 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Experiments &mdash; delira 0.2.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Callbacks" href="callbacks.html" />
+    <link rel="prev" title="NetworkTrainer" href="trainer.html" /> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html">
+          
+
+          
+            
+            <img src="../../../../_static/delira.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started.html#backends">Backends</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial_delira.html">Delira Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#loading-data">Loading Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#the-dataset">The Dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#the-dataloader">The Dataloader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#the-datamanager">The Datamanager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#sampler">Sampler</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#models">Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#init"><code class="docutils literal notranslate"><span class="pre">__init__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#closure"><code class="docutils literal notranslate"><span class="pre">closure</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#prepare-batch"><code class="docutils literal notranslate"><span class="pre">prepare_batch</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#abstract-networks-for-specific-backends">Abstract Networks for specific Backends</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#pytorch">PyTorch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial_delira.html#forward"><code class="docutils literal notranslate"><span class="pre">forward</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial_delira.html#id1"><code class="docutils literal notranslate"><span class="pre">prepare_batch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial_delira.html#closure-example"><code class="docutils literal notranslate"><span class="pre">closure</span> <span class="pre">example</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#other-examples">Other examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#training">Training</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#parameters">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#trainer">Trainer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#experiment">Experiment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#logging">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#multistreamhandler"><code class="docutils literal notranslate"><span class="pre">MultiStreamHandler</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial_delira.html#logging-with-visdom-the-trixi-loggers">Logging with <code class="docutils literal notranslate"><span class="pre">Visdom</span></code> - The <code class="docutils literal notranslate"><span class="pre">trixi</span></code> Loggers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../tutorial_delira.html#types-of-visdomhandlers">Types of VisdomHandlers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial_delira.html#more-examples">More Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../classification_pytorch.html">Classification with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../classification_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../classification_pytorch.html#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../classification_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../classification_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../classification_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../classification_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../gan_pytorch.html">Generative Adversarial Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gan_pytorch.html#hyperparameters">HyperParameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gan_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gan_pytorch.html#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gan_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gan_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gan_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gan_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html">Segmentation in 2D using U-Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#data-praparation">Data Praparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_2d_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html">Segmentation in 3D using U-Nets with Delira - A very short introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#logging-and-visualization">Logging and Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#data-praparation">Data Praparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#loading">Loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#augmentation">Augmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#training">Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../segmentation_3d_pytorch.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">API Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../modules.html">API Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../delira.html">Delira</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../data_loading/data_loading.html">Data Loading</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../data_loading/arbitrary_data.html">Arbitrary Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data_loading/nii.html">Nii</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data_loading/sampler.html">Sampler</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../delira.io.html">IO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logging/logging.html">Logging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../logging/handlers.html"><span class="hidden-section">MultiStreamHandler</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../logging/handlers.html#trixihandler"><span class="hidden-section">TrixiHandler</span></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../models/models.html">Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../models/classification.html">Classification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../models/gan.html">Generative Adversarial Networks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../models/segmentation.html">Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="training.html">Training</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="parameters.html">Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="trainer.html">Network Trainer</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Experiment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="callbacks.html">Callbacks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="losses.html">Losses</a></li>
+<li class="toctree-l4"><a class="reference internal" href="utils.html"><span class="hidden-section">AurocMetricPyTorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="utils.html#accurarcymetricpytorch"><span class="hidden-section">AccurarcyMetricPyTorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="utils.html#pytorch-batch-to-numpy"><span class="hidden-section">pytorch_batch_to_numpy</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="utils.html#pytorch-tensor-to-numpy"><span class="hidden-section">pytorch_tensor_to_numpy</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="utils.html#float-to-pytorch-tensor"><span class="hidden-section">float_to_pytorch_tensor</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="utils.html#create-optims-default-pytorch"><span class="hidden-section">create_optims_default_pytorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="utils.html#create-optims-gan-default-pytorch"><span class="hidden-section">create_optims_gan_default_pytorch</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="utils.html#create-optims-default-tf"><span class="hidden-section">create_optims_default_tf</span></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../delira.utils.html">Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../class_hierarchy.html">Class Hierarchy Diagrams</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/justusschock/delira">GitHub</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">delira</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../modules.html">API Documentation</a> &raquo;</li>
+        
+          <li><a href="../delira.html">Delira</a> &raquo;</li>
+        
+          <li><a href="training.html">Training</a> &raquo;</li>
+        
+      <li>Experiments</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../../_sources/_api/_build/delira/training/experiment.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="experiments">
+<h1>Experiments<a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h1>
+<p>Experiments are the outermost class to control your training, it wraps your
+NetworkTrainer and provides utilities for
+cross-validation.</p>
+<div class="section" id="abstractexperiment">
+<h2><span class="hidden-section">AbstractExperiment</span><a class="headerlink" href="#abstractexperiment" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="delira.training.AbstractExperiment">
+<em class="property">class </em><code class="descname">AbstractExperiment</code><span class="sig-paren">(</span><em>n_epochs</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#AbstractExperiment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AbstractExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sphinx.ext.autodoc.importer._MockObject</span></code></p>
+<p>Abstract Class Representing a single Experiment (must be subclassed for
+each Backend)</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#delira.training.PyTorchExperiment" title="delira.training.PyTorchExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyTorchExperiment</span></code></a></p>
+</div>
+<dl class="method">
+<dt id="delira.training.AbstractExperiment.kfold">
+<code class="descname">kfold</code><span class="sig-paren">(</span><em>num_epochs: int</em>, <em>data: delira.data_loading.data_manager.BaseDataManager</em>, <em>num_splits=None</em>, <em>shuffle=False</em>, <em>random_seed=None</em>, <em>train_kwargs={}</em>, <em>test_kwargs={}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#AbstractExperiment.kfold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AbstractExperiment.kfold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs K-Fold Crossvalidation
+The supported scenario is:</p>
+<blockquote>
+<div><ul class="simple">
+<li>passing a single datamanager: the data within the single manager</li>
+</ul>
+<p>will be split and multiple datamanagers will be created holding
+the subsets.</p>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of epochs to train the model</li>
+<li><strong>data</strong> (single <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataManager</span></code>) – single datamanager (will be split for crossvalidation)</li>
+<li><strong>num_splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of splits for kfold
+if None: 10 splits will be validated per default</li>
+<li><strong>shuffle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether or not to shuffle indices for kfold</li>
+<li><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – random seed used to seed the kfold (if shuffle is true),
+pytorch and numpy</li>
+<li><strong>train_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify training behavior</li>
+<li><strong>test_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify testing behavior</li>
+<li><strong>**kwargs</strong> – additional keyword arguments (completely passed to self.run())</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a href="#id1"><span class="problematic" id="id2">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
+<dd><code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">test_kwargs</span></code></dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="delira.training.AbstractExperiment.load">
+<em class="property">static </em><code class="descname">load</code><span class="sig-paren">(</span><em>file_name</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#AbstractExperiment.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AbstractExperiment.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads whole experiment</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – file_name to load the experiment from</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> – if not overwritten in subclass</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.AbstractExperiment.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>train_data: delira.data_loading.data_manager.BaseDataManager</em>, <em>val_data: Optional[delira.data_loading.data_manager.BaseDataManager] = None</em>, <em>params: Optional[delira.training.parameters.Parameters] = None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#AbstractExperiment.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AbstractExperiment.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>trains single model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>train_data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataManager</span></code>) – data manager containing the training data</li>
+<li><strong>val_data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataManager</span></code>) – data manager containing the validation data</li>
+<li><strong>parameters</strong> (<a class="reference internal" href="parameters.html#delira.training.Parameters" title="delira.training.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameters</span></code></a>, optional) – Class containing all parameters (defaults to None).
+If not specified, the parameters fall back to the ones given during
+class initialization</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> – If not overwritten in subclass</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.AbstractExperiment.save">
+<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#AbstractExperiment.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AbstractExperiment.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the Whole experiments</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> – If not overwritten in subclass</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.AbstractExperiment.setup">
+<code class="descname">setup</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#AbstractExperiment.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AbstractExperiment.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract Method to setup a <a class="reference internal" href="trainer.html#delira.training.AbstractNetworkTrainer" title="delira.training.AbstractNetworkTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractNetworkTrainer</span></code></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> – if not overwritten by subclass</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.AbstractExperiment.stratified_kfold">
+<code class="descname">stratified_kfold</code><span class="sig-paren">(</span><em>num_epochs: int</em>, <em>data: delira.data_loading.data_manager.BaseDataManager</em>, <em>num_splits=None</em>, <em>shuffle=False</em>, <em>random_seed=None</em>, <em>label_key='label'</em>, <em>train_kwargs={}</em>, <em>test_kwargs={}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#AbstractExperiment.stratified_kfold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AbstractExperiment.stratified_kfold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs stratified K-Fold Crossvalidation
+The supported supported scenario is:</p>
+<blockquote>
+<div><ul class="simple">
+<li>passing a single datamanager: the data within the single manager
+will be split and multiple datamanagers will be created holding
+the subsets.</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of epochs to train the model</li>
+<li><strong>data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataManager</span></code>) – single datamanager
+(will be split for crossvalidation)</li>
+<li><strong>num_splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of splits for kfold
+if None: 10 splits will be validated</li>
+<li><strong>shuffle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether or not to shuffle indices for kfold</li>
+<li><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – random seed used to seed the kfold (if shuffle is true),
+pytorch and numpy</li>
+<li><strong>label_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>default: &quot;label&quot;</em><em>)</em>) – the key to extract the label for stratification from each data
+sample</li>
+<li><strong>train_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify training behavior</li>
+<li><strong>test_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify testing behavior</li>
+<li><strong>**kwargs</strong> – additional keyword arguments (completely passed to self.run())</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a href="#id3"><span class="problematic" id="id4">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
+<dd><code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">test_kwargs</span></code></dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.AbstractExperiment.test">
+<code class="descname">test</code><span class="sig-paren">(</span><em>params: delira.training.parameters.Parameters</em>, <em>network: delira.models.abstract_network.AbstractNetwork</em>, <em>datamgr_test: delira.data_loading.data_manager.BaseDataManager</em>, <em>trainer_cls=&lt;class 'delira.training.abstract_trainer.AbstractNetworkTrainer'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#AbstractExperiment.test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AbstractExperiment.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes prediction for all items in datamgr_test with network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>params</strong> (<a class="reference internal" href="parameters.html#delira.training.Parameters" title="delira.training.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameters</span></code></a>) – the parameters to construct a model</li>
+<li><strong>network</strong> (<em>:class:'AbstractNetwork'</em>) – the network to train</li>
+<li><strong>datamgr_test</strong> (<em>:class:'BaseDataManager'</em>) – holds the test data</li>
+<li><strong>trainer_cls</strong> – class defining the actual trainer,
+defaults to <a class="reference internal" href="trainer.html#delira.training.AbstractNetworkTrainer" title="delira.training.AbstractNetworkTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractNetworkTrainer</span></code></a>,
+which should be suitable for most cases,
+but can easily be overwritten and exchanged if necessary</li>
+<li><strong>**kwargs</strong> – holds additional keyword arguments
+(which are completly passed to the trainers init)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>np.ndarray</em> – predictions from batches</li>
+<li><em>list of np.ndarray</em> – labels from batches</li>
+<li><em>dict</em> – dictionary containing the mean validation metrics and
+the mean loss values</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="pytorchexperiment">
+<h2><span class="hidden-section">PyTorchExperiment</span><a class="headerlink" href="#pytorchexperiment" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="delira.training.PyTorchExperiment">
+<em class="property">class </em><code class="descname">PyTorchExperiment</code><span class="sig-paren">(</span><em>params: delira.training.parameters.Parameters</em>, <em>model_cls: delira.models.abstract_network.AbstractPyTorchNetwork</em>, <em>name=None</em>, <em>save_path=None</em>, <em>val_score_key=None</em>, <em>optim_builder=&lt;function create_optims_default_pytorch&gt;</em>, <em>checkpoint_freq=1</em>, <em>trainer_cls=&lt;class 'delira.training.pytorch_trainer.PyTorchNetworkTrainer'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#PyTorchExperiment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">delira.training.experiment.AbstractExperiment</span></code></p>
+<p>Single Experiment for PyTorch Backend</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#delira.training.AbstractExperiment" title="delira.training.AbstractExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractExperiment</span></code></a></p>
+</div>
+<dl class="method">
+<dt id="delira.training.PyTorchExperiment.kfold">
+<code class="descname">kfold</code><span class="sig-paren">(</span><em>num_epochs: int, data: Union[List[delira.data_loading.data_manager.BaseDataManager], delira.data_loading.data_manager.BaseDataManager], num_splits=None, shuffle=False, random_seed=None, train_kwargs={}, test_kwargs={}, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#PyTorchExperiment.kfold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchExperiment.kfold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs K-Fold Crossvalidation
+The supported scenario is:</p>
+<blockquote>
+<div><ul class="simple">
+<li>passing a single datamanager: the data within the single manager</li>
+</ul>
+<p>will be split and multiple datamanagers will be created holding
+the subsets.</p>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of epochs to train the model</li>
+<li><strong>data</strong> (single <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataManager</span></code>) – single datamanager (will be split for crossvalidation)</li>
+<li><strong>num_splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of splits for kfold
+if None: 10 splits will be validated per default</li>
+<li><strong>shuffle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether or not to shuffle indices for kfold</li>
+<li><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – random seed used to seed the kfold (if shuffle is true),
+pytorch and numpy</li>
+<li><strong>train_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify training behavior</li>
+<li><strong>test_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify testing behavior</li>
+<li><strong>**kwargs</strong> – additional keyword arguments (completely passed to self.run())</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a href="#id5"><span class="problematic" id="id6">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
+<dd><code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">test_kwargs</span></code></dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="delira.training.PyTorchExperiment.load">
+<em class="property">static </em><code class="descname">load</code><span class="sig-paren">(</span><em>file_name</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#PyTorchExperiment.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchExperiment.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads whole experiment</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – file_name to load the experiment from</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.PyTorchExperiment.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>train_data: delira.data_loading.data_manager.BaseDataManager, val_data: Optional[delira.data_loading.data_manager.BaseDataManager], params: Optional[delira.training.parameters.Parameters] = None, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#PyTorchExperiment.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchExperiment.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>trains single model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>train_data</strong> (<a class="reference internal" href="../data_loading/datamanager.html#delira.data_loading.BaseDataManager" title="delira.data_loading.BaseDataManager"><em>BaseDataManager</em></a>) – holds the trainset</li>
+<li><strong>val_data</strong> (<a class="reference internal" href="../data_loading/datamanager.html#delira.data_loading.BaseDataManager" title="delira.data_loading.BaseDataManager"><em>BaseDataManager</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – holds the validation set (if None: Model will not be validated)</li>
+<li><strong>params</strong> (<a class="reference internal" href="parameters.html#delira.training.Parameters" title="delira.training.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameters</span></code></a>) – the parameters to construct a model and network trainer</li>
+<li><strong>**kwargs</strong> – holds additional keyword arguments
+(which are completly passed to the trainers init)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">trainer of trained network</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="trainer.html#delira.training.AbstractNetworkTrainer" title="delira.training.AbstractNetworkTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractNetworkTrainer</span></code></a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – Class has no Attribute <code class="docutils literal notranslate"><span class="pre">params</span></code> and no parameters were given as
+function argument</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.PyTorchExperiment.save">
+<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#PyTorchExperiment.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchExperiment.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the Whole experiments</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.PyTorchExperiment.setup">
+<code class="descname">setup</code><span class="sig-paren">(</span><em>params: delira.training.parameters.Parameters</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#PyTorchExperiment.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchExperiment.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform setup of Network Trainer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>params</strong> (<a class="reference internal" href="parameters.html#delira.training.Parameters" title="delira.training.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameters</span></code></a>) – the parameters to construct a model and network trainer</li>
+<li><strong>**kwargs</strong> – keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.PyTorchExperiment.stratified_kfold">
+<code class="descname">stratified_kfold</code><span class="sig-paren">(</span><em>num_epochs: int</em>, <em>data: delira.data_loading.data_manager.BaseDataManager</em>, <em>num_splits=None</em>, <em>shuffle=False</em>, <em>random_seed=None</em>, <em>label_key='label'</em>, <em>train_kwargs={}</em>, <em>test_kwargs={}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#PyTorchExperiment.stratified_kfold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchExperiment.stratified_kfold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs stratified K-Fold Crossvalidation
+The supported supported scenario is:</p>
+<blockquote>
+<div><ul class="simple">
+<li>passing a single datamanager: the data within the single manager
+will be split and multiple datamanagers will be created holding
+the subsets.</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of epochs to train the model</li>
+<li><strong>data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataManager</span></code>) – single datamanager
+(will be split for crossvalidation)</li>
+<li><strong>num_splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of splits for kfold
+if None: 10 splits will be validated</li>
+<li><strong>shuffle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether or not to shuffle indices for kfold</li>
+<li><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – random seed used to seed the kfold (if shuffle is true),
+pytorch and numpy</li>
+<li><strong>label_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>default: &quot;label&quot;</em><em>)</em>) – the key to extract the label for stratification from each data
+sample</li>
+<li><strong>train_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify training behavior</li>
+<li><strong>test_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify testing behavior</li>
+<li><strong>**kwargs</strong> – additional keyword arguments (completely passed to self.run())</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a href="#id7"><span class="problematic" id="id8">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
+<dd><code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">test_kwargs</span></code></dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.PyTorchExperiment.test">
+<code class="descname">test</code><span class="sig-paren">(</span><em>params: delira.training.parameters.Parameters</em>, <em>network: delira.models.abstract_network.AbstractPyTorchNetwork</em>, <em>datamgr_test: delira.data_loading.data_manager.BaseDataManager</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#PyTorchExperiment.test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchExperiment.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes prediction for all items in datamgr_test with network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>params</strong> (<a class="reference internal" href="parameters.html#delira.training.Parameters" title="delira.training.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameters</span></code></a>) – the parameters to construct a model</li>
+<li><strong>network</strong> (<em>:class:'AbstractPyTorchNetwork'</em>) – the network to train</li>
+<li><strong>datamgr_test</strong> (<em>:class:'BaseDataManager'</em>) – holds the test data</li>
+<li><strong>**kwargs</strong> – holds additional keyword arguments
+(which are completly passed to the trainers init)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>np.ndarray</em> – predictions from batches</li>
+<li><em>list of np.ndarray</em> – labels from batches</li>
+<li><em>dict</em> – dictionary containing the mean validation metrics and
+the mean loss values</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="tfexperiment">
+<h2><span class="hidden-section">TfExperiment</span><a class="headerlink" href="#tfexperiment" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="delira.training.TfExperiment">
+<em class="property">class </em><code class="descname">TfExperiment</code><span class="sig-paren">(</span><em>params: Union[delira.training.parameters.Parameters, str], model_cls: delira.models.abstract_network.AbstractTfNetwork, name=None, save_path=None, val_score_key=None, optim_builder=&lt;function create_optims_default_tf&gt;, checkpoint_freq=1, trainer_cls=&lt;class 'delira.training.tf_trainer.TfNetworkTrainer'&gt;, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">delira.training.experiment.AbstractExperiment</span></code></p>
+<p>Single Experiment for Tf Backend</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#delira.training.AbstractExperiment" title="delira.training.AbstractExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractExperiment</span></code></a></p>
+</div>
+<dl class="method">
+<dt id="delira.training.TfExperiment.kfold">
+<code class="descname">kfold</code><span class="sig-paren">(</span><em>num_epochs: int, data: Union[List[delira.data_loading.data_manager.BaseDataManager], delira.data_loading.data_manager.BaseDataManager], num_splits=None, shuffle=False, random_seed=None, train_kwargs={}, test_kwargs={}, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment.kfold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment.kfold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs K-Fold Crossvalidation
+The supported scenario is:</p>
+<blockquote>
+<div><ul class="simple">
+<li>passing a single datamanager: the data within the single manager</li>
+</ul>
+<p>will be split and multiple datamanagers will be created holding
+the subsets.</p>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of epochs to train the model</li>
+<li><strong>data</strong> (single <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataManager</span></code>) – single datamanager (will be split for crossvalidation)</li>
+<li><strong>num_splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of splits for kfold
+if None: 10 splits will be validated per default</li>
+<li><strong>shuffle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether or not to shuffle indices for kfold</li>
+<li><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – random seed used to seed the kfold (if shuffle is true),
+pytorch and numpy</li>
+<li><strong>train_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify training behavior</li>
+<li><strong>test_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify testing behavior</li>
+<li><strong>**kwargs</strong> – additional keyword arguments (completely passed to self.run())</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a href="#id9"><span class="problematic" id="id10">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
+<dd><code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">test_kwargs</span></code></dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="delira.training.TfExperiment.load">
+<em class="property">static </em><code class="descname">load</code><span class="sig-paren">(</span><em>file_name</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads whole experiment</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – file_name to load the experiment from</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.TfExperiment.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>train_data: delira.data_loading.data_manager.BaseDataManager, val_data: Optional[delira.data_loading.data_manager.BaseDataManager], params: Optional[delira.training.parameters.Parameters] = None, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>trains single model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>train_data</strong> (<a class="reference internal" href="../data_loading/datamanager.html#delira.data_loading.BaseDataManager" title="delira.data_loading.BaseDataManager"><em>BaseDataManager</em></a>) – holds the trainset</li>
+<li><strong>val_data</strong> (<a class="reference internal" href="../data_loading/datamanager.html#delira.data_loading.BaseDataManager" title="delira.data_loading.BaseDataManager"><em>BaseDataManager</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – holds the validation set (if None: Model will not be validated)</li>
+<li><strong>params</strong> (<a class="reference internal" href="parameters.html#delira.training.Parameters" title="delira.training.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameters</span></code></a>) – the parameters to construct a model and network trainer</li>
+<li><strong>**kwargs</strong> – holds additional keyword arguments
+(which are completly passed to the trainers init)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">trainer of trained network</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="trainer.html#delira.training.AbstractNetworkTrainer" title="delira.training.AbstractNetworkTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractNetworkTrainer</span></code></a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – Class has no Attribute <code class="docutils literal notranslate"><span class="pre">params</span></code> and no parameters were given as
+function argument</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.TfExperiment.save">
+<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the Whole experiments</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.TfExperiment.setup">
+<code class="descname">setup</code><span class="sig-paren">(</span><em>params: delira.training.parameters.Parameters</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform setup of Network Trainer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>params</strong> (<a class="reference internal" href="parameters.html#delira.training.Parameters" title="delira.training.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameters</span></code></a>) – the parameters to construct a model and network trainer</li>
+<li><strong>**kwargs</strong> – keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.TfExperiment.stratified_kfold">
+<code class="descname">stratified_kfold</code><span class="sig-paren">(</span><em>num_epochs: int</em>, <em>data: delira.data_loading.data_manager.BaseDataManager</em>, <em>num_splits=None</em>, <em>shuffle=False</em>, <em>random_seed=None</em>, <em>label_key='label'</em>, <em>train_kwargs={}</em>, <em>test_kwargs={}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment.stratified_kfold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment.stratified_kfold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs stratified K-Fold Crossvalidation
+The supported supported scenario is:</p>
+<blockquote>
+<div><ul class="simple">
+<li>passing a single datamanager: the data within the single manager
+will be split and multiple datamanagers will be created holding
+the subsets.</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of epochs to train the model</li>
+<li><strong>data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataManager</span></code>) – single datamanager
+(will be split for crossvalidation)</li>
+<li><strong>num_splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of splits for kfold
+if None: 10 splits will be validated</li>
+<li><strong>shuffle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether or not to shuffle indices for kfold</li>
+<li><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – random seed used to seed the kfold (if shuffle is true),
+pytorch and numpy</li>
+<li><strong>label_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>default: &quot;label&quot;</em><em>)</em>) – the key to extract the label for stratification from each data
+sample</li>
+<li><strong>train_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify training behavior</li>
+<li><strong>test_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify testing behavior</li>
+<li><strong>**kwargs</strong> – additional keyword arguments (completely passed to self.run())</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a href="#id11"><span class="problematic" id="id12">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
+<dd><code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">test_kwargs</span></code></dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.TfExperiment.test">
+<code class="descname">test</code><span class="sig-paren">(</span><em>params: delira.training.parameters.Parameters</em>, <em>network: delira.models.abstract_network.AbstractNetwork</em>, <em>datamgr_test: delira.data_loading.data_manager.BaseDataManager</em>, <em>trainer_cls=&lt;class 'delira.training.abstract_trainer.AbstractNetworkTrainer'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#delira.training.TfExperiment.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes prediction for all items in datamgr_test with network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>params</strong> (<a class="reference internal" href="parameters.html#delira.training.Parameters" title="delira.training.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameters</span></code></a>) – the parameters to construct a model</li>
+<li><strong>network</strong> (<em>:class:'AbstractNetwork'</em>) – the network to train</li>
+<li><strong>datamgr_test</strong> (<em>:class:'BaseDataManager'</em>) – holds the test data</li>
+<li><strong>trainer_cls</strong> – class defining the actual trainer,
+defaults to <a class="reference internal" href="trainer.html#delira.training.AbstractNetworkTrainer" title="delira.training.AbstractNetworkTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractNetworkTrainer</span></code></a>,
+which should be suitable for most cases,
+but can easily be overwritten and exchanged if necessary</li>
+<li><strong>**kwargs</strong> – holds additional keyword arguments
+(which are completly passed to the trainers init)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>np.ndarray</em> – predictions from batches</li>
+<li><em>list of np.ndarray</em> – labels from batches</li>
+<li><em>dict</em> – dictionary containing the mean validation metrics and
+the mean loss values</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="callbacks.html" class="btn btn-neutral float-right" title="Callbacks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="trainer.html" class="btn btn-neutral" title="NetworkTrainer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Justus Schock, Oliver Rippel, Christoph Haarburger
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
