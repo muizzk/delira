@@ -302,7 +302,7 @@
 <h2><span class="hidden-section">torch_load_checkpoint</span><a class="headerlink" href="#torch-load-checkpoint" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="delira.io.torch.load_checkpoint">
-<code class="descname">load_checkpoint</code><span class="sig-paren">(</span><em>file</em>, <em>weights_only=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/delira/io/torch.html#load_checkpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.io.torch.load_checkpoint" title="Permalink to this definition">¶</a></dt>
+<code class="descname">load_checkpoint</code><span class="sig-paren">(</span><em>file</em>, <em>weights_only=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/delira/io/torch.html#load_checkpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.io.torch.load_checkpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads a saved model</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -334,7 +334,7 @@ state_dict should be loaded to</li>
 <h2><span class="hidden-section">torch_save_checkpoint</span><a class="headerlink" href="#torch-save-checkpoint" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="delira.io.torch.save_checkpoint">
-<code class="descname">save_checkpoint</code><span class="sig-paren">(</span><em>file: str</em>, <em>model=None</em>, <em>optimizers={}</em>, <em>epoch=None</em>, <em>weights_only=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/delira/io/torch.html#save_checkpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.io.torch.save_checkpoint" title="Permalink to this definition">¶</a></dt>
+<code class="descname">save_checkpoint</code><span class="sig-paren">(</span><em>file: str</em>, <em>model=None</em>, <em>optimizers={}</em>, <em>epoch=None</em>, <em>weights_only=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/delira/io/torch.html#save_checkpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.io.torch.save_checkpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save model’s parameters</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
