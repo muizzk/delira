@@ -873,7 +873,7 @@
 
             <span class="k">return</span> <span class="n">outputs_all</span><span class="p">,</span> <span class="n">labels_all</span><span class="p">,</span> <span class="n">val_dict</span></div>
 
-<div class="viewcode-block" id="PyTorchNetworkTrainer.save_state"><a class="viewcode-back" href="../../../_api/_build/delira/training/trainer.html#delira.training.PyTorchNetworkTrainer.save_state">[docs]</a>        <span class="k">def</span> <span class="nf">save_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">weights_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="PyTorchNetworkTrainer.save_state"><a class="viewcode-back" href="../../../_api/_build/delira/training/trainer.html#delira.training.PyTorchNetworkTrainer.save_state">[docs]</a>        <span class="k">def</span> <span class="nf">save_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">weights_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            saves the current state via :func:`delira.io.torch.save_checkpoint`</span>
 
@@ -884,7 +884,7 @@
 <span class="sd">            epoch : int</span>
 <span class="sd">                current epoch (will be saved for mapping back)</span>
 <span class="sd">            weights_only : bool</span>
-<span class="sd">                whether to store only weights (default: False)</span>
+<span class="sd">                whether to store only weights (default: True)</span>
 <span class="sd">            *args :</span>
 <span class="sd">                positional arguments</span>
 <span class="sd">            **kwargs :</span>
@@ -904,7 +904,7 @@
 <span class="sd">            file_name : str</span>
 <span class="sd">                the file to load the state from</span>
 <span class="sd">            weights_only : bool</span>
-<span class="sd">                whether file contains stored weights only (default: False)</span>
+<span class="sd">                whether file contains stored weights only (default: True)</span>
 <span class="sd">            **kwargs : keyword arguments</span>
 
 <span class="sd">            Returns</span>

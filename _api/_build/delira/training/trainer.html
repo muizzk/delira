@@ -451,7 +451,7 @@ optimal; must be in [‘highest’, ‘lowest’]</li>
 
 <dl class="method">
 <dt id="delira.training.AbstractNetworkTrainer._train_single_epoch">
-<code class="descname">_train_single_epoch</code><span class="sig-paren">(</span><em>batchgen: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f83bb5a9358&gt;</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/abstract_trainer.html#AbstractNetworkTrainer._train_single_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AbstractNetworkTrainer._train_single_epoch" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_train_single_epoch</code><span class="sig-paren">(</span><em>batchgen: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f9d2da633c8&gt;</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/abstract_trainer.html#AbstractNetworkTrainer._train_single_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AbstractNetworkTrainer._train_single_epoch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines a routine to train a single epoch</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -784,7 +784,7 @@ optimal; must be in [‘highest’, ‘lowest’]</li>
 
 <dl class="method">
 <dt id="delira.training.PyTorchNetworkTrainer._train_single_epoch">
-<code class="descname">_train_single_epoch</code><span class="sig-paren">(</span><em>batchgen: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f83bb3d6550&gt;</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/pytorch_trainer.html#PyTorchNetworkTrainer._train_single_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchNetworkTrainer._train_single_epoch" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_train_single_epoch</code><span class="sig-paren">(</span><em>batchgen: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f9d2dd596a0&gt;</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/pytorch_trainer.html#PyTorchNetworkTrainer._train_single_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchNetworkTrainer._train_single_epoch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trains the network a single epoch</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -844,7 +844,7 @@ optimal; must be in [‘highest’, ‘lowest’]</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the file to load the state from</li>
-<li><strong>weights_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether file contains stored weights only (default: False)</li>
+<li><strong>weights_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether file contains stored weights only (default: True)</li>
 <li><strong>**kwargs</strong> (<em>keyword arguments</em>) – </li>
 </ul>
 </td>
@@ -906,7 +906,7 @@ not both methods [‘at_epoch_begin’, ‘at_epoch_end’]</td>
 
 <dl class="method">
 <dt id="delira.training.PyTorchNetworkTrainer.save_state">
-<code class="descname">save_state</code><span class="sig-paren">(</span><em>file_name</em>, <em>epoch</em>, <em>weights_only=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/pytorch_trainer.html#PyTorchNetworkTrainer.save_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchNetworkTrainer.save_state" title="Permalink to this definition">¶</a></dt>
+<code class="descname">save_state</code><span class="sig-paren">(</span><em>file_name</em>, <em>epoch</em>, <em>weights_only=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/pytorch_trainer.html#PyTorchNetworkTrainer.save_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchNetworkTrainer.save_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>saves the current state via <a class="reference internal" href="../delira.io.html#delira.io.torch.save_checkpoint" title="delira.io.torch.save_checkpoint"><code class="xref py py-func docutils literal notranslate"><span class="pre">delira.io.torch.save_checkpoint()</span></code></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -915,7 +915,7 @@ not both methods [‘at_epoch_begin’, ‘at_epoch_end’]</td>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – filename to save the state to</li>
 <li><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – current epoch (will be saved for mapping back)</li>
-<li><strong>weights_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether to store only weights (default: False)</li>
+<li><strong>weights_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether to store only weights (default: True)</li>
 <li><strong>*args</strong> – positional arguments</li>
 <li><strong>**kwargs</strong> – keyword arguments</li>
 </ul>
@@ -1123,7 +1123,7 @@ optimal; must be in [‘highest’, ‘lowest’]</li>
 
 <dl class="method">
 <dt id="delira.training.TfNetworkTrainer._train_single_epoch">
-<code class="descname">_train_single_epoch</code><span class="sig-paren">(</span><em>batchgen: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f83bb988e80&gt;</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/tf_trainer.html#TfNetworkTrainer._train_single_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfNetworkTrainer._train_single_epoch" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_train_single_epoch</code><span class="sig-paren">(</span><em>batchgen: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f9d2dd59358&gt;</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/tf_trainer.html#TfNetworkTrainer._train_single_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfNetworkTrainer._train_single_epoch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trains the network a single epoch</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
