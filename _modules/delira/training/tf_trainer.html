@@ -794,8 +794,8 @@
         <span class="n">labels_all</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">labels_all</span><span class="p">)</span>
         <span class="n">outputs_all</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">outputs_all</span><span class="p">)</span>
 
-        <span class="n">labels_all</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_labels</span><span class="p">)</span> <span class="k">for</span> <span class="n">_labels</span> <span class="ow">in</span> <span class="n">labels_all</span><span class="p">]</span>
-        <span class="n">outputs_all</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_outputs</span><span class="p">)</span> <span class="k">for</span> <span class="n">_outputs</span> <span class="ow">in</span> <span class="n">outputs_all</span><span class="p">]</span>
+        <span class="n">labels_all</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">_labels</span><span class="p">)</span> <span class="k">for</span> <span class="n">_labels</span> <span class="ow">in</span> <span class="n">labels_all</span><span class="p">]</span>
+        <span class="n">outputs_all</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">_outputs</span><span class="p">)</span> <span class="k">for</span> <span class="n">_outputs</span> <span class="ow">in</span> <span class="n">outputs_all</span><span class="p">]</span>
 
         <span class="c1"># metric_mean_vals contains sums of metrics so far.</span>
         <span class="c1"># Dividing by number of batches to get mean values</span>

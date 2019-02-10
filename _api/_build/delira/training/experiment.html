@@ -469,6 +469,50 @@ sample</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="delira.training.AbstractExperiment.stratified_kfold_predict">
+<code class="descname">stratified_kfold_predict</code><span class="sig-paren">(</span><em>num_epochs: int</em>, <em>data: delira.data_loading.data_manager.BaseDataManager</em>, <em>split_val=0.2</em>, <em>num_splits=None</em>, <em>shuffle=False</em>, <em>random_seed=None</em>, <em>label_key='label'</em>, <em>train_kwargs={}</em>, <em>test_kwargs={}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#AbstractExperiment.stratified_kfold_predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AbstractExperiment.stratified_kfold_predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs stratified K-Fold Crossvalidation
+The supported supported scenario is:</p>
+<blockquote>
+<div><ul class="simple">
+<li>passing a single datamanager: the data within the single manager
+will be split and multiple datamanagers will be created holding
+the subsets.</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of epochs to train the model</li>
+<li><strong>data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataManager</span></code>) – single datamanager
+(will be split for crossvalidation)</li>
+<li><strong>num_splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of splits for kfold
+if None: 10 splits will be validated</li>
+<li><strong>shuffle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether or not to shuffle indices for kfold</li>
+<li><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – random seed used to seed the kfold (if shuffle is true),
+pytorch and numpy</li>
+<li><strong>label_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>default: &quot;label&quot;</em><em>)</em>) – the key to extract the label for stratification from each data
+sample</li>
+<li><strong>train_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify training behavior</li>
+<li><strong>test_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify testing behavior</li>
+<li><strong>**kwargs</strong> – additional keyword arguments (completely passed to self.run())</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a href="#id5"><span class="problematic" id="id6">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
+<dd><code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">test_kwargs</span></code></dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="delira.training.AbstractExperiment.test">
 <code class="descname">test</code><span class="sig-paren">(</span><em>params: delira.training.parameters.Parameters</em>, <em>network: delira.models.abstract_network.AbstractNetwork</em>, <em>datamgr_test: delira.data_loading.data_manager.BaseDataManager</em>, <em>trainer_cls=&lt;class 'delira.training.abstract_trainer.AbstractNetworkTrainer'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#AbstractExperiment.test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AbstractExperiment.test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executes prediction for all items in datamgr_test with network</p>
@@ -551,7 +595,7 @@ pytorch and numpy</li>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a href="#id5"><span class="problematic" id="id6">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
+<dt><a href="#id7"><span class="problematic" id="id8">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
 <dd><code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">test_kwargs</span></code></dd>
 </dl>
 </div>
@@ -664,7 +708,51 @@ sample</li>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a href="#id7"><span class="problematic" id="id8">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
+<dt><a href="#id9"><span class="problematic" id="id10">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
+<dd><code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">test_kwargs</span></code></dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.PyTorchExperiment.stratified_kfold_predict">
+<code class="descname">stratified_kfold_predict</code><span class="sig-paren">(</span><em>num_epochs: int</em>, <em>data: delira.data_loading.data_manager.BaseDataManager</em>, <em>split_val=0.2</em>, <em>num_splits=None</em>, <em>shuffle=False</em>, <em>random_seed=None</em>, <em>label_key='label'</em>, <em>train_kwargs={}</em>, <em>test_kwargs={}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#delira.training.PyTorchExperiment.stratified_kfold_predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs stratified K-Fold Crossvalidation
+The supported supported scenario is:</p>
+<blockquote>
+<div><ul class="simple">
+<li>passing a single datamanager: the data within the single manager
+will be split and multiple datamanagers will be created holding
+the subsets.</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of epochs to train the model</li>
+<li><strong>data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataManager</span></code>) – single datamanager
+(will be split for crossvalidation)</li>
+<li><strong>num_splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of splits for kfold
+if None: 10 splits will be validated</li>
+<li><strong>shuffle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether or not to shuffle indices for kfold</li>
+<li><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – random seed used to seed the kfold (if shuffle is true),
+pytorch and numpy</li>
+<li><strong>label_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>default: &quot;label&quot;</em><em>)</em>) – the key to extract the label for stratification from each data
+sample</li>
+<li><strong>train_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify training behavior</li>
+<li><strong>test_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify testing behavior</li>
+<li><strong>**kwargs</strong> – additional keyword arguments (completely passed to self.run())</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a href="#id11"><span class="problematic" id="id12">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
 <dd><code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">test_kwargs</span></code></dd>
 </dl>
 </div>
@@ -749,7 +837,7 @@ pytorch and numpy</li>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a href="#id9"><span class="problematic" id="id10">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
+<dt><a href="#id13"><span class="problematic" id="id14">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
 <dd><code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">test_kwargs</span></code></dd>
 </dl>
 </div>
@@ -862,7 +950,51 @@ sample</li>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a href="#id11"><span class="problematic" id="id12">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
+<dt><a href="#id15"><span class="problematic" id="id16">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
+<dd><code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">test_kwargs</span></code></dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.TfExperiment.stratified_kfold_predict">
+<code class="descname">stratified_kfold_predict</code><span class="sig-paren">(</span><em>num_epochs: int</em>, <em>data: delira.data_loading.data_manager.BaseDataManager</em>, <em>split_val=0.2</em>, <em>num_splits=None</em>, <em>shuffle=False</em>, <em>random_seed=None</em>, <em>label_key='label'</em>, <em>train_kwargs={}</em>, <em>test_kwargs={}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment.stratified_kfold_predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment.stratified_kfold_predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs stratified K-Fold Crossvalidation
+The supported supported scenario is:</p>
+<blockquote>
+<div><ul class="simple">
+<li>passing a single datamanager: the data within the single manager
+will be split and multiple datamanagers will be created holding
+the subsets.</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of epochs to train the model</li>
+<li><strong>data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataManager</span></code>) – single datamanager
+(will be split for crossvalidation)</li>
+<li><strong>num_splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of splits for kfold
+if None: 10 splits will be validated</li>
+<li><strong>shuffle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether or not to shuffle indices for kfold</li>
+<li><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – random seed used to seed the kfold (if shuffle is true),
+pytorch and numpy</li>
+<li><strong>label_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>default: &quot;label&quot;</em><em>)</em>) – the key to extract the label for stratification from each data
+sample</li>
+<li><strong>train_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify training behavior</li>
+<li><strong>test_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify testing behavior</li>
+<li><strong>**kwargs</strong> – additional keyword arguments (completely passed to self.run())</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a href="#id17"><span class="problematic" id="id18">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
 <dd><code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">test_kwargs</span></code></dd>
 </dl>
 </div>
@@ -870,7 +1002,7 @@ sample</li>
 
 <dl class="method">
 <dt id="delira.training.TfExperiment.test">
-<code class="descname">test</code><span class="sig-paren">(</span><em>params: delira.training.parameters.Parameters</em>, <em>network: delira.models.abstract_network.AbstractNetwork</em>, <em>datamgr_test: delira.data_loading.data_manager.BaseDataManager</em>, <em>trainer_cls=&lt;class 'delira.training.abstract_trainer.AbstractNetworkTrainer'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#delira.training.TfExperiment.test" title="Permalink to this definition">¶</a></dt>
+<code class="descname">test</code><span class="sig-paren">(</span><em>params: delira.training.parameters.Parameters</em>, <em>network: delira.models.abstract_network.AbstractNetwork</em>, <em>datamgr_test: delira.data_loading.data_manager.BaseDataManager</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment.test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment.test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executes prediction for all items in datamgr_test with network</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -878,12 +1010,8 @@ sample</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>params</strong> (<a class="reference internal" href="parameters.html#delira.training.Parameters" title="delira.training.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameters</span></code></a>) – the parameters to construct a model</li>
-<li><strong>network</strong> (<em>:class:'AbstractNetwork'</em>) – the network to train</li>
+<li><strong>network</strong> (<em>:class:'AbstractPyTorchNetwork'</em>) – the network to train</li>
 <li><strong>datamgr_test</strong> (<em>:class:'BaseDataManager'</em>) – holds the test data</li>
-<li><strong>trainer_cls</strong> – class defining the actual trainer,
-defaults to <a class="reference internal" href="trainer.html#delira.training.AbstractNetworkTrainer" title="delira.training.AbstractNetworkTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractNetworkTrainer</span></code></a>,
-which should be suitable for most cases,
-but can easily be overwritten and exchanged if necessary</li>
 <li><strong>**kwargs</strong> – holds additional keyword arguments
 (which are completly passed to the trainers init)</li>
 </ul>
