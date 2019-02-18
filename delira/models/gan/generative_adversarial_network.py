@@ -5,7 +5,6 @@ from delira import get_backends
 
 if "TORCH" in get_backends():
     import torch
-    from torchvision import models as t_models
 
     from delira.models.abstract_network import AbstractPyTorchNetwork
 
@@ -28,7 +27,7 @@ if "TORCH" in get_backends():
 
         """
 
-        def __init__(self, n_channels, noise_length, **kwargs):
+        def __init__(self, n_channels: int, noise_length: int, **kwargs):
             """
 
             Parameters
@@ -44,8 +43,8 @@ if "TORCH" in get_backends():
 
             # register params by passing them as kwargs to parent class __init__
             super().__init__(n_channels=n_channels,
-                            noise_length=noise_length,
-                            **kwargs)
+                             noise_length=noise_length,
+                             **kwargs)
 
             gen, discr = self._build_models(n_channels, noise_length, **kwargs)
 
