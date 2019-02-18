@@ -4,7 +4,6 @@ logger = logging.getLogger(__name__)
 import os
 if "torch" in os.environ["DELIRA_BACKEND"]:
     import torch
-    from torchvision import models as t_models
 
     from delira.models.abstract_network import AbstractPyTorchNetwork
 
@@ -27,7 +26,7 @@ if "torch" in os.environ["DELIRA_BACKEND"]:
 
         """
 
-        def __init__(self, n_channels, noise_length, **kwargs):
+        def __init__(self, n_channels: int, noise_length: int, **kwargs):
             """
 
             Parameters
@@ -43,8 +42,8 @@ if "torch" in os.environ["DELIRA_BACKEND"]:
 
             # register params by passing them as kwargs to parent class __init__
             super().__init__(n_channels=n_channels,
-                            noise_length=noise_length,
-                            **kwargs)
+                             noise_length=noise_length,
+                             **kwargs)
 
             gen, discr = self._build_models(n_channels, noise_length, **kwargs)
 
