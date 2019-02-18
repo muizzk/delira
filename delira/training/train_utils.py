@@ -129,6 +129,56 @@ if "tf" in os.environ["DELIRA_BACKEND"]:
         """
         return {"default": optim_cls(**optim_params)}
 
+    def create_optims_gan_default_tf(optim_cls, **optim_params):
+        """
+        Function to create a optimizer dictionary
+        (in this case two optimizers: One for the generator,
+        one for the discriminator)
+
+        Parameters
+        ----------
+        optim_cls :
+            Class implementing an optimization algorithm
+        **optim_params :
+            Additional keyword arguments (passed to the optimizer class)
+
+        Returns
+        -------
+        dict
+            dictionary containing all created optimizers
+        """
+        return {"gen": optim_cls(**optim_params),
+                "discr": optim_cls(**optim_params)}
+
+    def create_optims_gan_variable_lr_tf(optim_cls, **optim_params):
+        """
+        Function to create a optimizer dictionary
+        (in this case two optimizers: One for the generator,
+        one for the discriminator)
+
+        Parameters
+        ----------
+        optim_cls :
+            Class implementing an optimization algorithm
+        **optim_params :
+            Additional keyword arguments (passed to the optimizer class)
+
+        Returns
+        -------
+        dict
+            dictionary containing all created optimizers
+        """
+
+        factor = optim_params.pop('lambda')
+
+        optim_dict = {}
+        optim_dict['gen'] = optim_cls(**optim_params)
+
+        optim_params['learning_rate'] = optim_params['learning_rate'] * factor
+        optim_dict['discr'] = optim_cls(**optim_params)
+
+        return optim_dict
+
 
     def initialize_uninitialized(sess):
         """
