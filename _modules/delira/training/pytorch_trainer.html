@@ -451,6 +451,11 @@
                     <span class="c1"># access actual optimizer by calling wrapped optimizer from wrapper</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">register_callback</span><span class="p">(</span><span class="n">lr_scheduler_cls</span><span class="p">(</span><span class="n">optim</span><span class="o">.</span><span class="n">_optimizer</span><span class="p">,</span>
                                                             <span class="o">**</span><span class="n">lr_scheduler_params</span><span class="p">))</span>
+                    
+            <span class="c1"># store network in self.module to load previous state</span>
+            <span class="c1"># (will be overwritten later)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">network</span>
+
 
             <span class="c1"># Load latest epoch file if available</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">):</span>
@@ -500,7 +505,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">input_device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda:</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">gpu_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
                     <span class="c1"># Train on multiple GPUs and use GPU 0 as output device</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">input_device</span><span class="p">),</span>
                         <span class="n">device_ids</span><span class="o">=</span><span class="n">gpu_ids</span><span class="p">,</span>
                         <span class="n">output_device</span><span class="o">=</span><span class="n">gpu_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -510,7 +515,7 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># use the only available GPU as input device</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">input_device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda:</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">gpu_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_device</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_device</span><span class="p">)</span>
 
                     <span class="c1"># use GPU 0 as output device as output device</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">output_device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda:</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">gpu_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -518,7 +523,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">use_gpu</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">input_device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">output_device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_device</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_device</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PyTorchNetworkTrainer.train"><a class="viewcode-back" href="../../../_api/_build/delira/training/trainer.html#delira.training.PyTorchNetworkTrainer.train">[docs]</a>        <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">,</span> <span class="n">datamgr_train</span><span class="p">,</span> <span class="n">datamgr_valid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">val_score_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">val_score_mode</span><span class="o">=</span><span class="s1">&#39;highest&#39;</span><span class="p">):</span>
