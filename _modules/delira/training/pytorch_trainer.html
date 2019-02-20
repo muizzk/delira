@@ -17,33 +17,35 @@
   
 
   
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -450,6 +452,43 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">register_callback</span><span class="p">(</span><span class="n">lr_scheduler_cls</span><span class="p">(</span><span class="n">optim</span><span class="o">.</span><span class="n">_optimizer</span><span class="p">,</span>
                                                             <span class="o">**</span><span class="n">lr_scheduler_params</span><span class="p">))</span>
 
+            <span class="c1"># Load latest epoch file if available</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">):</span>
+                <span class="c1"># check all files in directory starting with &quot;checkpoint&quot; and not</span>
+                <span class="c1"># ending with &quot;_best.pth&quot;</span>
+                <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">)</span>
+                         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+                         <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;checkpoint&quot;</span><span class="p">)</span>
+                         <span class="ow">and</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_best.pth&quot;</span><span class="p">)]</span>
+
+                <span class="c1"># if list is not empty: load previous state</span>
+                <span class="k">if</span> <span class="n">files</span><span class="p">:</span>
+
+                    <span class="n">latest_epoch</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+                                        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">files</span><span class="p">])</span>
+
+                    <span class="n">latest_state_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span>
+                                                     <span class="s2">&quot;checkpoint_epoch_</span><span class="si">%d</span><span class="s2">.pth&quot;</span>
+                                                     <span class="o">%</span> <span class="n">latest_epoch</span><span class="p">)</span>
+
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Attempting to load state from previous </span><span class="se">\</span>
+<span class="s2">                                training from </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">latest_state_path</span><span class="p">)</span>
+
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">update_state</span><span class="p">(</span><span class="n">latest_state_path</span><span class="p">,</span>
+                                          <span class="n">weights_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">update_state</span><span class="p">(</span><span class="n">latest_state_path</span><span class="p">,</span>
+                                              <span class="n">weights_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">start_epoch</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+                                <span class="n">latest_epoch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_epoch</span><span class="p">)</span>
+
+                        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Previous State could not be loaded, </span><span class="se">\</span>
+<span class="s2">                                        although it exists.Training will be </span><span class="se">\</span>
+<span class="s2">                                        restarted&quot;</span><span class="p">)</span>
+
             <span class="c1"># asssign closure and prepare batch from network</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">closure_fn</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">closure</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_batch</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">prepare_batch</span>
@@ -594,38 +633,7 @@
 <span class="sd">                keyword arguments</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-
-            <span class="c1"># Load latest epoch file if available</span>
-            <span class="c1"># Load latest epoch file if available</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">):</span>
-                <span class="c1"># check all files in directory starting with &quot;checkpoint&quot; and not</span>
-                <span class="c1"># ending with &quot;_best.pth&quot;</span>
-                <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">)</span>
-                         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
-                         <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;checkpoint&quot;</span><span class="p">)</span>
-                         <span class="ow">and</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_best.pth&quot;</span><span class="p">)]</span>
-
-                <span class="c1"># if list is not empty: load previous state</span>
-                <span class="k">if</span> <span class="n">files</span><span class="p">:</span>
-
-                    <span class="n">latest_epoch</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-                                        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">files</span><span class="p">])</span>
-
-                    <span class="n">latest_state_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span>
-                                                     <span class="s2">&quot;checkpoint_epoch_</span><span class="si">%d</span><span class="s2">.pth&quot;</span> <span class="o">%</span> <span class="n">latest_epoch</span><span class="p">)</span>
-
-                    <span class="n">latest_state</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">latest_state_path</span><span class="p">)</span>
-
-                    <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span>
-                        <span class="n">latest_state</span><span class="p">[</span><span class="s2">&quot;state_dict&quot;</span><span class="p">][</span><span class="s2">&quot;model&quot;</span><span class="p">])</span>
-
-                    <span class="bp">self</span><span class="o">.</span><span class="n">start_epoch</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">latest_epoch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_epoch</span><span class="p">)</span>
-
-                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">latest_state</span><span class="p">[</span><span class="s2">&quot;state_dict&quot;</span><span class="p">][</span><span class="s2">&quot;optimizer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">optimizers</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loaded previous training from </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
-                                <span class="n">latest_state_path</span><span class="p">)</span></div>
+            <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="PyTorchNetworkTrainer._at_training_end"><a class="viewcode-back" href="../../../_api/_build/delira/training/trainer.html#delira.training.PyTorchNetworkTrainer._at_training_end">[docs]</a>        <span class="k">def</span> <span class="nf">_at_training_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
@@ -641,7 +649,8 @@
 
                 <span class="c1"># load best model and return it</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">update_state</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span>
-                                               <span class="s1">&#39;checkpoint_best.pth&#39;</span><span class="p">)</span>
+                                               <span class="s1">&#39;checkpoint_best.pth&#39;</span><span class="p">),</span>
+                                  <span class="n">weights_only</span><span class="o">=</span><span class="kc">True</span>
                                   <span class="p">)</span>
 
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span></div>
@@ -671,7 +680,8 @@
             <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_update_state</span><span class="p">(</span><span class="n">cb</span><span class="o">.</span><span class="n">at_epoch_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val_metrics</span><span class="o">=</span><span class="n">metrics_val</span><span class="p">,</span>
                                                      <span class="n">val_score_key</span><span class="o">=</span><span class="n">val_score_key</span><span class="p">,</span>
-                                                     <span class="n">curr_epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">))</span></div>
+                                                     <span class="n">curr_epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">),</span>
+                                   <span class="n">weights_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PyTorchNetworkTrainer._at_epoch_end"><a class="viewcode-back" href="../../../_api/_build/delira/training/trainer.html#delira.training.PyTorchNetworkTrainer._at_epoch_end">[docs]</a>        <span class="k">def</span> <span class="nf">_at_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metrics_val</span><span class="p">,</span> <span class="n">val_score_key</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">is_best</span><span class="p">,</span>
                           <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -699,7 +709,8 @@
             <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_update_state</span><span class="p">(</span><span class="n">cb</span><span class="o">.</span><span class="n">at_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val_metrics</span><span class="o">=</span><span class="n">metrics_val</span><span class="p">,</span>
                                                    <span class="n">val_score_key</span><span class="o">=</span><span class="n">val_score_key</span><span class="p">,</span>
-                                                   <span class="n">curr_epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">))</span>
+                                                   <span class="n">curr_epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">),</span>
+                                   <span class="n">weights_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">save_state</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span>
@@ -961,10 +972,25 @@
 <span class="sd">            :class:`PyTorchNetworkTrainer`</span>
 <span class="sd">                the trainer with a modified state</span>
 
-<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">            # &quot;&quot;&quot;</span>
+            <span class="c1"># print(&quot;,&quot;.join(new_state.keys()))</span>
 
             <span class="k">if</span> <span class="n">weights_only</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">new_state</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s2">&quot;model&quot;</span> <span class="ow">in</span> <span class="n">new_state</span><span class="p">:</span>
+                    <span class="n">model_state</span> <span class="o">=</span> <span class="n">new_state</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">model_state</span> <span class="o">=</span> <span class="n">new_state</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">model_state</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="s2">&quot;optimizer&quot;</span> <span class="ow">in</span> <span class="n">new_state</span> <span class="ow">and</span> <span class="n">new_state</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">]:</span>
+                    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">optimizers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span>
+                            <span class="n">new_state</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">])</span>
+
+                <span class="k">if</span> <span class="s2">&quot;epoch&quot;</span> <span class="ow">in</span> <span class="n">new_state</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">start_epoch</span> <span class="o">=</span> <span class="n">new_state</span><span class="p">[</span><span class="s2">&quot;epoch&quot;</span><span class="p">]</span>
+
                 <span class="k">return</span> <span class="bp">self</span>
 
             <span class="k">else</span><span class="p">:</span>
@@ -998,26 +1024,16 @@
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
