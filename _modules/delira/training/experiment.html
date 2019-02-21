@@ -638,11 +638,12 @@
                                <span class="n">random_state</span><span class="o">=</span><span class="n">random_seed</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">_train_idxs</span><span class="p">,</span> <span class="n">test_idxs</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fold</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">split_idxs</span><span class="p">,</span>
-                                                                 <span class="n">split_labels</span><span class="p">)):</span>
+                                                                  <span class="n">split_labels</span><span class="p">)):</span>
             <span class="c1"># extract data from single manager</span>
             <span class="n">_train_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">_train_idxs</span><span class="p">)</span>
             <span class="n">_split_idxs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_train_data</span><span class="o">.</span><span class="n">dataset</span><span class="p">)))</span>
-            <span class="n">_split_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">_train_data</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="n">_idx</span><span class="p">][</span><span class="n">label_key</span><span class="p">]</span> <span class="k">for</span> <span class="n">_idx</span> <span class="ow">in</span> <span class="n">_split_idxs</span><span class="p">]</span>
+            <span class="n">_split_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">_train_data</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="n">_idx</span><span class="p">][</span><span class="n">label_key</span><span class="p">]</span>
+                             <span class="k">for</span> <span class="n">_idx</span> <span class="ow">in</span> <span class="n">_split_idxs</span><span class="p">]</span>
 
             <span class="n">val_fold</span> <span class="o">=</span> <span class="n">StratifiedShuffleSplit</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                                               <span class="n">test_size</span><span class="o">=</span><span class="n">split_val</span><span class="p">,</span>
@@ -663,7 +664,8 @@
                              <span class="n">fold</span><span class="o">=</span><span class="n">idx</span><span class="p">,</span>
                              <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-            <span class="n">_outputs</span><span class="p">,</span> <span class="n">_labels</span><span class="p">,</span> <span class="n">_metrics_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">test_data</span><span class="p">)</span>
+            <span class="n">_outputs</span><span class="p">,</span> <span class="n">_labels</span><span class="p">,</span> <span class="n">_metrics_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">test_data</span><span class="p">)</span>
 
             <span class="n">outputs</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_outputs</span>
             <span class="n">labels</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_labels</span>
@@ -857,15 +859,7 @@
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">model_params</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">permute_training_on_top</span><span class="p">()</span><span class="o">.</span><span class="n">model</span>
 
-            <span class="n">model_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">,</span> <span class="s2">&quot;kwargs&quot;</span><span class="p">]:</span>
-                    <span class="k">continue</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">model_kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">model_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="k">pass</span>
+            <span class="n">model_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">model_params</span><span class="o">.</span><span class="n">fixed</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span><span class="o">.</span><span class="n">variable</span><span class="p">}</span>
 
             <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_cls</span><span class="p">(</span><span class="o">**</span><span class="n">model_kwargs</span><span class="p">)</span>
 
@@ -1077,6 +1071,7 @@
 <span class="sd">        :class:`AbstractExperiment`</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                      <span class="n">params</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Parameters</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
                      <span class="n">model_cls</span><span class="p">:</span> <span class="n">AbstractTfNetwork</span><span class="p">,</span>
@@ -1104,8 +1099,8 @@
                 <span class="n">save_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span>
-                                        <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
-                                            <span class="s2">&quot;%y-%m-</span><span class="si">%d</span><span class="s2">_%H-%M-%S&quot;</span><span class="p">)))</span>
+                                          <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
+                                              <span class="s2">&quot;%y-%m-</span><span class="si">%d</span><span class="s2">_%H-%M-%S&quot;</span><span class="p">)))</span>
 
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Save Path </span><span class="si">%s</span><span class="s2"> already exists&quot;</span><span class="p">)</span>
@@ -1128,8 +1123,8 @@
 
             <span class="c1"># log HyperParameters</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">({</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span>
-                                    <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">model_class = </span><span class="si">%s</span><span class="s2">&quot;</span>
-                                    <span class="o">%</span> <span class="n">model_cls</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">}})</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">model_class = </span><span class="si">%s</span><span class="s2">&quot;</span>
+                                  <span class="o">%</span> <span class="n">model_cls</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">}})</span>
 
         <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
@@ -1146,15 +1141,7 @@
 
             <span class="n">model_params</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">permute_training_on_top</span><span class="p">()</span><span class="o">.</span><span class="n">model</span>
 
-            <span class="n">model_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">,</span> <span class="s2">&quot;kwargs&quot;</span><span class="p">]:</span>
-                    <span class="k">continue</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">model_kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">model_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="k">pass</span>
+            <span class="n">model_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">model_params</span><span class="o">.</span><span class="n">fixed</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span><span class="o">.</span><span class="n">variable</span><span class="p">}</span>
 
             <span class="n">tf</span><span class="o">.</span><span class="n">reset_default_graph</span><span class="p">()</span>
 
@@ -1245,7 +1232,7 @@
 
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;experiment.delira.pkl&quot;</span><span class="p">),</span>
-                    <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                      <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;parameters&quot;</span><span class="p">))</span>
@@ -1299,7 +1286,7 @@
                                      <span class="n">data</span><span class="p">:</span> <span class="n">BaseDataManager</span><span class="p">,</span>
                                      <span class="n">split_val</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
                                      <span class="n">num_splits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                     <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                                     <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                      <span class="n">random_seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                      <span class="n">label_key</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span>
                                      <span class="n">train_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="n">test_kwargs</span><span class="o">=</span><span class="p">{},</span>
@@ -1348,15 +1335,14 @@
             <span class="n">training_params</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">permute_training_on_top</span><span class="p">()</span><span class="o">.</span><span class="n">training</span>
             <span class="n">metrics</span> <span class="o">=</span> <span class="n">training_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">)</span>
 
-
             <span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainer_cls</span><span class="p">(</span>
                 <span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span>
                 <span class="n">save_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">),</span>
                 <span class="n">optimizer_cls</span><span class="o">=</span><span class="n">training_params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s2">&quot;optimizer_cls&quot;</span><span class="p">),</span>
                 <span class="n">optim_fn</span><span class="o">=</span><span class="n">create_optims_default_tf</span><span class="p">,</span>
                 <span class="n">optimizer_params</span><span class="o">=</span><span class="p">{},</span>
-                <span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">,</span>
-                <span class="n">losses</span> <span class="o">=</span> <span class="p">{},</span>
+                <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">,</span>
+                <span class="n">losses</span><span class="o">=</span><span class="p">{},</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="c1"># testing with batchsize 1 and 1 augmentation processs to</span>
