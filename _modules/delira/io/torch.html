@@ -297,10 +297,11 @@
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">islice</span>
+<span class="kn">from</span> <span class="nn">delira</span> <span class="k">import</span> <span class="n">get_backends</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="s2">&quot;torch&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;DELIRA_BACKEND&quot;</span><span class="p">]:</span>
+<span class="k">if</span> <span class="s2">&quot;TORCH&quot;</span> <span class="ow">in</span> <span class="n">get_backends</span><span class="p">():</span>
 
     <span class="kn">import</span> <span class="nn">torch</span>
 
@@ -310,9 +311,6 @@
     <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">optim</span>
 
     <span class="kn">from</span> <span class="nn">..models</span> <span class="k">import</span> <span class="n">AbstractPyTorchNetwork</span>
-
-
-
 
 <div class="viewcode-block" id="save_checkpoint"><a class="viewcode-back" href="../../../_api/_build/delira/delira.io.html#delira.io.torch.save_checkpoint">[docs]</a>    <span class="k">def</span> <span class="nf">save_checkpoint</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">optimizers</span><span class="o">=</span><span class="p">{},</span>
                         <span class="n">epoch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -358,8 +356,8 @@
             <span class="n">epoch</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="n">state</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="n">optim_state</span><span class="p">,</span>
-                <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">model_state</span><span class="p">,</span>
-                <span class="s2">&quot;epoch&quot;</span><span class="p">:</span> <span class="n">epoch</span><span class="p">}</span>
+                 <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">model_state</span><span class="p">,</span>
+                 <span class="s2">&quot;epoch&quot;</span><span class="p">:</span> <span class="n">epoch</span><span class="p">}</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">weights_only</span><span class="p">:</span>
 
@@ -378,11 +376,10 @@
             <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">({</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">source</span><span class="p">,</span> <span class="s1">&#39;cls_name_model&#39;</span><span class="p">:</span> <span class="n">class_name_model</span><span class="p">,</span>
                         <span class="s1">&#39;parent_class&#39;</span><span class="p">:</span> <span class="n">parent_class</span><span class="p">,</span> <span class="s1">&#39;init_kwargs&#39;</span><span class="p">:</span> <span class="n">init_kwargs</span><span class="p">,</span>
                         <span class="s1">&#39;state_dict&#39;</span><span class="p">:</span> <span class="n">state</span><span class="p">,</span> <span class="s1">&#39;cls_name_optim&#39;</span><span class="p">:</span> <span class="n">class_names_optim</span><span class="p">},</span>
-                    <span class="n">file</span><span class="p">)</span>
+                       <span class="n">file</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span></div>
-
 
 <div class="viewcode-block" id="load_checkpoint"><a class="viewcode-back" href="../../../_api/_build/delira/delira.io.html#delira.io.torch.load_checkpoint">[docs]</a>    <span class="k">def</span> <span class="nf">load_checkpoint</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">weights_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -421,7 +418,7 @@
 
             <span class="c1"># create class instance (default device: CPU)</span>
             <span class="n">exec</span><span class="p">(</span><span class="s2">&quot;model = &quot;</span> <span class="o">+</span> <span class="n">loaded_dict</span><span class="p">[</span><span class="s2">&quot;cls_name_model&quot;</span><span class="p">]</span> <span class="o">+</span>
-                <span class="s2">&quot;(**loaded_dict[&#39;init_kwargs&#39;])&quot;</span><span class="p">)</span>
+                 <span class="s2">&quot;(**loaded_dict[&#39;init_kwargs&#39;])&quot;</span><span class="p">)</span>
 
             <span class="c1"># check for &quot;map_location&quot; kwarg and use device of first weight tensor</span>
             <span class="c1"># as default argument (weight tensors should be all on same device)</span>
@@ -434,20 +431,21 @@
                 <span class="n">default_device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
 
             <span class="n">map_location</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;map_location&quot;</span><span class="p">,</span>
-                                    <span class="c1"># use slicing instead of converting to list</span>
-                                    <span class="c1"># to avoid memory overhead</span>
-                                    <span class="n">default_device</span><span class="p">)</span>
+                                      <span class="c1"># use slicing instead of converting to list</span>
+                                      <span class="c1"># to avoid memory overhead</span>
+                                      <span class="n">default_device</span><span class="p">)</span>
 
             <span class="c1"># push created class from CPU to suitable device</span>
             <span class="nb">locals</span><span class="p">()[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">map_location</span><span class="p">)</span>
 
-            <span class="nb">locals</span><span class="p">()[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">loaded_dict</span><span class="p">[</span><span class="s2">&quot;state_dict&quot;</span><span class="p">][</span><span class="s2">&quot;model&quot;</span><span class="p">])</span>
+            <span class="nb">locals</span><span class="p">()[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span>
+                <span class="n">loaded_dict</span><span class="p">[</span><span class="s2">&quot;state_dict&quot;</span><span class="p">][</span><span class="s2">&quot;model&quot;</span><span class="p">])</span>
 
             <span class="n">optims</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
 
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">loaded_dict</span><span class="p">[</span><span class="s2">&quot;cls_name_optim&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">exec</span><span class="p">(</span><span class="s2">&quot;_optim = optim.</span><span class="si">%s</span><span class="s2">(models.parameters())&quot;</span> <span class="o">%</span>
-                <span class="n">loaded_dict</span><span class="p">[</span><span class="s2">&quot;cls_name_optim&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">])</span>
+                     <span class="n">loaded_dict</span><span class="p">[</span><span class="s2">&quot;cls_name_optim&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">])</span>
 
                 <span class="n">optims</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()[</span><span class="s1">&#39;_optim&#39;</span><span class="p">]</span>
 

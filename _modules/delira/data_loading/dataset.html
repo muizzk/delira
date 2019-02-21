@@ -300,6 +300,7 @@
 <span class="kn">import</span> <span class="nn">typing</span>
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">subdirs</span>
 <span class="kn">from</span> <span class="nn">..utils.decorators</span> <span class="k">import</span> <span class="n">make_deprecated</span>
+<span class="kn">from</span> <span class="nn">delira</span> <span class="k">import</span> <span class="n">get_backends</span>
 
 
 <div class="viewcode-block" id="AbstractDataset"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/dataset.html#delira.data_loading.AbstractDataset">[docs]</a><span class="k">class</span> <span class="nc">AbstractDataset</span><span class="p">:</span>
@@ -951,7 +952,7 @@
         <span class="k">return</span> <span class="n">data</span>
 
 
-<span class="k">if</span> <span class="s2">&quot;torch&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;DELIRA_BACKEND&quot;</span><span class="p">]:</span>
+<span class="k">if</span> <span class="s2">&quot;TORCH&quot;</span> <span class="ow">in</span> <span class="n">get_backends</span><span class="p">():</span>
     <span class="kn">from</span> <span class="nn">torchvision.datasets</span> <span class="k">import</span> <span class="n">CIFAR10</span><span class="p">,</span> <span class="n">CIFAR100</span><span class="p">,</span> <span class="n">EMNIST</span><span class="p">,</span> <span class="n">MNIST</span><span class="p">,</span> <span class="n">FashionMNIST</span>
 
     <span class="k">class</span> <span class="nc">TorchvisionClassificationDataset</span><span class="p">(</span><span class="n">AbstractDataset</span><span class="p">):</span>

@@ -294,7 +294,7 @@
 <span></span><span class="kn">from</span> <span class="nn">.abstract_callback</span> <span class="k">import</span> <span class="n">AbstractCallback</span>
 <span class="kn">from</span> <span class="nn">delira</span> <span class="k">import</span> <span class="n">get_backends</span>
 
-<span class="k">if</span> <span class="s1">&#39;torch&#39;</span> <span class="ow">in</span> <span class="n">get_backends</span><span class="p">():</span>
+<span class="k">if</span> <span class="s1">&#39;TORCH&#39;</span> <span class="ow">in</span> <span class="n">get_backends</span><span class="p">():</span>
     <span class="kn">from</span> <span class="nn">torch.optim.lr_scheduler</span> <span class="k">import</span> <span class="n">ReduceLROnPlateau</span><span class="p">,</span> <span class="n">CosineAnnealingLR</span><span class="p">,</span> \
         <span class="n">ExponentialLR</span><span class="p">,</span> <span class="n">LambdaLR</span><span class="p">,</span> <span class="n">MultiStepLR</span><span class="p">,</span> <span class="n">StepLR</span>
 

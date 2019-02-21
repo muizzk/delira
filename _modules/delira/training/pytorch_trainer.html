@@ -300,9 +300,11 @@
 <span class="kn">from</span> <span class="nn">.callbacks</span> <span class="k">import</span> <span class="n">AbstractCallback</span>
 <span class="kn">from</span> <span class="nn">.abstract_trainer</span> <span class="k">import</span> <span class="n">AbstractNetworkTrainer</span>
 
+<span class="kn">from</span> <span class="nn">delira</span> <span class="k">import</span> <span class="n">get_backends</span>
+
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="s2">&quot;torch&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;DELIRA_BACKEND&quot;</span><span class="p">]:</span>
+<span class="k">if</span> <span class="s2">&quot;TORCH&quot;</span> <span class="ow">in</span> <span class="n">get_backends</span><span class="p">():</span>
     <span class="kn">import</span> <span class="nn">torch</span>
     <span class="kn">from</span> <span class="nn">.train_utils</span> <span class="k">import</span> <span class="n">pytorch_batch_to_numpy</span>
     <span class="kn">from</span> <span class="nn">.train_utils</span> <span class="k">import</span> <span class="n">create_optims_default_pytorch</span> <span class="k">as</span> <span class="n">create_optims_default</span>

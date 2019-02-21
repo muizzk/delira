@@ -383,7 +383,7 @@ specified</p>
 
 <dl class="method">
 <dt id="delira.models.classification.ClassificationNetworkBasePyTorch.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>input_batch: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f385c5ea278&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/models/classification/classification_network.html#ClassificationNetworkBasePyTorch.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.models.classification.ClassificationNetworkBasePyTorch.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>input_batch: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f6afa42d9b0&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/models/classification/classification_network.html#ClassificationNetworkBasePyTorch.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.models.classification.ClassificationNetworkBasePyTorch.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Forward input_batch through network</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -528,7 +528,7 @@ specified</p>
 
 <dl class="method">
 <dt id="delira.models.classification.VGG3DClassificationNetworkPyTorch.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>input_batch: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f385c5ea278&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#delira.models.classification.VGG3DClassificationNetworkPyTorch.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>input_batch: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f6afa42d9b0&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#delira.models.classification.VGG3DClassificationNetworkPyTorch.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Forward input_batch through network</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -592,170 +592,6 @@ device</p>
 </div>
 <div class="section" id="classificationnetworkbasetf">
 <h2><span class="hidden-section">ClassificationNetworkBaseTf</span><a class="headerlink" href="#classificationnetworkbasetf" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="delira.models.classification.ClassificationNetworkBaseTf">
-<em class="property">class </em><code class="descname">ClassificationNetworkBaseTf</code><span class="sig-paren">(</span><em>in_channels: int</em>, <em>n_outputs: int</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/models/classification/classification_network_tf.html#ClassificationNetworkBaseTf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.models.classification.ClassificationNetworkBaseTf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">delira.models.abstract_network.AbstractTfNetwork</span></code></p>
-<p>Implements basic classification with ResNet18</p>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractTfNetwork</span></code></p>
-</div>
-<dl class="method">
-<dt id="delira.models.classification.ClassificationNetworkBaseTf._add_losses">
-<code class="descname">_add_losses</code><span class="sig-paren">(</span><em>losses: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/models/classification/classification_network_tf.html#ClassificationNetworkBaseTf._add_losses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.models.classification.ClassificationNetworkBaseTf._add_losses" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds losses to model that are to be used by optimizers or during evaluation</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>losses</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – dictionary containing all losses. Individual losses are averaged</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="delira.models.classification.ClassificationNetworkBaseTf._add_optims">
-<code class="descname">_add_optims</code><span class="sig-paren">(</span><em>optims: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/models/classification/classification_network_tf.html#ClassificationNetworkBaseTf._add_optims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.models.classification.ClassificationNetworkBaseTf._add_optims" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds optims to model that are to be used by optimizers or during training</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>optim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – dictionary containing all optimizers, optimizers should be of Type[tf.train.Optimizer]</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="delira.models.classification.ClassificationNetworkBaseTf._build_model">
-<em class="property">static </em><code class="descname">_build_model</code><span class="sig-paren">(</span><em>n_outputs: int</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/models/classification/classification_network_tf.html#ClassificationNetworkBaseTf._build_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.models.classification.ClassificationNetworkBaseTf._build_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>builds actual model (resnet 18)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>n_outputs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of outputs (usually same as number of classes)</li>
-<li><strong>**kwargs</strong> – additional keyword arguments</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">created model</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tf.keras.Model</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="delira.models.classification.ClassificationNetworkBaseTf._init_kwargs">
-<code class="descname">_init_kwargs</code><em class="property"> = {}</em><a class="headerlink" href="#delira.models.classification.ClassificationNetworkBaseTf._init_kwargs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="delira.models.classification.ClassificationNetworkBaseTf.closure">
-<em class="property">static </em><code class="descname">closure</code><span class="sig-paren">(</span><em>model: Type[delira.models.abstract_network.AbstractTfNetwork], data_dict: dict, metrics={}, fold=0, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/models/classification/classification_network_tf.html#ClassificationNetworkBaseTf.closure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.models.classification.ClassificationNetworkBaseTf.closure" title="Permalink to this definition">¶</a></dt>
-<dd><p>closure method to do a single prediction.
-This is followed by backpropagation or not based state of
-on model.train</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>model</strong> (<a class="reference internal" href="models.html#delira.models.AbstractTfNetwork" title="delira.models.AbstractTfNetwork"><em>AbstractTfNetwork</em></a>) – AbstractTfNetwork or its child-clases</li>
-<li><strong>data_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – dictionary containing the data</li>
-<li><strong>metrics</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – dict holding the metrics to calculate</li>
-<li><strong>fold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Current Fold in Crossvalidation (default: 0)</li>
-<li><strong>**kwargs</strong> – additional keyword arguments</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><em>dict</em> – Metric values (with same keys as input dict metrics)</li>
-<li><em>dict</em> – Loss values (with same keys as those initially passed to model.init).
-Additionally, a total_loss key is added</li>
-<li><em>list</em> – Arbitrary number of predictions as np.array</li>
-</ul>
-</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="delira.models.classification.ClassificationNetworkBaseTf.init_kwargs">
-<code class="descname">init_kwargs</code><a class="headerlink" href="#delira.models.classification.ClassificationNetworkBaseTf.init_kwargs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns all arguments registered as init kwargs</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">init kwargs</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="delira.models.classification.ClassificationNetworkBaseTf.prepare_batch">
-<em class="property">static </em><code class="descname">prepare_batch</code><span class="sig-paren">(</span><em>batch: dict</em>, <em>input_device</em>, <em>output_device</em><span class="sig-paren">)</span><a class="headerlink" href="#delira.models.classification.ClassificationNetworkBaseTf.prepare_batch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts a numpy batch of data and labels to suitable datatype and
-pushes them to correct devices</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>batch</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – dictionary containing the batch (must have keys ‘data’ and ‘label’</li>
-<li><strong>input_device</strong> – device for network inputs</li>
-<li><strong>output_device</strong> – device for network outputs</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dictionary containing all necessary data in right format and type
-and on the correct device</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> – If not overwritten by subclass</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="delira.models.classification.ClassificationNetworkBaseTf.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#delira.models.classification.ClassificationNetworkBaseTf.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluates <cite>self.outputs_train</cite> or <cite>self.outputs_eval</cite> based on <cite>self.training</cite></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>*args</strong> – arguments to feed as <cite>self.inputs</cite>. Must have same length as <cite>self.inputs</cite></td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">based on len(self.outputs*), returns either list or np.ndarray</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 </div>
 
