@@ -304,7 +304,7 @@
 <h2><span class="hidden-section">torch_load_checkpoint</span><a class="headerlink" href="#torch-load-checkpoint" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="delira.io.torch.load_checkpoint">
-<code class="descname">load_checkpoint</code><span class="sig-paren">(</span><em>file</em>, <em>weights_only=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/delira/io/torch.html#load_checkpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.io.torch.load_checkpoint" title="Permalink to this definition">¶</a></dt>
+<code class="descname">load_checkpoint</code><span class="sig-paren">(</span><em>file</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/delira/io/torch.html#load_checkpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.io.torch.load_checkpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads a saved model</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -312,19 +312,16 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – filepath to a file containing a saved model</li>
-<li><strong>weights_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether the file contains only weights / only weights should be
-returned</li>
 <li><strong>**kwargs</strong> – Additional keyword arguments (passed to torch.load)
 Especially “map_location” is important to change the device the
 state_dict should be loaded to</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><em>OrderedDict</em> – checkpoint state_dict if <cite>weights_only=True</cite></li>
-<li><em>torch.nn.Module, OrderedDict, int</em> – Model, Optimizers, epoch with loaded state_dicts if <cite>weights_only=False</cite></li>
-</ul>
-</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">checkpoint state_dict</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">OrderedDict</p>
 </td>
 </tr>
 </tbody>
@@ -336,7 +333,7 @@ state_dict should be loaded to</li>
 <h2><span class="hidden-section">torch_save_checkpoint</span><a class="headerlink" href="#torch-save-checkpoint" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="delira.io.torch.save_checkpoint">
-<code class="descname">save_checkpoint</code><span class="sig-paren">(</span><em>file: str</em>, <em>model=None</em>, <em>optimizers={}</em>, <em>epoch=None</em>, <em>weights_only=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/delira/io/torch.html#save_checkpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.io.torch.save_checkpoint" title="Permalink to this definition">¶</a></dt>
+<code class="descname">save_checkpoint</code><span class="sig-paren">(</span><em>file: str</em>, <em>model=None</em>, <em>optimizers={}</em>, <em>epoch=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/delira/io/torch.html#save_checkpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.io.torch.save_checkpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save model’s parameters</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -348,8 +345,6 @@ state_dict should be loaded to</li>
 if None: empty dict will be saved as state dict</li>
 <li><strong>optimizers</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – dictionary containing all optimizers</li>
 <li><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – current epoch (will also be pickled)</li>
-<li><strong>weights_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether or not to save only the model’s weights or also save additional
-information (for easy loading)</li>
 </ul>
 </td>
 </tr>

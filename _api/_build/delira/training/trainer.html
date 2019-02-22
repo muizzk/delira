@@ -453,7 +453,7 @@ optimal; must be in [‘highest’, ‘lowest’]</li>
 
 <dl class="method">
 <dt id="delira.training.AbstractNetworkTrainer._train_single_epoch">
-<code class="descname">_train_single_epoch</code><span class="sig-paren">(</span><em>batchgen: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f8536f3fd30&gt;</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/abstract_trainer.html#AbstractNetworkTrainer._train_single_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AbstractNetworkTrainer._train_single_epoch" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_train_single_epoch</code><span class="sig-paren">(</span><em>batchgen: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f6b22470d68&gt;</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/abstract_trainer.html#AbstractNetworkTrainer._train_single_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.AbstractNetworkTrainer._train_single_epoch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines a routine to train a single epoch</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -786,7 +786,7 @@ optimal; must be in [‘highest’, ‘lowest’]</li>
 
 <dl class="method">
 <dt id="delira.training.PyTorchNetworkTrainer._train_single_epoch">
-<code class="descname">_train_single_epoch</code><span class="sig-paren">(</span><em>batchgen: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f8537150358&gt;</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/pytorch_trainer.html#PyTorchNetworkTrainer._train_single_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchNetworkTrainer._train_single_epoch" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_train_single_epoch</code><span class="sig-paren">(</span><em>batchgen: &lt;sphinx.ext.autodoc.importer._MockObject object at 0x7f6b223edf60&gt;</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/pytorch_trainer.html#PyTorchNetworkTrainer._train_single_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchNetworkTrainer._train_single_epoch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trains the network a single epoch</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -804,25 +804,17 @@ optimal; must be in [‘highest’, ‘lowest’]</li>
 
 <dl class="method">
 <dt id="delira.training.PyTorchNetworkTrainer._update_state">
-<code class="descname">_update_state</code><span class="sig-paren">(</span><em>new_state</em>, <em>weights_only=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/pytorch_trainer.html#PyTorchNetworkTrainer._update_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchNetworkTrainer._update_state" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_update_state</code><span class="sig-paren">(</span><em>new_state</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/pytorch_trainer.html#PyTorchNetworkTrainer._update_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchNetworkTrainer._update_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the state from a given new state</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>new_state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – new state to update internal state from</li>
-<li><strong>weights_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether to update weights only from statedict or update
-everything</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>new_state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – new state to update internal state from</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><a class="reference internal" href="#delira.training.PyTorchNetworkTrainer" title="delira.training.PyTorchNetworkTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyTorchNetworkTrainer</span></code></a> – the trainer with a modified state</li>
-<li><em>#</em></li>
-</ul>
-</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the trainer with a modified state</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#delira.training.PyTorchNetworkTrainer" title="delira.training.PyTorchNetworkTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyTorchNetworkTrainer</span></code></a></td>
 </tr>
 </tbody>
 </table>
@@ -846,7 +838,7 @@ everything</li>
 
 <dl class="staticmethod">
 <dt id="delira.training.PyTorchNetworkTrainer.load_state">
-<em class="property">static </em><code class="descname">load_state</code><span class="sig-paren">(</span><em>file_name</em>, <em>weights_only=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/pytorch_trainer.html#PyTorchNetworkTrainer.load_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchNetworkTrainer.load_state" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">load_state</code><span class="sig-paren">(</span><em>file_name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/pytorch_trainer.html#PyTorchNetworkTrainer.load_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchNetworkTrainer.load_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the new state from file via <a class="reference internal" href="../delira.io.html#delira.io.torch.load_checkpoint" title="delira.io.torch.load_checkpoint"><code class="xref py py-func docutils literal notranslate"><span class="pre">delira.io.torch.load_checkpoint()</span></code></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -854,7 +846,6 @@ everything</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the file to load the state from</li>
-<li><strong>weights_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether file contains stored weights only (default: False)</li>
 <li><strong>**kwargs</strong> (<em>keyword arguments</em>) – </li>
 </ul>
 </td>
@@ -916,7 +907,7 @@ not both methods [‘at_epoch_begin’, ‘at_epoch_end’]</td>
 
 <dl class="method">
 <dt id="delira.training.PyTorchNetworkTrainer.save_state">
-<code class="descname">save_state</code><span class="sig-paren">(</span><em>file_name</em>, <em>epoch</em>, <em>weights_only=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/pytorch_trainer.html#PyTorchNetworkTrainer.save_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchNetworkTrainer.save_state" title="Permalink to this definition">¶</a></dt>
+<code class="descname">save_state</code><span class="sig-paren">(</span><em>file_name</em>, <em>epoch</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/pytorch_trainer.html#PyTorchNetworkTrainer.save_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchNetworkTrainer.save_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>saves the current state via <a class="reference internal" href="../delira.io.html#delira.io.torch.save_checkpoint" title="delira.io.torch.save_checkpoint"><code class="xref py py-func docutils literal notranslate"><span class="pre">delira.io.torch.save_checkpoint()</span></code></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -925,7 +916,6 @@ not both methods [‘at_epoch_begin’, ‘at_epoch_end’]</td>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – filename to save the state to</li>
 <li><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – current epoch (will be saved for mapping back)</li>
-<li><strong>weights_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether to store only weights (default: False)</li>
 <li><strong>*args</strong> – positional arguments</li>
 <li><strong>**kwargs</strong> – keyword arguments</li>
 </ul>
@@ -966,7 +956,7 @@ last epoch will be returned)</p>
 
 <dl class="method">
 <dt id="delira.training.PyTorchNetworkTrainer.update_state">
-<code class="descname">update_state</code><span class="sig-paren">(</span><em>file_name</em>, <em>weights_only=True</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/pytorch_trainer.html#PyTorchNetworkTrainer.update_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchNetworkTrainer.update_state" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update_state</code><span class="sig-paren">(</span><em>file_name</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/pytorch_trainer.html#PyTorchNetworkTrainer.update_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.PyTorchNetworkTrainer.update_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update internal state from a loaded state</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -974,7 +964,6 @@ last epoch will be returned)</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – file containing the new state to load</li>
-<li><strong>weights_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether to update only weights or notS</li>
 <li><strong>*args</strong> – positional arguments</li>
 <li><strong>**kwargs</strong> – keyword arguments</li>
 </ul>

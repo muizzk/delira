@@ -480,21 +480,12 @@
 
                     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Attempting to load state from previous </span><span class="se">\</span>
 <span class="s2">                                training from </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">latest_state_path</span><span class="p">)</span>
-
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">update_state</span><span class="p">(</span><span class="n">latest_state_path</span><span class="p">,</span>
-                                          <span class="n">weights_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">update_state</span><span class="p">(</span><span class="n">latest_state_path</span><span class="p">)</span>
                     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                        <span class="k">try</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">update_state</span><span class="p">(</span><span class="n">latest_state_path</span><span class="p">,</span>
-                                              <span class="n">weights_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">start_epoch</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
-                                <span class="n">latest_epoch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_epoch</span><span class="p">)</span>
-
-                        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Previous State could not be loaded, </span><span class="se">\</span>
-<span class="s2">                                        although it exists.Training will be </span><span class="se">\</span>
-<span class="s2">                                        restarted&quot;</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Previous State could not be loaded, </span><span class="se">\</span>
+<span class="s2">                                    although it exists.Training will be </span><span class="se">\</span>
+<span class="s2">                                    restarted&quot;</span><span class="p">)</span>
 
             <span class="c1"># asssign closure and prepare batch from network</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">closure_fn</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">closure</span>
@@ -656,8 +647,7 @@
 
                 <span class="c1"># load best model and return it</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">update_state</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span>
-                                               <span class="s1">&#39;checkpoint_best.pth&#39;</span><span class="p">),</span>
-                                  <span class="n">weights_only</span><span class="o">=</span><span class="kc">True</span>
+                                               <span class="s1">&#39;checkpoint_best.pth&#39;</span><span class="p">)</span>
                                   <span class="p">)</span>
 
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span></div>
@@ -687,8 +677,7 @@
             <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_update_state</span><span class="p">(</span><span class="n">cb</span><span class="o">.</span><span class="n">at_epoch_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val_metrics</span><span class="o">=</span><span class="n">metrics_val</span><span class="p">,</span>
                                                      <span class="n">val_score_key</span><span class="o">=</span><span class="n">val_score_key</span><span class="p">,</span>
-                                                     <span class="n">curr_epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">),</span>
-                                   <span class="n">weights_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+                                                     <span class="n">curr_epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="PyTorchNetworkTrainer._at_epoch_end"><a class="viewcode-back" href="../../../_api/_build/delira/training/trainer.html#delira.training.PyTorchNetworkTrainer._at_epoch_end">[docs]</a>        <span class="k">def</span> <span class="nf">_at_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metrics_val</span><span class="p">,</span> <span class="n">val_score_key</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">is_best</span><span class="p">,</span>
                           <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -716,18 +705,17 @@
             <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_update_state</span><span class="p">(</span><span class="n">cb</span><span class="o">.</span><span class="n">at_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val_metrics</span><span class="o">=</span><span class="n">metrics_val</span><span class="p">,</span>
                                                    <span class="n">val_score_key</span><span class="o">=</span><span class="n">val_score_key</span><span class="p">,</span>
-                                                   <span class="n">curr_epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">),</span>
-                                   <span class="n">weights_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                                                   <span class="n">curr_epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">save_state</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span>
                                              <span class="s2">&quot;checkpoint_epoch_</span><span class="si">%d</span><span class="s2">.pth&quot;</span> <span class="o">%</span> <span class="n">epoch</span><span class="p">),</span>
-                                <span class="n">epoch</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                                <span class="n">epoch</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">is_best</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">save_state</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span>
                                              <span class="s2">&quot;checkpoint_best.pth&quot;</span><span class="p">),</span>
-                                <span class="n">epoch</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+                                <span class="n">epoch</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PyTorchNetworkTrainer._train_single_epoch"><a class="viewcode-back" href="../../../_api/_build/delira/training/trainer.html#delira.training.PyTorchNetworkTrainer._train_single_epoch">[docs]</a>        <span class="k">def</span> <span class="nf">_train_single_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batchgen</span><span class="p">:</span> <span class="n">MultiThreadedAugmenter</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
@@ -890,7 +878,7 @@
 
             <span class="k">return</span> <span class="n">outputs_all</span><span class="p">,</span> <span class="n">labels_all</span><span class="p">,</span> <span class="n">val_dict</span></div>
 
-<div class="viewcode-block" id="PyTorchNetworkTrainer.save_state"><a class="viewcode-back" href="../../../_api/_build/delira/training/trainer.html#delira.training.PyTorchNetworkTrainer.save_state">[docs]</a>        <span class="k">def</span> <span class="nf">save_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">weights_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="PyTorchNetworkTrainer.save_state"><a class="viewcode-back" href="../../../_api/_build/delira/training/trainer.html#delira.training.PyTorchNetworkTrainer.save_state">[docs]</a>        <span class="k">def</span> <span class="nf">save_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            saves the current state via :func:`delira.io.torch.save_checkpoint`</span>
 
@@ -900,19 +888,17 @@
 <span class="sd">                filename to save the state to</span>
 <span class="sd">            epoch : int</span>
 <span class="sd">                current epoch (will be saved for mapping back)</span>
-<span class="sd">            weights_only : bool</span>
-<span class="sd">                whether to store only weights (default: False)</span>
 <span class="sd">            *args :</span>
 <span class="sd">                positional arguments</span>
 <span class="sd">            **kwargs :</span>
 <span class="sd">                keyword arguments</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">save_checkpoint</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizers</span><span class="p">,</span> <span class="n">weights_only</span><span class="p">,</span>
-                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+            <span class="n">save_checkpoint</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizers</span><span class="p">,</span>
+                            <span class="n">epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PyTorchNetworkTrainer.load_state"><a class="viewcode-back" href="../../../_api/_build/delira/training/trainer.html#delira.training.PyTorchNetworkTrainer.load_state">[docs]</a>        <span class="nd">@staticmethod</span>
-        <span class="k">def</span> <span class="nf">load_state</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">weights_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">load_state</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Loads the new state from file via :func:`delira.io.torch.load_checkpoint`</span>
 
@@ -920,8 +906,6 @@
 <span class="sd">            ----------</span>
 <span class="sd">            file_name : str</span>
 <span class="sd">                the file to load the state from</span>
-<span class="sd">            weights_only : bool</span>
-<span class="sd">                whether file contains stored weights only (default: False)</span>
 <span class="sd">            **kwargs : keyword arguments</span>
 
 <span class="sd">            Returns</span>
@@ -930,15 +914,9 @@
 <span class="sd">                new state</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="k">if</span> <span class="n">weights_only</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">load_checkpoint</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">weights_only</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">epoch</span> <span class="o">=</span> <span class="n">load_checkpoint</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">weights_only</span><span class="p">,</span>
-                                                          <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;module&quot;</span><span class="p">:</span> <span class="n">model</span><span class="p">,</span> <span class="s2">&quot;optimizers&quot;</span><span class="p">:</span> <span class="n">optimizer</span><span class="p">,</span>
-                        <span class="s2">&quot;start_epoch&quot;</span><span class="p">:</span> <span class="n">epoch</span><span class="p">}</span></div>
+            <span class="k">return</span> <span class="n">load_checkpoint</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PyTorchNetworkTrainer.update_state"><a class="viewcode-back" href="../../../_api/_build/delira/training/trainer.html#delira.training.PyTorchNetworkTrainer.update_state">[docs]</a>        <span class="k">def</span> <span class="nf">update_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">weights_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="PyTorchNetworkTrainer.update_state"><a class="viewcode-back" href="../../../_api/_build/delira/training/trainer.html#delira.training.PyTorchNetworkTrainer.update_state">[docs]</a>        <span class="k">def</span> <span class="nf">update_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Update internal state from a loaded state</span>
 
@@ -946,8 +924,6 @@
 <span class="sd">            ----------</span>
 <span class="sd">            file_name : str</span>
 <span class="sd">                file containing the new state to load</span>
-<span class="sd">            weights_only : bool</span>
-<span class="sd">                whether to update only weights or notS</span>
 <span class="sd">            *args :</span>
 <span class="sd">                positional arguments</span>
 <span class="sd">            **kwargs :</span>
@@ -959,10 +935,9 @@
 <span class="sd">                the trainer with a modified state</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_update_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load_state</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">weights_only</span><span class="p">,</span>
-                                               <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">weights_only</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load_state</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="PyTorchNetworkTrainer._update_state"><a class="viewcode-back" href="../../../_api/_build/delira/training/trainer.html#delira.training.PyTorchNetworkTrainer._update_state">[docs]</a>        <span class="k">def</span> <span class="nf">_update_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_state</span><span class="p">,</span> <span class="n">weights_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="PyTorchNetworkTrainer._update_state"><a class="viewcode-back" href="../../../_api/_build/delira/training/trainer.html#delira.training.PyTorchNetworkTrainer._update_state">[docs]</a>        <span class="k">def</span> <span class="nf">_update_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_state</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Update the state from a given new state</span>
 
@@ -970,38 +945,28 @@
 <span class="sd">            ----------</span>
 <span class="sd">            new_state : dict</span>
 <span class="sd">                new state to update internal state from</span>
-<span class="sd">            weights_only : bool</span>
-<span class="sd">                whether to update weights only from statedict or update </span>
-<span class="sd">                everything</span>
 
 <span class="sd">            Returns</span>
 <span class="sd">            -------</span>
 <span class="sd">            :class:`PyTorchNetworkTrainer`</span>
 <span class="sd">                the trainer with a modified state</span>
 
-<span class="sd">            # &quot;&quot;&quot;</span>
+<span class="sd">            &quot;&quot;&quot;</span>
             <span class="c1"># print(&quot;,&quot;.join(new_state.keys()))</span>
 
-            <span class="k">if</span> <span class="n">weights_only</span><span class="p">:</span>
-                <span class="k">if</span> <span class="s2">&quot;model&quot;</span> <span class="ow">in</span> <span class="n">new_state</span><span class="p">:</span>
-                    <span class="n">model_state</span> <span class="o">=</span> <span class="n">new_state</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">model_state</span> <span class="o">=</span> <span class="n">new_state</span>
+            <span class="k">if</span> <span class="s2">&quot;model&quot;</span> <span class="ow">in</span> <span class="n">new_state</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">new_state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">))</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">model_state</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;optimizer&quot;</span> <span class="ow">in</span> <span class="n">new_state</span> <span class="ow">and</span> <span class="n">new_state</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">]:</span>
+                <span class="n">optim_state</span> <span class="o">=</span> <span class="n">new_state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;optimizer&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">optimizers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span>
+                        <span class="n">optim_state</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
 
-                <span class="k">if</span> <span class="s2">&quot;optimizer&quot;</span> <span class="ow">in</span> <span class="n">new_state</span> <span class="ow">and</span> <span class="n">new_state</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">]:</span>
-                    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">optimizers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span>
-                            <span class="n">new_state</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s2">&quot;epoch&quot;</span> <span class="ow">in</span> <span class="n">new_state</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">start_epoch</span> <span class="o">=</span> <span class="n">new_state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;epoch&quot;</span><span class="p">)</span>
 
-                <span class="k">if</span> <span class="s2">&quot;epoch&quot;</span> <span class="ow">in</span> <span class="n">new_state</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">start_epoch</span> <span class="o">=</span> <span class="n">new_state</span><span class="p">[</span><span class="s2">&quot;epoch&quot;</span><span class="p">]</span>
-
-                <span class="k">return</span> <span class="bp">self</span>
-
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_update_state</span><span class="p">(</span><span class="n">new_state</span><span class="p">)</span></div></div>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_update_state</span><span class="p">(</span><span class="n">new_state</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
