@@ -421,7 +421,7 @@ implemented in <code class="docutils literal notranslate"><span class="pre">__ge
 <h2><span class="hidden-section">BaseLazyDataset</span><a class="headerlink" href="#baselazydataset" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="delira.data_loading.BaseLazyDataset">
-<em class="property">class </em><code class="descname">BaseLazyDataset</code><span class="sig-paren">(</span><em>data_path</em>, <em>load_fn</em>, <em>img_extensions</em>, <em>gt_extensions</em>, <em>**load_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#BaseLazyDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.BaseLazyDataset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">BaseLazyDataset</code><span class="sig-paren">(</span><em>data_path</em>, <em>load_fn</em>, <em>img_extensions</em>, <em>gt_extensions=[]</em>, <em>**load_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#BaseLazyDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.BaseLazyDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">delira.data_loading.dataset.AbstractDataset</span></code></p>
 <p>Dataset to load data in a lazy way</p>
 <dl class="method">
@@ -550,7 +550,7 @@ implemented in <code class="docutils literal notranslate"><span class="pre">__ge
 <h2><span class="hidden-section">BaseCacheDataset</span><a class="headerlink" href="#basecachedataset" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="delira.data_loading.BaseCacheDataset">
-<em class="property">class </em><code class="descname">BaseCacheDataset</code><span class="sig-paren">(</span><em>data_path</em>, <em>load_fn</em>, <em>img_extensions</em>, <em>gt_extensions</em>, <em>**load_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#BaseCacheDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.BaseCacheDataset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">BaseCacheDataset</code><span class="sig-paren">(</span><em>data_path</em>, <em>load_fn</em>, <em>img_extensions</em>, <em>gt_extensions=[]</em>, <em>**load_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#BaseCacheDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.BaseCacheDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">delira.data_loading.dataset.AbstractDataset</span></code></p>
 <p>Dataset to preload and cache data</p>
 <p class="rubric">Notes</p>
