@@ -485,9 +485,9 @@ number of samplers per batch for each class</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dataset</strong> (<a class="reference internal" href="dataset.html#delira.data_loading.AbstractDataset" title="delira.data_loading.AbstractDataset"><em>AbstractDataset</em></a>) – the given dataset</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The initialzed sampler</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The initialized sampler</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#delira.data_loading.sampler.AbstractSampler" title="delira.data_loading.sampler.AbstractSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractSampler</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#delira.data_loading.sampler.AbstractSampler" title="delira.data_loading.sampler.AbstractSampler">AbstractSampler</a></td>
 </tr>
 </tbody>
 </table>
@@ -535,9 +535,9 @@ smallest class</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dataset</strong> (<a class="reference internal" href="dataset.html#delira.data_loading.AbstractDataset" title="delira.data_loading.AbstractDataset"><em>AbstractDataset</em></a>) – the given dataset</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The initialzed sampler</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The initialized sampler</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#delira.data_loading.sampler.AbstractSampler" title="delira.data_loading.sampler.AbstractSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractSampler</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#delira.data_loading.sampler.AbstractSampler" title="delira.data_loading.sampler.AbstractSampler">AbstractSampler</a></td>
 </tr>
 </tbody>
 </table>
@@ -720,7 +720,6 @@ first class have been sampled</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
 <li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#StopIteration" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">StopIteration</span></code></a> – If maximal number of samples is reached</li>
-<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> – if weights and cum_weights are specified at the same time</li>
 <li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – if weights or cum_weights don’t match the population</li>
 </ul>
 </td>

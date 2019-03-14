@@ -409,6 +409,20 @@
 
 <div class="viewcode-block" id="PrevalenceRandomSampler.from_dataset"><a class="viewcode-back" href="../../../../_api/_build/delira/data_loading/sampler.html#delira.data_loading.sampler.PrevalenceRandomSampler.from_dataset">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_dataset</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">AbstractDataset</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Classmethod to initialize the sampler from a given dataset</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataset : AbstractDataset</span>
+<span class="sd">            the given dataset</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        AbstractSampler</span>
+<span class="sd">            The initialized sampler</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">))</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -518,6 +532,20 @@
 
 <div class="viewcode-block" id="StoppingPrevalenceRandomSampler.from_dataset"><a class="viewcode-back" href="../../../../_api/_build/delira/data_loading/sampler.html#delira.data_loading.sampler.StoppingPrevalenceRandomSampler.from_dataset">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_dataset</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">AbstractDataset</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Classmethod to initialize the sampler from a given dataset</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataset : AbstractDataset</span>
+<span class="sd">            the given dataset</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        AbstractSampler</span>
+<span class="sd">            The initialized sampler</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">))</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
