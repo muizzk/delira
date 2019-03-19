@@ -980,6 +980,7 @@
                 <span class="n">optim_fn</span><span class="o">=</span><span class="n">create_optims_default_pytorch</span><span class="p">,</span>
                 <span class="n">criterions</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s1">&#39;criterions&#39;</span><span class="p">),</span>
                 <span class="n">optimizer_params</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">nested_get</span><span class="p">(</span><span class="s1">&#39;optimizer_params&#39;</span><span class="p">),</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="c1"># testing with batchsize 1 and 1 augmentation processs to</span>
@@ -1343,6 +1344,7 @@
                 <span class="n">optimizer_params</span><span class="o">=</span><span class="p">{},</span>
                 <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">,</span>
                 <span class="n">losses</span><span class="o">=</span><span class="p">{},</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="c1"># testing with batchsize 1 and 1 augmentation processs to</span>
