@@ -1063,7 +1063,7 @@
     <span class="kn">from</span> <span class="nn">.parameters</span> <span class="k">import</span> <span class="n">Parameters</span>
     <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 
-    <span class="k">class</span> <span class="nc">TfExperiment</span><span class="p">(</span><span class="n">AbstractExperiment</span><span class="p">):</span>
+<div class="viewcode-block" id="TfExperiment"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.TfExperiment">[docs]</a>    <span class="k">class</span> <span class="nc">TfExperiment</span><span class="p">(</span><span class="n">AbstractExperiment</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Single Experiment for Tf Backend</span>
 
@@ -1127,7 +1127,7 @@
                                   <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">model_class = </span><span class="si">%s</span><span class="s2">&quot;</span>
                                   <span class="o">%</span> <span class="n">model_cls</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">}})</span>
 
-        <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="TfExperiment.setup"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.TfExperiment.setup">[docs]</a>        <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Perform setup of Network Trainer</span>
 
@@ -1172,9 +1172,9 @@
                 <span class="n">save_freq</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_freq</span><span class="p">,</span>
                 <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span>
-            <span class="p">)</span>
+            <span class="p">)</span></div>
 
-        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="TfExperiment.run"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.TfExperiment.run">[docs]</a>        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                 <span class="n">train_data</span><span class="p">:</span> <span class="n">BaseDataManager</span><span class="p">,</span>
                 <span class="n">val_data</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">BaseDataManager</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
                 <span class="n">params</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Parameters</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1225,9 +1225,9 @@
                                  <span class="bp">self</span><span class="o">.</span><span class="n">val_score_key</span><span class="p">,</span>
                                  <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;val_score_mode&quot;</span><span class="p">,</span>
                                                  <span class="s2">&quot;lowest&quot;</span><span class="p">)</span>
-                                 <span class="p">)</span>
+                                 <span class="p">)</span></div>
 
-        <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TfExperiment.save"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.TfExperiment.save">[docs]</a>        <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Saves the Whole experiments</span>
 
@@ -1236,9 +1236,9 @@
                       <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;parameters&quot;</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;parameters&quot;</span><span class="p">))</span></div>
 
-        <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TfExperiment.load"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.TfExperiment.load">[docs]</a>        <span class="nd">@staticmethod</span>
         <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Loads whole experiment</span>
@@ -1250,7 +1250,7 @@
 
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
 
         <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -1258,7 +1258,7 @@
         <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
             <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">kfold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<div class="viewcode-block" id="TfExperiment.kfold"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.TfExperiment.kfold">[docs]</a>        <span class="k">def</span> <span class="nf">kfold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                   <span class="n">data</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">BaseDataManager</span><span class="p">],</span>
                                      <span class="n">BaseDataManager</span><span class="p">],</span>
                   <span class="n">num_splits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1268,9 +1268,9 @@
                 <span class="n">tf</span><span class="o">.</span><span class="n">set_random_seed</span><span class="p">(</span><span class="n">random_seed</span><span class="p">)</span>
 
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">kfold</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">num_splits</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">,</span> <span class="n">random_seed</span><span class="p">,</span>
-                          <span class="n">train_kwargs</span><span class="p">,</span> <span class="n">test_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                          <span class="n">train_kwargs</span><span class="p">,</span> <span class="n">test_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-        <span class="k">def</span> <span class="nf">stratified_kfold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<div class="viewcode-block" id="TfExperiment.stratified_kfold"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.TfExperiment.stratified_kfold">[docs]</a>        <span class="k">def</span> <span class="nf">stratified_kfold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                              <span class="n">data</span><span class="p">:</span> <span class="n">BaseDataManager</span><span class="p">,</span>
                              <span class="n">num_splits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                              <span class="n">label_key</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">train_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="n">test_kwargs</span><span class="o">=</span><span class="p">{},</span>
@@ -1281,9 +1281,9 @@
 
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">stratified_kfold</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">num_splits</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">,</span>
                                      <span class="n">random_seed</span><span class="p">,</span> <span class="n">label_key</span><span class="p">,</span> <span class="n">train_kwargs</span><span class="p">,</span>
-                                     <span class="n">test_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                                     <span class="n">test_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-        <span class="k">def</span> <span class="nf">stratified_kfold_predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<div class="viewcode-block" id="TfExperiment.stratified_kfold_predict"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.TfExperiment.stratified_kfold_predict">[docs]</a>        <span class="k">def</span> <span class="nf">stratified_kfold_predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                                      <span class="n">data</span><span class="p">:</span> <span class="n">BaseDataManager</span><span class="p">,</span>
                                      <span class="n">split_val</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
                                      <span class="n">num_splits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1298,9 +1298,9 @@
 
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">stratified_kfold_predict</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">split_val</span><span class="p">,</span> <span class="n">num_splits</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">,</span>
                                                     <span class="n">random_seed</span><span class="p">,</span> <span class="n">label_key</span><span class="p">,</span> <span class="n">train_kwargs</span><span class="p">,</span>
-                                                    <span class="n">test_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                                                    <span class="n">test_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-        <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="TfExperiment.test"><a class="viewcode-back" href="../../../_api/_build/delira/training/experiment.html#delira.training.TfExperiment.test">[docs]</a>        <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span>
                  <span class="n">network</span><span class="p">:</span> <span class="n">AbstractNetwork</span><span class="p">,</span>
                  <span class="n">datamgr_test</span><span class="p">:</span> <span class="n">BaseDataManager</span><span class="p">,</span>
@@ -1361,7 +1361,7 @@
             <span class="c1"># reset old values</span>
             <span class="n">datamgr_test</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">orig_batch_size</span>
             <span class="n">datamgr_test</span><span class="o">.</span><span class="n">n_process_augmentation</span> <span class="o">=</span> <span class="n">orig_num_aug_processes</span>
-            <span class="k">return</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">metrics_val</span>
+            <span class="k">return</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">metrics_val</span></div></div>
 </pre></div>
 
            </div>

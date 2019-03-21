@@ -521,6 +521,150 @@ device</p>
 </div>
 <div class="section" id="abstracttfnetwork">
 <h2><span class="hidden-section">AbstractTfNetwork</span><a class="headerlink" href="#abstracttfnetwork" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="delira.models.AbstractTfNetwork">
+<em class="property">class </em><code class="descname">AbstractTfNetwork</code><span class="sig-paren">(</span><em>sess=&lt;sphinx.ext.autodoc.importer._MockObject object&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/models/abstract_network.html#AbstractTfNetwork"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.models.AbstractTfNetwork" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">delira.models.abstract_network.AbstractNetwork</span></code></p>
+<p>Abstract Class for Tf Networks</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#delira.models.AbstractNetwork" title="delira.models.AbstractNetwork"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractNetwork</span></code></a></p>
+</div>
+<dl class="method">
+<dt id="delira.models.AbstractTfNetwork._add_losses">
+<code class="descname">_add_losses</code><span class="sig-paren">(</span><em>losses: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/models/abstract_network.html#AbstractTfNetwork._add_losses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.models.AbstractTfNetwork._add_losses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add losses to the model graph</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>losses</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – dictionary containing losses.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.models.AbstractTfNetwork._add_optims">
+<code class="descname">_add_optims</code><span class="sig-paren">(</span><em>optims: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/models/abstract_network.html#AbstractTfNetwork._add_optims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.models.AbstractTfNetwork._add_optims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add optimizers to the model graph</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>optims</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – dictionary containing losses.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="delira.models.AbstractTfNetwork._init_kwargs">
+<code class="descname">_init_kwargs</code><em class="property"> = {}</em><a class="headerlink" href="#delira.models.AbstractTfNetwork._init_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="delira.models.AbstractTfNetwork.closure">
+<em class="property">static </em><code class="descname">closure</code><span class="sig-paren">(</span><em>model</em>, <em>data_dict: dict</em>, <em>optimizers: dict</em>, <em>criterions={}</em>, <em>metrics={}</em>, <em>fold=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#delira.models.AbstractTfNetwork.closure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function which handles prediction from batch, logging, loss calculation
+and optimizer step
+:param model: model to forward data through
+:type model: <a class="reference internal" href="#delira.models.AbstractNetwork" title="delira.models.AbstractNetwork"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractNetwork</span></code></a>
+:param data_dict: dictionary containing the data
+:type data_dict: dict
+:param optimizers: dictionary containing all optimizers to perform parameter update
+:type optimizers: dict
+:param criterions: Functions or classes to calculate criterions
+:type criterions: dict
+:param metrics: Functions or classes to calculate other metrics
+:type metrics: dict
+:param fold: Current Fold in Crossvalidation (default: 0)
+:type fold: int
+:param kwargs: additional keyword arguments
+:type kwargs: dict</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><em>dict</em> – Metric values (with same keys as input dict metrics)</li>
+<li><em>dict</em> – Loss values (with same keys as input dict criterions)</li>
+<li><em>list</em> – Arbitrary number of predictions</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> – If not overwritten by subclass</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="delira.models.AbstractTfNetwork.init_kwargs">
+<code class="descname">init_kwargs</code><a class="headerlink" href="#delira.models.AbstractTfNetwork.init_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all arguments registered as init kwargs</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">init kwargs</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="delira.models.AbstractTfNetwork.prepare_batch">
+<em class="property">static </em><code class="descname">prepare_batch</code><span class="sig-paren">(</span><em>batch: dict</em>, <em>input_device</em>, <em>output_device</em><span class="sig-paren">)</span><a class="headerlink" href="#delira.models.AbstractTfNetwork.prepare_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a numpy batch of data and labels to suitable datatype and
+pushes them to correct devices</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>batch</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – dictionary containing the batch (must have keys ‘data’ and ‘label’</li>
+<li><strong>input_device</strong> – device for network inputs</li>
+<li><strong>output_device</strong> – device for network outputs</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dictionary containing all necessary data in right format and type
+and on the correct device</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> – If not overwritten by subclass</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.models.AbstractTfNetwork.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/models/abstract_network.html#AbstractTfNetwork.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.models.AbstractTfNetwork.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluates <cite>self.outputs_train</cite> or <cite>self.outputs_eval</cite> based on <cite>self.training</cite></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>*args</strong> – arguments to feed as <cite>self.inputs</cite>. Must have same length as <cite>self.inputs</cite></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">based on len(self.outputs*), returns either list or np.ndarray</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="classification.html">Classification</a><ul>

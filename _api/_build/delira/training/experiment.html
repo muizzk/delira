@@ -795,6 +795,245 @@ the mean loss values</li>
 </div>
 <div class="section" id="tfexperiment">
 <h2><span class="hidden-section">TfExperiment</span><a class="headerlink" href="#tfexperiment" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="delira.training.TfExperiment">
+<em class="property">class </em><code class="descname">TfExperiment</code><span class="sig-paren">(</span><em>params: Union[delira.training.parameters.Parameters, str], model_cls: delira.models.abstract_network.AbstractTfNetwork, name=None, save_path=None, val_score_key=None, optim_builder=&lt;function create_optims_default_tf&gt;, checkpoint_freq=1, trainer_cls=&lt;class 'delira.training.tf_trainer.TfNetworkTrainer'&gt;, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">delira.training.experiment.AbstractExperiment</span></code></p>
+<p>Single Experiment for Tf Backend</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#delira.training.AbstractExperiment" title="delira.training.AbstractExperiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractExperiment</span></code></a></p>
+</div>
+<dl class="method">
+<dt id="delira.training.TfExperiment.kfold">
+<code class="descname">kfold</code><span class="sig-paren">(</span><em>num_epochs: int, data: Union[List[delira.data_loading.data_manager.BaseDataManager], delira.data_loading.data_manager.BaseDataManager], num_splits=None, shuffle=False, random_seed=None, train_kwargs={}, test_kwargs={}, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment.kfold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment.kfold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs K-Fold Crossvalidation
+The supported scenario is:</p>
+<blockquote>
+<div><ul class="simple">
+<li>passing a single datamanager: the data within the single manager</li>
+</ul>
+<p>will be split and multiple datamanagers will be created holding
+the subsets.</p>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of epochs to train the model</li>
+<li><strong>data</strong> (single <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataManager</span></code>) – single datamanager (will be split for crossvalidation)</li>
+<li><strong>num_splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of splits for kfold
+if None: 10 splits will be validated per default</li>
+<li><strong>shuffle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether or not to shuffle indices for kfold</li>
+<li><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – random seed used to seed the kfold (if shuffle is true),
+pytorch and numpy</li>
+<li><strong>train_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify training behavior</li>
+<li><strong>test_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify testing behavior</li>
+<li><strong>**kwargs</strong> – additional keyword arguments (completely passed to self.run())</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a href="#id13"><span class="problematic" id="id14">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
+<dd><code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">test_kwargs</span></code></dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="delira.training.TfExperiment.load">
+<em class="property">static </em><code class="descname">load</code><span class="sig-paren">(</span><em>file_name</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads whole experiment</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – file_name to load the experiment from</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.TfExperiment.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>train_data: delira.data_loading.data_manager.BaseDataManager, val_data: Optional[delira.data_loading.data_manager.BaseDataManager], params: Optional[delira.training.parameters.Parameters] = None, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>trains single model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>train_data</strong> (<a class="reference internal" href="../data_loading/datamanager.html#delira.data_loading.BaseDataManager" title="delira.data_loading.BaseDataManager"><em>BaseDataManager</em></a>) – holds the trainset</li>
+<li><strong>val_data</strong> (<a class="reference internal" href="../data_loading/datamanager.html#delira.data_loading.BaseDataManager" title="delira.data_loading.BaseDataManager"><em>BaseDataManager</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – holds the validation set (if None: Model will not be validated)</li>
+<li><strong>params</strong> (<a class="reference internal" href="parameters.html#delira.training.Parameters" title="delira.training.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameters</span></code></a>) – the parameters to construct a model and network trainer</li>
+<li><strong>**kwargs</strong> – holds additional keyword arguments
+(which are completly passed to the trainers init)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">trainer of trained network</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="trainer.html#delira.training.AbstractNetworkTrainer" title="delira.training.AbstractNetworkTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractNetworkTrainer</span></code></a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – Class has no Attribute <code class="docutils literal notranslate"><span class="pre">params</span></code> and no parameters were given as
+function argument</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.TfExperiment.save">
+<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the Whole experiments</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.TfExperiment.setup">
+<code class="descname">setup</code><span class="sig-paren">(</span><em>params: delira.training.parameters.Parameters</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform setup of Network Trainer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>params</strong> (<a class="reference internal" href="parameters.html#delira.training.Parameters" title="delira.training.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameters</span></code></a>) – the parameters to construct a model and network trainer</li>
+<li><strong>**kwargs</strong> – keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.TfExperiment.stratified_kfold">
+<code class="descname">stratified_kfold</code><span class="sig-paren">(</span><em>num_epochs: int</em>, <em>data: delira.data_loading.data_manager.BaseDataManager</em>, <em>num_splits=None</em>, <em>shuffle=False</em>, <em>random_seed=None</em>, <em>label_key='label'</em>, <em>train_kwargs={}</em>, <em>test_kwargs={}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment.stratified_kfold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment.stratified_kfold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs stratified K-Fold Crossvalidation
+The supported supported scenario is:</p>
+<blockquote>
+<div><ul class="simple">
+<li>passing a single datamanager: the data within the single manager
+will be split and multiple datamanagers will be created holding
+the subsets.</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of epochs to train the model</li>
+<li><strong>data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataManager</span></code>) – single datamanager
+(will be split for crossvalidation)</li>
+<li><strong>num_splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of splits for kfold
+if None: 10 splits will be validated</li>
+<li><strong>shuffle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether or not to shuffle indices for kfold</li>
+<li><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – random seed used to seed the kfold (if shuffle is true),
+pytorch and numpy</li>
+<li><strong>label_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>default: &quot;label&quot;</em><em>)</em>) – the key to extract the label for stratification from each data
+sample</li>
+<li><strong>train_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify training behavior</li>
+<li><strong>test_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify testing behavior</li>
+<li><strong>**kwargs</strong> – additional keyword arguments (completely passed to self.run())</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a href="#id15"><span class="problematic" id="id16">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
+<dd><code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">test_kwargs</span></code></dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.TfExperiment.stratified_kfold_predict">
+<code class="descname">stratified_kfold_predict</code><span class="sig-paren">(</span><em>num_epochs: int</em>, <em>data: delira.data_loading.data_manager.BaseDataManager</em>, <em>split_val=0.2</em>, <em>num_splits=None</em>, <em>shuffle=False</em>, <em>random_seed=None</em>, <em>label_key='label'</em>, <em>train_kwargs={}</em>, <em>test_kwargs={}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment.stratified_kfold_predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment.stratified_kfold_predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs stratified K-Fold Crossvalidation
+The supported supported scenario is:</p>
+<blockquote>
+<div><ul class="simple">
+<li>passing a single datamanager: the data within the single manager
+will be split and multiple datamanagers will be created holding
+the subsets.</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of epochs to train the model</li>
+<li><strong>data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataManager</span></code>) – single datamanager
+(will be split for crossvalidation)</li>
+<li><strong>num_splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – number of splits for kfold
+if None: 10 splits will be validated</li>
+<li><strong>shuffle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether or not to shuffle indices for kfold</li>
+<li><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – random seed used to seed the kfold (if shuffle is true),
+pytorch and numpy</li>
+<li><strong>label_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> (</em><em>default: &quot;label&quot;</em><em>)</em>) – the key to extract the label for stratification from each data
+sample</li>
+<li><strong>train_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify training behavior</li>
+<li><strong>test_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keyword arguments to specify testing behavior</li>
+<li><strong>**kwargs</strong> – additional keyword arguments (completely passed to self.run())</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a href="#id17"><span class="problematic" id="id18">:method:`BaseDataManager.update_state_from_dict`</span></a></dt>
+<dd><code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">test_kwargs</span></code></dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="delira.training.TfExperiment.test">
+<code class="descname">test</code><span class="sig-paren">(</span><em>params: delira.training.parameters.Parameters</em>, <em>network: delira.models.abstract_network.AbstractNetwork</em>, <em>datamgr_test: delira.data_loading.data_manager.BaseDataManager</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/experiment.html#TfExperiment.test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.TfExperiment.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes prediction for all items in datamgr_test with network</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>params</strong> (<a class="reference internal" href="parameters.html#delira.training.Parameters" title="delira.training.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameters</span></code></a>) – the parameters to construct a model</li>
+<li><strong>network</strong> (<em>:class:'AbstractPyTorchNetwork'</em>) – the network to train</li>
+<li><strong>datamgr_test</strong> (<em>:class:'BaseDataManager'</em>) – holds the test data</li>
+<li><strong>**kwargs</strong> – holds additional keyword arguments
+(which are completly passed to the trainers init)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>np.ndarray</em> – predictions from batches</li>
+<li><em>list of np.ndarray</em> – labels from batches</li>
+<li><em>dict</em> – dictionary containing the mean validation metrics and
+the mean loss values</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 
