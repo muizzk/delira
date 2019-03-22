@@ -1,75 +1,75 @@
 import logging
-import tensorflow as tf
 import typing
 import numpy as np
-from delira.models.abstract_network import AbstractTfNetwork
-
-tf.keras.backend.set_image_data_format('channels_first')
-
+from delira import get_backends
 
 logger = logging.getLogger(__name__)
 
 
-class GenerativeAdversarialNetworkBaseTf(AbstractTfNetwork):
-    """Implementation of Vanilla DC-GAN to create 64x64 pixel images
+if "TF" in get_backends():
+    import tensorflow as tf
+    from delira.models.abstract_network import AbstractTfNetwork
+    tf.keras.backend.set_image_data_format('channels_first')
+    class GenerativeAdversarialNetworkBaseTf(AbstractTfNetwork):
+        """Implementation of Vanilla DC-GAN to create 64x64 pixel images
 
-    Notes
-    -----
-    The fully connected part in the discriminator has been replaced with an
-    equivalent convolutional part
+        Notes
+        -----
+        The fully connected part in the discriminator has been replaced with an
+        equivalent convolutional part
 
-    References
-    ----------
-    https://arxiv.org/abs/1511.06434
-
-    See Also
-    --------
-    :class:`AbstractTfNetwork`
-
-    """
-
-    def __init__(self, n_channels: int, noise_length: int, **kwargs):
-        """
-
-        Constructs graph containing model definition and forward pass behavior
-
-        Parameters
+        References
         ----------
-        n_channels : int
-            number of image channels for generated images and input images
-        noise_length : int
-            length of noise vector
-        **kwargs :
-            additional keyword arguments
+        https://arxiv.org/abs/1511.06434
+
+        See Also
+        --------
+        :class:`AbstractTfNetwork`
 
         """
-        # register params by passing them as kwargs to parent class __init__
-        super().__init__(n_channels=n_channels,
-                         noise_length=noise_length,
-                         **kwargs)
 
-        # build on CPU for tf.keras.utils.multi_gpu_model() in tf_trainer.py
-        # with tf.device('/cpu:0'):
+        def __init__(self, n_channels: int, noise_length: int, **kwargs):
+            """
 
-        gen, discr = self._build_models(n_channels, **kwargs)
+            Constructs graph containing model definition and forward pass behavior
 
-        self.noise_length = noise_length
-        self.gen = gen
-        self.discr = discr
+            Parameters
+            ----------
+            n_channels : int
+                number of image channels for generated images and input images
+            noise_length : int
+                length of noise vector
+            **kwargs :
+                additional keyword arguments
 
-        real_images = tf.placeholder(shape=[None, n_channels, 64, 64], dtype=tf.float32)
-        fake_images = self.gen(tf.random.normal(shape=(tf.shape(real_images)[0], self.noise_length, 1, 1)))
+            """
+            # register params by passing them as kwargs to parent class __init__
+            super().__init__(n_channels=n_channels,
+                            noise_length=noise_length,
+                            **kwargs)
 
-        discr_real = self.discr(real_images)
-        discr_fake = self.discr(fake_images)
+            # build on CPU for tf.keras.utils.multi_gpu_model() in tf_trainer.py
+            # with tf.device('/cpu:0'):
+
+            gen, discr = self._build_models(n_channels, **kwargs)
+
+            self.noise_length = noise_length
+            self.gen = gen
+            self.discr = discr
+
+            real_images = tf.placeholder(shape=[None, n_channels, 64, 64], dtype=tf.float32)
+            fake_images = self.gen(tf.random.normal(shape=(tf.shape(real_images)[0], self.noise_length, 1, 1)))
+
+            discr_real = self.discr(real_images)
+            discr_fake = self.discr(fake_images)
 
 
-        self.inputs = [real_images]
-        self.outputs_train = [fake_images, discr_real, discr_fake]
-        self.outputs_eval = [fake_images, discr_real, discr_fake]
+            self.inputs = [real_images]
+            self.outputs_train = [fake_images, discr_real, discr_fake]
+            self.outputs_eval = [fake_images, discr_real, discr_fake]
 
-        for key, value in kwargs.items():
-            setattr(self, key, value)
+            for key, value in kwargs.items():
+                setattr(self, key, value)
 
     def _add_losses(self, losses: dict):
         """
