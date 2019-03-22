@@ -4,6 +4,6 @@ if "TORCH" in get_backends():
     from .generative_adversarial_network import \
         GenerativeAdversarialNetworkBasePyTorch
 
-if "tf" in os.environ["DELIRA_BACKEND"]:
+if "tf" in get_backends():
     from.generative_adversarial_network_tf import \
         GenerativeAdversarialNetworkBaseTf
