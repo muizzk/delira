@@ -323,7 +323,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># following operation adds AssignVariableOps to the graph, keep an eye on this for memory leak</span>
-    <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Saver</span><span class="p">()</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_sess</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span></div>
+    <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Saver</span><span class="p">()</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_sess</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{}</span></div>
 </pre></div>
 
            </div>
