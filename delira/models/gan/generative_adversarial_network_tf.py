@@ -71,231 +71,231 @@ if "TF" in get_backends():
             for key, value in kwargs.items():
                 setattr(self, key, value)
 
-    def _add_losses(self, losses: dict):
-        """
-        Adds losses to model that are to be used by optimizers or during evaluation
+        def _add_losses(self, losses: dict):
+            """
+            Adds losses to model that are to be used by optimizers or during evaluation
 
-        Parameters
-        ----------
-        losses : dict
-            dictionary containing all losses. Individual losses are averaged for discr_real, discr_fake and gen
-        """
-        if self._losses is not None and len(losses) != 0:
-            logging.warning('Change of losses is not yet supported')
-            raise NotImplementedError()
-        elif self._losses is not None and len(losses) == 0:
-            pass
-        else:
-            self._losses = {}
+            Parameters
+            ----------
+            losses : dict
+                dictionary containing all losses. Individual losses are averaged for discr_real, discr_fake and gen
+            """
+            if self._losses is not None and len(losses) != 0:
+                logging.warning('Change of losses is not yet supported')
+                raise NotImplementedError()
+            elif self._losses is not None and len(losses) == 0:
+                pass
+            else:
+                self._losses = {}
 
-            total_loss_discr_fake = []
-            total_loss_discr_real = []
-            total_loss_gen = []
+                total_loss_discr_fake = []
+                total_loss_discr_real = []
+                total_loss_gen = []
 
 
-            for name, _loss in losses.items():
-                loss_val = _loss(tf.ones_like(self.outputs_train[1]), self.outputs_train[1])
-                self._losses[name + 'discr_real'] = loss_val
-                total_loss_discr_real.append(loss_val)
+                for name, _loss in losses.items():
+                    loss_val = _loss(tf.ones_like(self.outputs_train[1]), self.outputs_train[1])
+                    self._losses[name + 'discr_real'] = loss_val
+                    total_loss_discr_real.append(loss_val)
 
-            for name, _loss in losses.items():
-                loss_val = _loss(tf.zeros_like(self.outputs_train[2]), self.outputs_train[2])
-                self._losses[name + 'discr_fake'] = loss_val
-                total_loss_discr_fake.append(loss_val)
+                for name, _loss in losses.items():
+                    loss_val = _loss(tf.zeros_like(self.outputs_train[2]), self.outputs_train[2])
+                    self._losses[name + 'discr_fake'] = loss_val
+                    total_loss_discr_fake.append(loss_val)
 
-            for name, _loss in losses.items():
-                loss_val = _loss(tf.ones_like(self.outputs_train[2]), self.outputs_train[2])
-                self._losses[name + 'gen'] = loss_val
-                total_loss_gen.append(loss_val)
+                for name, _loss in losses.items():
+                    loss_val = _loss(tf.ones_like(self.outputs_train[2]), self.outputs_train[2])
+                    self._losses[name + 'gen'] = loss_val
+                    total_loss_gen.append(loss_val)
 
-            total_loss_discr = tf.reduce_mean([*total_loss_discr_real, *total_loss_discr_fake], axis=0)
-            self._losses['total_discr'] = total_loss_discr
+                total_loss_discr = tf.reduce_mean([*total_loss_discr_real, *total_loss_discr_fake], axis=0)
+                self._losses['total_discr'] = total_loss_discr
 
-            total_loss_gen = tf.reduce_mean(total_loss_gen, axis=0)
-            self._losses['total_gen'] = total_loss_gen
+                total_loss_gen = tf.reduce_mean(total_loss_gen, axis=0)
+                self._losses['total_gen'] = total_loss_gen
 
-            self.outputs_train.append(self._losses)
-            self.outputs_eval.append(self._losses)
+                self.outputs_train.append(self._losses)
+                self.outputs_eval.append(self._losses)
 
-    def _add_optims(self, optims: dict):
-        """
-        Adds optims to model that are to be used by optimizers or during training
+        def _add_optims(self, optims: dict):
+            """
+            Adds optims to model that are to be used by optimizers or during training
 
-        Parameters
-        ----------
-        optim: dict
-            dictionary containing all optimizers, optimizers should be of Type[tf.train.Optimizer]
-        """
-        if self._optims is not None and len(optims) != 0:
-            logging.warning('Change of optims is not yet supported')
-            pass
-            #raise NotImplementedError()
-        elif self._optims is not None and len(optims) == 0:
-            pass
-        else:
-            self._optims = optims
+            Parameters
+            ----------
+            optim: dict
+                dictionary containing all optimizers, optimizers should be of Type[tf.train.Optimizer]
+            """
+            if self._optims is not None and len(optims) != 0:
+                logging.warning('Change of optims is not yet supported')
+                pass
+                #raise NotImplementedError()
+            elif self._optims is not None and len(optims) == 0:
+                pass
+            else:
+                self._optims = optims
 
-            optim_gen = self._optims['gen']
-            grads_gen = optim_gen.compute_gradients(self._losses['total_gen'])
-            step_gen = optim_gen.apply_gradients(grads_gen)
+                optim_gen = self._optims['gen']
+                grads_gen = optim_gen.compute_gradients(self._losses['total_gen'], self.gen.trainable_variables)
+                step_gen = optim_gen.apply_gradients(grads_gen)
 
-            optim_discr = self._optims['discr']
-            grads_discr = optim_discr.compute_gradients(self._losses['total_discr'])
-            step_discr = optim_discr.apply_gradients(grads_discr)
+                optim_discr = self._optims['discr']
+                grads_discr = optim_discr.compute_gradients(self._losses['total_discr'], self.discr.trainable_variables)
+                step_discr = optim_discr.apply_gradients(grads_discr)
 
-            steps = tf.group([step_gen, step_discr])
+                steps = tf.group([step_gen, step_discr])
 
-            self.outputs_train.append(steps)
+                self.outputs_train.append(steps)
 
-    @staticmethod
-    def _build_models(n_channels: int, **kwargs):
-        """
-        builds generator and discriminators
+        @staticmethod
+        def _build_models(n_channels: int, **kwargs):
+            """
+            builds generator and discriminators
 
-        Parameters
-        ----------
-        n_channels : int
-            number of channels for fake and real images
-        **kwargs :
-            additional keyword arguments
-        Returns
-        -------
-        tf.keras.Sequential
-            created gen
-        tf.keras.Sequential
-            created discr
-        """
-        gen = tf.keras.models.Sequential(
-            [
-                 tf.keras.layers.Conv2DTranspose(64 * 8, 4, 1, use_bias=False),
-                 tf.keras.layers.BatchNormalization(axis=1),
-                 tf.keras.layers.ReLU(),
-                 # state size. (64*8) x 4 x 4,
-                 tf.keras.layers.Conv2DTranspose(64 * 4, 4, 2, padding='same', use_bias=False),
-                 tf.keras.layers.BatchNormalization(axis=1),
-                 tf.keras.layers.ReLU(),
-                 # state size.
-                 tf.keras.layers.Conv2DTranspose(64 * 2, 4, 2, padding='same', use_bias=False),
-                 tf.keras.layers.BatchNormalization(axis=1),
-                 tf.keras.layers.ReLU(),
-                 # state size.
-                 tf.keras.layers.Conv2DTranspose(64, 4, 2, padding='same', use_bias=False),
-                 tf.keras.layers.BatchNormalization(axis=1),
-                 tf.keras.layers.ReLU(),
-                 # state size.
-                 tf.keras.layers.Conv2DTranspose(n_channels, 4, 2, padding='same', use_bias=False),
-                 tf.keras.layers.Activation('tanh')
-            ]
-        )
+            Parameters
+            ----------
+            n_channels : int
+                number of channels for fake and real images
+            **kwargs :
+                additional keyword arguments
+            Returns
+            -------
+            tf.keras.Sequential
+                created gen
+            tf.keras.Sequential
+                created discr
+            """
+            gen = tf.keras.models.Sequential(
+                [
+                     tf.keras.layers.Conv2DTranspose(64 * 8, 4, 1, use_bias=False),
+                     tf.keras.layers.BatchNormalization(axis=1),
+                     tf.keras.layers.ReLU(),
+                     # state size. (64*8) x 4 x 4,
+                     tf.keras.layers.Conv2DTranspose(64 * 4, 4, 2, padding='same', use_bias=False),
+                     tf.keras.layers.BatchNormalization(axis=1),
+                     tf.keras.layers.ReLU(),
+                     # state size.
+                     tf.keras.layers.Conv2DTranspose(64 * 2, 4, 2, padding='same', use_bias=False),
+                     tf.keras.layers.BatchNormalization(axis=1),
+                     tf.keras.layers.ReLU(),
+                     # state size.
+                     tf.keras.layers.Conv2DTranspose(64, 4, 2, padding='same', use_bias=False),
+                     tf.keras.layers.BatchNormalization(axis=1),
+                     tf.keras.layers.ReLU(),
+                     # state size.
+                     tf.keras.layers.Conv2DTranspose(n_channels, 4, 2, padding='same', use_bias=False),
+                     tf.keras.layers.Activation('tanh')
+                ]
+            )
 
-        discr = tf.keras.models.Sequential(
-            [
-                tf.keras.layers.Conv2D(64, 4, 2, padding='same', use_bias=False),
-                tf.keras.layers.LeakyReLU(0.2),
+            discr = tf.keras.models.Sequential(
+                [
+                    tf.keras.layers.Conv2D(64, 4, 2, padding='same', use_bias=False),
+                    tf.keras.layers.LeakyReLU(0.2),
 
-                tf.keras.layers.Conv2D(64*2, 4, 2, padding='same', use_bias=False),
-                tf.keras.layers.BatchNormalization(axis=1),
-                tf.keras.layers.LeakyReLU(0.2),
+                    tf.keras.layers.Conv2D(64*2, 4, 2, padding='same', use_bias=False),
+                    tf.keras.layers.BatchNormalization(axis=1),
+                    tf.keras.layers.LeakyReLU(0.2),
 
-                tf.keras.layers.Conv2D(64*4, 4, 2, padding='same', use_bias=False),
-                tf.keras.layers.BatchNormalization(axis=1),
-                tf.keras.layers.LeakyReLU(0.2),
+                    tf.keras.layers.Conv2D(64*4, 4, 2, padding='same', use_bias=False),
+                    tf.keras.layers.BatchNormalization(axis=1),
+                    tf.keras.layers.LeakyReLU(0.2),
 
-                tf.keras.layers.Conv2D(64 * 8, 4, 2, padding='same', use_bias=False),
-                tf.keras.layers.BatchNormalization(axis=1),
-                tf.keras.layers.LeakyReLU(0.2),
+                    tf.keras.layers.Conv2D(64 * 8, 4, 2, padding='same', use_bias=False),
+                    tf.keras.layers.BatchNormalization(axis=1),
+                    tf.keras.layers.LeakyReLU(0.2),
 
-                tf.keras.layers.Conv2D(1, 4, 1, use_bias=False),
-                tf.keras.layers.Activation('sigmoid')
-            ]
-        )
+                    tf.keras.layers.Conv2D(1, 4, 1, use_bias=False),
+                    tf.keras.layers.Activation('sigmoid')
+                ]
+            )
 
-        return gen, discr
+            return gen, discr
 
-    @staticmethod
-    def closure(model: typing.Type[AbstractTfNetwork], data_dict: dict,
-                metrics={}, fold=0, **kwargs):
-        """
-                closure method to do a single prediction.
-                This is followed by backpropagation or not based state of
-                on model.train
+        @staticmethod
+        def closure(model: typing.Type[AbstractTfNetwork], data_dict: dict,
+                    metrics={}, fold=0, **kwargs):
+            """
+                    closure method to do a single prediction.
+                    This is followed by backpropagation or not based state of
+                    on model.train
 
-                Parameters
-                ----------
-                model: AbstractTfNetwork
-                    AbstractTfNetwork or its child-clases
-                data_dict : dict
-                    dictionary containing the data
-                metrics : dict
-                    dict holding the metrics to calculate
-                fold : int
-                    Current Fold in Crossvalidation (default: 0)
-                **kwargs:
-                    additional keyword arguments
+                    Parameters
+                    ----------
+                    model: AbstractTfNetwork
+                        AbstractTfNetwork or its child-clases
+                    data_dict : dict
+                        dictionary containing the data
+                    metrics : dict
+                        dict holding the metrics to calculate
+                    fold : int
+                        Current Fold in Crossvalidation (default: 0)
+                    **kwargs:
+                        additional keyword arguments
 
-                Returns
-                -------
-                dict
-                    Metric values (with same keys as input dict metrics)
-                dict
-                    Loss values (with same keys as those initially passed to model.init).
-                    Additionally, a total_loss key is added
-                list
-                    Arbitrary number of predictions as np.array
+                    Returns
+                    -------
+                    dict
+                        Metric values (with same keys as input dict metrics)
+                    dict
+                        Loss values (with same keys as those initially passed to model.init).
+                        Additionally, a total_loss key is added
+                    list
+                        Arbitrary number of predictions as np.array
 
-                """
+                    """
 
-        loss_vals = {}
-        metric_vals = {}
-        image_name_real = "real_images"
-        image_name_fake = "fake_images"
+            loss_vals = {}
+            metric_vals = {}
+            image_name_real = "real_images"
+            image_name_fake = "fake_images"
 
-        inputs = data_dict.pop('data')
+            inputs = data_dict.pop('data')
 
-        fake_images, discr_real, discr_fake, losses, *_ = model.run(inputs)
+            fake_images, discr_real, discr_fake, losses, *_ = model.run(inputs)
 
-        for key, loss_val in losses.items():
-            loss_vals[key] = loss_val
+            for key, loss_val in losses.items():
+                loss_vals[key] = loss_val
 
-        for key, metric_fn in metrics.items():
-            metric_vals[key + 'discr_real'] = metric_fn(
-                discr_real,
-                np.ones_like(discr_real))
+            for key, metric_fn in metrics.items():
+                metric_vals[key + 'discr_real'] = metric_fn(
+                    discr_real,
+                    np.ones_like(discr_real))
 
-        for key, metric_fn in metrics.items():
-            metric_vals[key + 'discr_fake'] = metric_fn(
-                discr_fake,
-                np.zeros_like(discr_fake))
+            for key, metric_fn in metrics.items():
+                metric_vals[key + 'discr_fake'] = metric_fn(
+                    discr_fake,
+                    np.zeros_like(discr_fake))
 
-        for key, metric_fn in metrics.items():
-            metric_vals[key + 'gen'] = metric_fn(
-                discr_fake,
-                np.ones_like(discr_fake))
+            for key, metric_fn in metrics.items():
+                metric_vals[key + 'gen'] = metric_fn(
+                    discr_fake,
+                    np.ones_like(discr_fake))
 
-        if model.training == False:
-            # add prefix "val" in validation mode
-            eval_loss_vals, eval_metrics_vals = {}, {}
-            for key in loss_vals.keys():
-                eval_loss_vals["val_" + str(key)] = loss_vals[key]
+            if model.training == False:
+                # add prefix "val" in validation mode
+                eval_loss_vals, eval_metrics_vals = {}, {}
+                for key in loss_vals.keys():
+                    eval_loss_vals["val_" + str(key)] = loss_vals[key]
 
-            for key in metric_vals:
-                eval_metrics_vals["val_" + str(key)] = metric_vals[key]
+                for key in metric_vals:
+                    eval_metrics_vals["val_" + str(key)] = metric_vals[key]
 
-            loss_vals = eval_loss_vals
-            metric_vals = eval_metrics_vals
+                loss_vals = eval_loss_vals
+                metric_vals = eval_metrics_vals
 
-            image_name_real = "val_" + str(image_name_real)
-            image_name_fake = "val_" + str(image_name_fake)
+                image_name_real = "val_" + str(image_name_real)
+                image_name_fake = "val_" + str(image_name_fake)
 
-        for key, val in {**metric_vals, **loss_vals}.items():
-            logging.info({"value": {"value": val.item(), "name": key,
-                                    "env_appendix": "_%02d" % fold
-                                    }})
+            for key, val in {**metric_vals, **loss_vals}.items():
+                logging.info({"value": {"value": val.item(), "name": key,
+                                        "env_appendix": "_%02d" % fold
+                                        }})
 
-        #logging.info({'image_grid': {"image_array": inputs, "name": image_name_real,
-        #                             "title": "input_images", "env_appendix": "_%02d" % fold}})
+            #logging.info({'image_grid': {"image_array": inputs, "name": image_name_real,
+            #                             "title": "input_images", "env_appendix": "_%02d" % fold}})
 
-        logging.info({'image_grid': {"image_array": fake_images, "name": image_name_fake,
-                                     "title": "input_images", "env_appendix": "_%02d" % fold}})
+            logging.info({'image_grid': {"image_array": fake_images, "name": image_name_fake,
+                                         "title": "input_images", "env_appendix": "_%02d" % fold}})
 
-        return metric_vals, loss_vals, [fake_images, discr_fake, discr_real]
+            return metric_vals, loss_vals, [fake_images, discr_fake, discr_real]
