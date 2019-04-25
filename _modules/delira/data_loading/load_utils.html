@@ -292,11 +292,101 @@
             
   <h1>Source code for delira.data_loading.load_utils</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">from</span> <span class="nn">skimage.io</span> <span class="k">import</span> <span class="n">imread</span>
 <span class="kn">from</span> <span class="nn">skimage.transform</span> <span class="k">import</span> <span class="n">resize</span>
+<span class="kn">from</span> <span class="nn">delira.utils.decorators</span> <span class="k">import</span> <span class="n">make_deprecated</span>
 
 
-<div class="viewcode-block" id="default_load_fn_2d"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/utils.html#delira.data_loading.default_load_fn_2d">[docs]</a><span class="k">def</span> <span class="nf">default_load_fn_2d</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="o">*</span><span class="n">label_files</span><span class="p">,</span> <span class="n">img_shape</span><span class="p">,</span> <span class="n">n_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">norm_range</span><span class="p">(</span><span class="n">mode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Closure function for range normalization</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mode : str</span>
+<span class="sd">        &#39;-1,1&#39; normalizes data to range [-1, 1], while &#39;0,1&#39;</span>
+<span class="sd">        normalizes data to range [0, 1]</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        normalization function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">norm_fn</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the input data normalized to the range</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : np.ndarray</span>
+<span class="sd">            data which should be normalized</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarary</span>
+<span class="sd">            normalized data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">data</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span> <span class="o">/</span> <span class="n">norm</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;-1,1&#39;</span><span class="p">:</span>
+            <span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span> <span class="o">-</span> <span class="mf">0.5</span>
+            <span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;0,1&#39;</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{mode}</span><span class="s1"> not supported.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">norm</span>
+    <span class="k">return</span> <span class="n">norm_fn</span>
+
+
+<span class="k">def</span> <span class="nf">norm_zero_mean_unit_std</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return normalized data with mean 0, standard deviation 1</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : np.nadarray</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        normalized data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">data</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+
+<span class="nd">@make_deprecated</span>
+<span class="k">def</span> <span class="nf">_is_valid_image_file</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">img_extensions</span><span class="p">,</span> <span class="n">gt_extensions</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper Function to check wheter file is image file and has at least</span>
+<span class="sd">    one label file</span>
+<span class="sd">     Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fname : str</span>
+<span class="sd">        filename of image path</span>
+<span class="sd">     Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        is valid data sample</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="n">is_valid_file</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">img_extensions</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">ext</span><span class="p">):</span>
+            <span class="n">is_valid_file</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">has_label</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">gt_extensions</span>
+    <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">gt_extensions</span><span class="p">:</span>
+        <span class="n">label_file</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ext</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">label_file</span><span class="p">):</span>
+            <span class="n">has_label</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">is_valid_file</span> <span class="ow">and</span> <span class="n">has_label</span>
+
+
+<div class="viewcode-block" id="default_load_fn_2d"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/utils.html#delira.data_loading.default_load_fn_2d">[docs]</a><span class="nd">@make_deprecated</span><span class="p">(</span><span class="s2">&quot;Will be replaced by LoadSample.&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">default_load_fn_2d</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="o">*</span><span class="n">label_files</span><span class="p">,</span> <span class="n">img_shape</span><span class="p">,</span> <span class="n">n_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    loading single 2d sample with arbitrary number of samples</span>
 
@@ -334,6 +424,153 @@
         <span class="n">result_dict</span><span class="p">[</span><span class="s2">&quot;label_</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
 
     <span class="k">return</span> <span class="n">result_dict</span></div>
+
+
+<span class="k">class</span> <span class="nc">LoadSample</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">sample_ext</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+                 <span class="n">sample_fn</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span>
+                 <span class="n">dtype</span><span class="o">=</span><span class="p">{},</span> <span class="n">normalize</span><span class="o">=</span><span class="p">(),</span> <span class="n">norm_fn</span><span class="o">=</span><span class="n">norm_range</span><span class="p">(</span><span class="s1">&#39;-1,1&#39;</span><span class="p">),</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Provides a callable to load a single sample from multiple files in a</span>
+<span class="sd">        folder</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sample_ext : dict of iterable</span>
+<span class="sd">            Defines the data _sample_ext. The dict key defines the position of</span>
+<span class="sd">            the sample inside the returned data dict, while the list defines</span>
+<span class="sd">            the the files which should be loaded inside the data dict.</span>
+<span class="sd">        sample_fn : callable</span>
+<span class="sd">            function to load a single sample</span>
+<span class="sd">        dtype : dict</span>
+<span class="sd">            defines the data type which should be used for the respective key</span>
+<span class="sd">        normalize : iterable of hashable</span>
+<span class="sd">            list of hashable which should be normalized. Can contain</span>
+<span class="sd">            entire keys of extension (normalizes each element individually)</span>
+<span class="sd">            or provide the file name which should be normalized</span>
+<span class="sd">        norm_fn : callable</span>
+<span class="sd">            callable to normalize input. Default: normalize range to [-1, 1]</span>
+<span class="sd">        kwargs :</span>
+<span class="sd">            variable number of keyword arguments passed to load function</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Simple loading function which returns a dict with `data`</span>
+<span class="sd">        &gt;&gt;&gt; from delira.data_loading.nii import load_nii</span>
+<span class="sd">        &gt;&gt;&gt; load_fn = LoadSample({&#39;data:&#39;: [&#39;data.nii&#39;]}, load_nii)</span>
+
+<span class="sd">        Loading function for data (casted to float32 and normalized) and</span>
+<span class="sd">        segmentation (casted to unit8)</span>
+<span class="sd">        &gt;&gt;&gt; from delira.data_loading.nii import load_nii</span>
+<span class="sd">        &gt;&gt;&gt; load_fn = LoadSample({&#39;data:&#39;: [&#39;data.nii&#39;], &#39;seg&#39;: [&#39;seg.nii&#39;]},</span>
+<span class="sd">        &gt;&gt;&gt;                      load_nii, dtype={&#39;data&#39;: &#39;float32&#39;,</span>
+<span class="sd">        &gt;&gt;&gt;                                       &#39;seg&#39;: &#39;uint8&#39;},</span>
+<span class="sd">        &gt;&gt;&gt;                      normalize=(&#39;data&#39;,))</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sample_ext</span> <span class="o">=</span> <span class="n">sample_ext</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sample_fn</span> <span class="o">=</span> <span class="n">sample_fn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">dtype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_normalize</span> <span class="o">=</span> <span class="n">normalize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_norm_fn</span> <span class="o">=</span> <span class="n">norm_fn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load sample from multiple files</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str</span>
+<span class="sd">            defines patch to folder which contain the _sample_ext</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            dict with data defines by _sample_ext</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sample_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_ext</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">data_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_fn</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">f</span><span class="p">),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
+
+                <span class="c1"># _normalize data if necessary</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize</span><span class="p">):</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norm_fn</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+                <span class="c1"># cast data to type</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+                <span class="c1"># append data</span>
+                <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">sample_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sample_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sample_dict</span>
+
+
+<span class="k">class</span> <span class="nc">LoadSampleLabel</span><span class="p">(</span><span class="n">LoadSample</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">sample_ext</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+                 <span class="n">sample_fn</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span>
+                 <span class="n">label_ext</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">,</span>
+                 <span class="n">label_fn</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span>
+                 <span class="n">sample_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load sample and label from folder</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sample_ext : dict of list</span>
+<span class="sd">            Defines the data _sample_ext. The dict key defines the position of</span>
+<span class="sd">            the sample inside the returned data dict, while the list defines</span>
+<span class="sd">            the the files which should be loaded inside the data dict.</span>
+<span class="sd">            Passed to LoadSample.</span>
+<span class="sd">        sample_fn : callable</span>
+<span class="sd">            function to load a single sample</span>
+<span class="sd">            Passed to LoadSample.</span>
+<span class="sd">        label_ext : str</span>
+<span class="sd">            extension for label</span>
+<span class="sd">        label_fn: function</span>
+<span class="sd">            functions which returns the label inside a dict</span>
+<span class="sd">        args :</span>
+<span class="sd">            variable number of positional arguments passed to LoadSample</span>
+<span class="sd">        sample_kwargs :</span>
+<span class="sd">            additional keyword arguments passed to LoadSample</span>
+<span class="sd">        kwargs :</span>
+<span class="sd">            variable number of keyword arguments passed to _label_fn</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class: `LoadSample`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">sample_ext</span><span class="p">,</span> <span class="n">sample_fn</span><span class="p">,</span> <span class="o">**</span><span class="n">sample_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_label_ext</span> <span class="o">=</span> <span class="n">label_ext</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_label_fn</span> <span class="o">=</span> <span class="n">label_fn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_label_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads a sample and a label</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            dict with data and label</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sample_dict</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">LoadSampleLabel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">label_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_label_fn</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_label_ext</span><span class="p">),</span>
+                                    <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_label_kwargs</span><span class="p">)</span>
+        <span class="n">sample_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">label_dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sample_dict</span>
 </pre></div>
 
            </div>

@@ -291,16 +291,17 @@
            <div itemprop="articleBody">
             
   <h1>Source code for delira.data_loading.dataset</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">tqdm</span> <span class="k">import</span> <span class="n">tqdm</span>
+<span></span><span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">typing</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="k">import</span> <span class="n">tqdm</span>
 <span class="kn">from</span> <span class="nn">skimage.transform</span> <span class="k">import</span> <span class="n">resize</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
-<span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">from</span> <span class="nn">delira</span> <span class="k">import</span> <span class="n">get_backends</span>
+
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">subdirs</span>
 <span class="kn">from</span> <span class="nn">..utils.decorators</span> <span class="k">import</span> <span class="n">make_deprecated</span>
-<span class="kn">from</span> <span class="nn">delira</span> <span class="k">import</span> <span class="n">get_backends</span>
 
 
 <div class="viewcode-block" id="AbstractDataset"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/dataset.html#delira.data_loading.AbstractDataset">[docs]</a><span class="k">class</span> <span class="nc">AbstractDataset</span><span class="p">:</span>
@@ -309,7 +310,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">,</span> <span class="n">img_extensions</span><span class="p">,</span> <span class="n">gt_extensions</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Parameters</span>
@@ -318,21 +319,13 @@
 <span class="sd">            path to data samples</span>
 <span class="sd">        load_fn : function</span>
 <span class="sd">            function to load single sample</span>
-<span class="sd">        img_extensions : list</span>
-<span class="sd">            valid extensions of image files</span>
-<span class="sd">        gt_extensions : list</span>
-<span class="sd">            valid extensions of label files</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_img_extensions</span> <span class="o">=</span> <span class="n">img_extensions</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_gt_extensions</span> <span class="o">=</span> <span class="n">gt_extensions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_path</span> <span class="o">=</span> <span class="n">data_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_fn</span> <span class="o">=</span> <span class="n">load_fn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="AbstractDataset._make_dataset"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/dataset.html#delira.data_loading.AbstractDataset._make_dataset">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_make_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_make_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create dataset</span>
 
@@ -377,6 +370,17 @@
 <span class="sd">            number of samples</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return an iterator for the dataset</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        object</span>
+<span class="sd">            a single sample</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_DatasetIter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AbstractDataset.get_sample_from_index"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/dataset.html#delira.data_loading.AbstractDataset.get_sample_from_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_sample_from_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -471,10 +475,37 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">train_idxs</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">test_idxs</span><span class="p">)</span></div></div>
 
 
+<span class="k">class</span> <span class="nc">_DatasetIter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Iterator for dataset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dset</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dset: :class: `AbstractDataset`</span>
+<span class="sd">            the dataset which should be iterated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dset</span> <span class="o">=</span> <span class="n">dset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_curr_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curr_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dset</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span>
+
+        <span class="n">sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dset</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_curr_index</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_curr_index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">sample</span>
+
+
 <span class="k">class</span> <span class="nc">BlankDataset</span><span class="p">(</span><span class="n">AbstractDataset</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Blank Dataset loading the data, which has been passed</span>
-<span class="sd">    in it&#39;s ``__init__`` by it&#39;s ``load_fn``</span>
+<span class="sd">    in it&#39;s ``__init__`` by it&#39;s ``_sample_fn``</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -491,7 +522,7 @@
 <span class="sd">            additional keyword arguments (are set as class attribute)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_old_getitem</span> <span class="o">=</span> <span class="n">old_getitem</span>
@@ -501,7 +532,7 @@
 
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        returns single sample corresponding to ``index`` via the ``load_fn``</span>
+<span class="sd">        returns single sample corresponding to ``index`` via the ``_sample_fn``</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -526,124 +557,7 @@
 <span class="sd">            number of samples</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="BaseLazyDataset"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/dataset.html#delira.data_loading.BaseLazyDataset">[docs]</a><span class="k">class</span> <span class="nc">BaseLazyDataset</span><span class="p">(</span><span class="n">AbstractDataset</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Dataset to load data in a lazy way</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">,</span> <span class="n">img_extensions</span><span class="p">,</span> <span class="n">gt_extensions</span><span class="o">=</span><span class="p">[],</span>
-                 <span class="o">**</span><span class="n">load_kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        data_path : str</span>
-<span class="sd">            path to data samples</span>
-<span class="sd">        load_fn : function</span>
-<span class="sd">            function to load single data sample</span>
-<span class="sd">        img_extensions : list</span>
-<span class="sd">            valid extensions of image files</span>
-<span class="sd">        gt_extensions : list</span>
-<span class="sd">            valid extensions of label files</span>
-<span class="sd">        **load_kwargs :</span>
-<span class="sd">            additional loading keyword arguments (image shape,</span>
-<span class="sd">            channel number, ...); passed to load_fn</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">,</span> <span class="n">img_extensions</span><span class="p">,</span> <span class="n">gt_extensions</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_load_kwargs</span> <span class="o">=</span> <span class="n">load_kwargs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">)</span>
-
-<div class="viewcode-block" id="BaseLazyDataset._make_dataset"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/dataset.html#delira.data_loading.BaseLazyDataset._make_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">_make_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Helper Function to make a dataset containing paths to all images in a</span>
-<span class="sd">        certain directory</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        path : str</span>
-<span class="sd">            path to data samples</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        list</span>
-<span class="sd">            list of sample paths</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        AssertionError</span>
-<span class="sd">            if `path` is not a valid directory</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> is not a valid directory&#39;</span> <span class="o">%</span> <span class="nb">dir</span>
-
-        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">fnames</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path</span><span class="p">)):</span>
-            <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">fnames</span><span class="p">:</span>
-                <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid_image_file</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
-                    <span class="n">sample</span> <span class="o">=</span> <span class="p">[</span><span class="n">fpath</span><span class="p">]</span>
-                    <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gt_extensions</span><span class="p">:</span>
-                        <span class="n">gt_path</span> <span class="o">=</span> <span class="n">fpath</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ext</span>
-                        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">gt_path</span><span class="p">):</span>
-                            <span class="n">sample</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gt_path</span><span class="p">)</span>
-
-                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">data</span></div>
-
-<div class="viewcode-block" id="BaseLazyDataset._is_valid_image_file"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/dataset.html#delira.data_loading.BaseLazyDataset._is_valid_image_file">[docs]</a>    <span class="k">def</span> <span class="nf">_is_valid_image_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Helper Function to check wheter file is image file and has at least</span>
-<span class="sd">        one label file</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        fname : str</span>
-<span class="sd">            filename of image path</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        bool</span>
-<span class="sd">            is valid data sample</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">is_valid_file</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_img_extensions</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">ext</span><span class="p">):</span>
-                <span class="n">is_valid_file</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="n">has_label</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gt_extensions</span>
-        <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gt_extensions</span><span class="p">:</span>
-            <span class="n">label_file</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ext</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">label_file</span><span class="p">):</span>
-                <span class="n">has_label</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="k">return</span> <span class="n">is_valid_file</span> <span class="ow">and</span> <span class="n">has_label</span></div>
-
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        load data sample specified by index</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        index : int</span>
-<span class="sd">            index to specifiy which data sample to load</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        dict</span>
-<span class="sd">            loaded data sample</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">data_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_fn</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">get_sample_from_index</span><span class="p">(</span><span class="n">index</span><span class="p">),</span>
-                                  <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_kwargs</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">data_dict</span></div>
 
 
 <div class="viewcode-block" id="BaseCacheDataset"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/dataset.html#delira.data_loading.BaseCacheDataset">[docs]</a><span class="k">class</span> <span class="nc">BaseCacheDataset</span><span class="p">(</span><span class="n">AbstractDataset</span><span class="p">):</span>
@@ -656,96 +570,65 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">,</span> <span class="n">img_extensions</span><span class="p">,</span> <span class="n">gt_extensions</span><span class="o">=</span><span class="p">[],</span>
-                 <span class="o">**</span><span class="n">load_kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span>
+                 <span class="n">load_fn</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="o">**</span><span class="n">load_kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        data_path : str</span>
-<span class="sd">            path to data samples</span>
+<span class="sd">        data_path : str or list</span>
+<span class="sd">            if data_path is a string, _sample_fn is called for all items inside</span>
+<span class="sd">            the specified directory</span>
+<span class="sd">            if data_path is a list, _sample_fn is called for elements in the</span>
+<span class="sd">            list</span>
 <span class="sd">        load_fn : function</span>
-<span class="sd">            function to load single data sample</span>
-<span class="sd">        img_extensions : list</span>
-<span class="sd">            valid extensions of image files</span>
-<span class="sd">        gt_extensions : list</span>
-<span class="sd">            valid extensions of label files</span>
+<span class="sd">            function to load a single data sample</span>
 <span class="sd">        **load_kwargs :</span>
 <span class="sd">            additional loading keyword arguments (image shape,</span>
-<span class="sd">            channel number, ...); passed to load_fn</span>
+<span class="sd">            channel number, ...); passed to _sample_fn</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">,</span> <span class="n">img_extensions</span><span class="p">,</span> <span class="n">gt_extensions</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_kwargs</span> <span class="o">=</span> <span class="n">load_kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_dataset</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
 
-<div class="viewcode-block" id="BaseCacheDataset._make_dataset"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/dataset.html#delira.data_loading.BaseCacheDataset._make_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">_make_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseCacheDataset._make_dataset"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/dataset.html#delira.data_loading.BaseCacheDataset._make_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">_make_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Helper Function to make a dataset containing all samples in a certain</span>
 <span class="sd">        directory</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        path: str</span>
-<span class="sd">            path to data samples</span>
+<span class="sd">        path: str or list</span>
+<span class="sd">            if data_path is a string, _sample_fn is called for all items inside</span>
+<span class="sd">            the specified directory</span>
+<span class="sd">            if data_path is a list, _sample_fn is called for elements in the</span>
+<span class="sd">            list</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list</span>
-<span class="sd">            list of sample paths</span>
+<span class="sd">            list of items which where returned from _sample_fn (typically dict)</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        AssertionError</span>
-<span class="sd">            if `path` is not a valid directory</span>
+<span class="sd">            if `path` is not a list and is not a valid directory</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> is not a valid directory&#39;</span> <span class="o">%</span> <span class="nb">dir</span>
-
-        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">fnames</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path</span><span class="p">)):</span>
-            <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">fnames</span><span class="p">:</span>
-                <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid_image_file</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
-                    <span class="n">sample</span> <span class="o">=</span> <span class="p">[</span><span class="n">fpath</span><span class="p">]</span>
-                    <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gt_extensions</span><span class="p">:</span>
-                        <span class="n">gt_path</span> <span class="o">=</span> <span class="n">fpath</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ext</span>
-                        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">gt_path</span><span class="p">):</span>
-                            <span class="n">sample</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gt_path</span><span class="p">)</span>
-
-                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_fn</span><span class="p">(</span>
-                        <span class="o">*</span><span class="n">sample</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_kwargs</span><span class="p">))</span>
-
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="c1"># iterate over all elements</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;samples&#39;</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Loading samples&quot;</span><span class="p">):</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_fn</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_kwargs</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># call _sample_fn for all elements inside directory</span>
+            <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> is not a valid directory&#39;</span> <span class="o">%</span> <span class="nb">dir</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;samples&#39;</span><span class="p">,</span>
+                          <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Loading samples&quot;</span><span class="p">):</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_fn</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span>
+                                          <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_kwargs</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">data</span></div>
-
-<div class="viewcode-block" id="BaseCacheDataset._is_valid_image_file"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/dataset.html#delira.data_loading.BaseCacheDataset._is_valid_image_file">[docs]</a>    <span class="k">def</span> <span class="nf">_is_valid_image_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Helper Function to check wheter file is image file and has at least</span>
-<span class="sd">        one label file</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        fname : str</span>
-<span class="sd">            filename of image path</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        bool</span>
-<span class="sd">            is valid data sample</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">is_valid_file</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_img_extensions</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">ext</span><span class="p">):</span>
-                <span class="n">is_valid_file</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="n">has_label</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gt_extensions</span>
-        <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gt_extensions</span><span class="p">:</span>
-            <span class="n">label_file</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ext</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">label_file</span><span class="p">):</span>
-                <span class="n">has_label</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="k">return</span> <span class="n">is_valid_file</span> <span class="ow">and</span> <span class="n">has_label</span></div>
 
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -763,13 +646,173 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sample_from_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-
         <span class="k">return</span> <span class="n">data_dict</span></div>
+
+
+<div class="viewcode-block" id="BaseLazyDataset"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/dataset.html#delira.data_loading.BaseLazyDataset">[docs]</a><span class="k">class</span> <span class="nc">BaseLazyDataset</span><span class="p">(</span><span class="n">AbstractDataset</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dataset to load data in a lazy way</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span>
+                 <span class="n">load_fn</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="o">**</span><span class="n">load_kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data_path : str or list</span>
+<span class="sd">            if data_path is a string, _sample_fn is called for all items inside</span>
+<span class="sd">            the specified directory</span>
+<span class="sd">            if data_path is a list, _sample_fn is called for elements in the</span>
+<span class="sd">            list</span>
+<span class="sd">        load_fn : function</span>
+<span class="sd">            function to load single data sample</span>
+<span class="sd">        **load_kwargs :</span>
+<span class="sd">            additional loading keyword arguments (image shape,</span>
+<span class="sd">            channel number, ...); passed to _sample_fn</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_kwargs</span> <span class="o">=</span> <span class="n">load_kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BaseLazyDataset._make_dataset"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/dataset.html#delira.data_loading.BaseLazyDataset._make_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">_make_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helper Function to make a dataset containing paths to all images in a</span>
+<span class="sd">        certain directory</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str or list</span>
+<span class="sd">            path to data samples</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            list of sample paths</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        AssertionError</span>
+<span class="sd">            if `path` is not a valid directory</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="c1"># generate list from iterable</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># generate list from all items</span>
+            <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> is not a valid directory&#39;</span> <span class="o">%</span> <span class="nb">dir</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        load data sample specified by index</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        index : int</span>
+<span class="sd">            index to specifiy which data sample to load</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            loaded data sample</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_fn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_sample_from_index</span><span class="p">(</span><span class="n">index</span><span class="p">),</span>
+                                  <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data_dict</span></div>
+
+
+<span class="k">class</span> <span class="nc">BaseExtendCacheDataset</span><span class="p">(</span><span class="n">BaseCacheDataset</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dataset to preload and cache data. Function to load sample is expected</span>
+<span class="sd">    to return an iterable which can contain multiple samples</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    data needs to fit completely into RAM!</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span>
+                 <span class="n">load_fn</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="o">**</span><span class="n">load_kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data_path : str or list</span>
+<span class="sd">            if data_path is a string, _sample_fn is called for all items inside</span>
+<span class="sd">            the specified directory</span>
+<span class="sd">            if data_path is a list, _sample_fn is called for elements in the list</span>
+<span class="sd">        load_fn : function</span>
+<span class="sd">            function to load a multiple data samples at once. Needs to return</span>
+<span class="sd">            an iterable which extends the internal list.</span>
+<span class="sd">        **load_kwargs :</span>
+<span class="sd">            additional loading keyword arguments (image shape,</span>
+<span class="sd">            channel number, ...); passed to _sample_fn</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class: `BaseCacheDataset`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">,</span> <span class="o">**</span><span class="n">load_kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_make_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helper Function to make a dataset containing all samples in a certain</span>
+<span class="sd">        directory</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path: str or iterable</span>
+<span class="sd">            if data_path is a string, _sample_fn is called for all items inside</span>
+<span class="sd">            the specified directory</span>
+<span class="sd">            if data_path is a list, _sample_fn is called for elements in the</span>
+<span class="sd">            list</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            list of items which where returned from _sample_fn (typically dict)</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        AssertionError</span>
+<span class="sd">            if `path` is not a list and is not a valid directory</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="c1"># iterate over all elements</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;samples&#39;</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Loading samples&quot;</span><span class="p">):</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_fn</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_kwargs</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># call _sample_fn for all elements inside directory</span>
+            <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> is not a valid directory&#39;</span> <span class="o">%</span> <span class="nb">dir</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;samples&#39;</span><span class="p">,</span>
+                          <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Loading samples&quot;</span><span class="p">):</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_fn</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span>
+                                          <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_kwargs</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">data</span>
 
 
 <div class="viewcode-block" id="ConcatDataset"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/dataset.html#delira.data_loading.ConcatDataset">[docs]</a><span class="k">class</span> <span class="nc">ConcatDataset</span><span class="p">(</span><span class="n">AbstractDataset</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">datasets</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Concatenate multiple datasets to one</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        datasets:</span>
+<span class="sd">            variable number of datasets</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># TODO: Why should datasets[0] be a list not a AbstractDataset?</span>
 
         <span class="c1"># check if first item in datasets is list and datasets is of length 1</span>
         <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">datasets</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">datasets</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
@@ -824,17 +867,16 @@
         <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">dset</span><span class="p">)</span> <span class="k">for</span> <span class="n">dset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span></div>
 
 
+<span class="nd">@make_deprecated</span><span class="p">(</span><span class="s1">&#39;Will be removed in favour of LoadSample function.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Nii3DLazyDataset</span><span class="p">(</span><span class="n">BaseLazyDataset</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Dataset to load 3D medical images (e.g. from .nii files) during training</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">       Dataset to load 3D medical images (e.g. from .nii files) during training</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">,</span> <span class="n">img_extensions</span><span class="p">,</span> <span class="n">gt_extensions</span><span class="p">,</span>
                  <span class="n">img_files</span><span class="p">,</span> <span class="n">label_file</span><span class="p">,</span> <span class="o">**</span><span class="n">load_kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        Parameters</span>
+<span class="sd">         Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        data_path : str</span>
 <span class="sd">            root path to data samples where each samples has it&#39;s own folder</span>
@@ -851,34 +893,28 @@
 <span class="sd">        **load_kwargs :</span>
 <span class="sd">            additional loading keyword arguments (image shape,</span>
 <span class="sd">            channel number, ...); passed to load_fn</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">         &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">img_files</span> <span class="o">=</span> <span class="n">img_files</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">label_file</span> <span class="o">=</span> <span class="n">label_file</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">,</span> <span class="n">img_extensions</span><span class="p">,</span> <span class="n">gt_extensions</span><span class="p">,</span>
-                         <span class="o">**</span><span class="n">load_kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">,</span> <span class="o">**</span><span class="n">load_kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_make_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Helper Function to make a dataset containing all samples in a certain</span>
 <span class="sd">        directory</span>
-
-<span class="sd">        Parameters</span>
+<span class="sd">         Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        path: str</span>
 <span class="sd">            path to data samples</span>
-
-<span class="sd">        Returns</span>
+<span class="sd">         Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list</span>
 <span class="sd">            list of sample paths</span>
-
-<span class="sd">        Raises</span>
+<span class="sd">         Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        AssertionError</span>
 <span class="sd">            if `path` is not a valid directory</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">         &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="p">[[{</span><span class="s1">&#39;img&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_files</span><span class="p">],</span>
@@ -887,17 +923,16 @@
         <span class="k">return</span> <span class="n">data</span>
 
 
+<span class="nd">@make_deprecated</span><span class="p">(</span><span class="s1">&#39;Will be removed in favour of LoadSample function.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Nii3DCacheDatset</span><span class="p">(</span><span class="n">BaseCacheDataset</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Dataset to load 3D medical images (e.g. from .nii files) before training</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">     &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">,</span> <span class="n">img_extensions</span><span class="p">,</span> <span class="n">gt_extensions</span><span class="p">,</span>
                  <span class="n">img_files</span><span class="p">,</span> <span class="n">label_file</span><span class="p">,</span> <span class="o">**</span><span class="n">load_kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        Parameters</span>
+<span class="sd">         Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        data_path : str</span>
 <span class="sd">            root path to data samples where each samples has it&#39;s own folder</span>
@@ -914,34 +949,28 @@
 <span class="sd">        **load_kwargs :</span>
 <span class="sd">            additional loading keyword arguments (image shape,</span>
 <span class="sd">            channel number, ...); passed to load_fn</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">         &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">img_files</span> <span class="o">=</span> <span class="n">img_files</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">label_file</span> <span class="o">=</span> <span class="n">label_file</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">,</span> <span class="n">img_extensions</span><span class="p">,</span> <span class="n">gt_extensions</span><span class="p">,</span>
-                         <span class="o">**</span><span class="n">load_kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">,</span> <span class="o">**</span><span class="n">load_kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_make_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Helper Function to make a dataset containing all samples in a certain</span>
 <span class="sd">        directory</span>
-
-<span class="sd">        Parameters</span>
+<span class="sd">         Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        path: str</span>
 <span class="sd">            path to data samples</span>
-
-<span class="sd">        Returns</span>
+<span class="sd">         Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list</span>
 <span class="sd">            list of samples</span>
-
-<span class="sd">        Raises</span>
+<span class="sd">         Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        AssertionError</span>
 <span class="sd">            if `path` is not a valid directory</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">         &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">subdirs</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;samples&#39;</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Loading samples&quot;</span><span class="p">):</span>
@@ -954,6 +983,7 @@
 
 <span class="k">if</span> <span class="s2">&quot;TORCH&quot;</span> <span class="ow">in</span> <span class="n">get_backends</span><span class="p">():</span>
     <span class="kn">from</span> <span class="nn">torchvision.datasets</span> <span class="k">import</span> <span class="n">CIFAR10</span><span class="p">,</span> <span class="n">CIFAR100</span><span class="p">,</span> <span class="n">EMNIST</span><span class="p">,</span> <span class="n">MNIST</span><span class="p">,</span> <span class="n">FashionMNIST</span>
+
 
     <span class="k">class</span> <span class="nc">TorchvisionClassificationDataset</span><span class="p">(</span><span class="n">AbstractDataset</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -987,7 +1017,7 @@
 <span class="sd">                class for initialization</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">download</span> <span class="o">=</span> <span class="n">download</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">train</span> <span class="o">=</span> <span class="n">train</span>
@@ -1027,7 +1057,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="mi">10</span>
             <span class="k">elif</span> <span class="n">dataset</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;emnist&quot;</span><span class="p">:</span>
                 <span class="n">_dataset_cls</span> <span class="o">=</span> <span class="n">EMNIST</span>
-                <span class="c1">#TODO: EMNIST requires split as kwarg. Search for &#39;split&#39; in kwargs and</span>
+                <span class="c1"># TODO: EMNIST requires split as kwarg. Search for &#39;split&#39; in kwargs and</span>
                 <span class="c1"># update self.num_classes accordingly</span>
                 <span class="c1"># https://pytorch.org/docs/stable/torchvision/datasets.html#torchvision.datasets.EMNIST</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1064,10 +1094,10 @@
 
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
             <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
-                         <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)}</span>
+                         <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)}</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">one_hot</span><span class="p">:</span>
-                <span class="c1">#TODO: Remove and refer to batchgenerators transform:</span>
+                <span class="c1"># TODO: Remove and refer to batchgenerators transform:</span>
                 <span class="c1"># https://github.com/MIC-DKFZ/batchgenerators/blob/master/batchgenerators/transforms/utility_transforms.py#L97</span>
                 <span class="k">def</span> <span class="nf">make_onehot</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
                     <span class="sd">&quot;&quot;&quot;</span>
@@ -1077,10 +1107,10 @@
 <span class="sd">                    ----------</span>
 <span class="sd">                    num_classes : int</span>
 <span class="sd">                        number of classes present in the dataset</span>
-<span class="sd">                    </span>
+
 <span class="sd">                    labels : np.ndarray</span>
 <span class="sd">                        labels in label-encoding format</span>
-<span class="sd">                    </span>
+
 <span class="sd">                    Returns</span>
 <span class="sd">                    -------</span>
 <span class="sd">                    np.ndarray</span>
@@ -1091,12 +1121,12 @@
                     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="n">one_hot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">num_classes</span><span class="p">]),</span>
-                                        <span class="n">dtype</span><span class="o">=</span><span class="n">labels</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+                                           <span class="n">dtype</span><span class="o">=</span><span class="n">labels</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
                         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">num_classes</span><span class="p">)):</span>
                             <span class="n">one_hot</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">][</span><span class="n">labels</span> <span class="o">==</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">one_hot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">([</span><span class="n">num_classes</span><span class="p">]),</span>
-                                        <span class="n">dtype</span><span class="o">=</span><span class="n">labels</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+                                           <span class="n">dtype</span><span class="o">=</span><span class="n">labels</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
                         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">num_classes</span><span class="p">)):</span>
                             <span class="k">if</span> <span class="n">labels</span> <span class="o">==</span> <span class="n">c</span><span class="p">:</span>
                                 <span class="n">one_hot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>

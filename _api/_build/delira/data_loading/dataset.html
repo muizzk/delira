@@ -314,12 +314,12 @@ they are needed or you could preload them and cache them.</p>
 <h2><span class="hidden-section">AbstractDataset</span><a class="headerlink" href="#abstractdataset" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="delira.data_loading.AbstractDataset">
-<em class="property">class </em><code class="descname">AbstractDataset</code><span class="sig-paren">(</span><em>data_path</em>, <em>load_fn</em>, <em>img_extensions</em>, <em>gt_extensions</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#AbstractDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.AbstractDataset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">AbstractDataset</code><span class="sig-paren">(</span><em>data_path: str</em>, <em>load_fn: Callable</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#AbstractDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.AbstractDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Base Class for Dataset</p>
 <dl class="method">
 <dt id="delira.data_loading.AbstractDataset._make_dataset">
-<code class="descname">_make_dataset</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#AbstractDataset._make_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.AbstractDataset._make_dataset" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_make_dataset</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#AbstractDataset._make_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.AbstractDataset._make_dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create dataset</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -421,38 +421,19 @@ implemented in <code class="docutils literal notranslate"><span class="pre">__ge
 <h2><span class="hidden-section">BaseLazyDataset</span><a class="headerlink" href="#baselazydataset" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="delira.data_loading.BaseLazyDataset">
-<em class="property">class </em><code class="descname">BaseLazyDataset</code><span class="sig-paren">(</span><em>data_path</em>, <em>load_fn</em>, <em>img_extensions</em>, <em>gt_extensions=[]</em>, <em>**load_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#BaseLazyDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.BaseLazyDataset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">BaseLazyDataset</code><span class="sig-paren">(</span><em>data_path: Union[str, list], load_fn: Callable, **load_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#BaseLazyDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.BaseLazyDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">delira.data_loading.dataset.AbstractDataset</span></code></p>
 <p>Dataset to load data in a lazy way</p>
 <dl class="method">
-<dt id="delira.data_loading.BaseLazyDataset._is_valid_image_file">
-<code class="descname">_is_valid_image_file</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#BaseLazyDataset._is_valid_image_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.BaseLazyDataset._is_valid_image_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Helper Function to check wheter file is image file and has at least
-one label file</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – filename of image path</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">is valid data sample</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="delira.data_loading.BaseLazyDataset._make_dataset">
-<code class="descname">_make_dataset</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#BaseLazyDataset._make_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.BaseLazyDataset._make_dataset" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_make_dataset</code><span class="sig-paren">(</span><em>path: Union[str, list]</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#BaseLazyDataset._make_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.BaseLazyDataset._make_dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper Function to make a dataset containing paths to all images in a
 certain directory</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – path to data samples</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – path to data samples</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of sample paths</td>
 </tr>
@@ -550,46 +531,30 @@ implemented in <code class="docutils literal notranslate"><span class="pre">__ge
 <h2><span class="hidden-section">BaseCacheDataset</span><a class="headerlink" href="#basecachedataset" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="delira.data_loading.BaseCacheDataset">
-<em class="property">class </em><code class="descname">BaseCacheDataset</code><span class="sig-paren">(</span><em>data_path</em>, <em>load_fn</em>, <em>img_extensions</em>, <em>gt_extensions=[]</em>, <em>**load_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#BaseCacheDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.BaseCacheDataset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">BaseCacheDataset</code><span class="sig-paren">(</span><em>data_path: Union[str, list], load_fn: Callable, **load_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#BaseCacheDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.BaseCacheDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">delira.data_loading.dataset.AbstractDataset</span></code></p>
 <p>Dataset to preload and cache data</p>
 <p class="rubric">Notes</p>
 <p>data needs to fit completely into RAM!</p>
 <dl class="method">
-<dt id="delira.data_loading.BaseCacheDataset._is_valid_image_file">
-<code class="descname">_is_valid_image_file</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#BaseCacheDataset._is_valid_image_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.BaseCacheDataset._is_valid_image_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Helper Function to check wheter file is image file and has at least
-one label file</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – filename of image path</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">is valid data sample</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="delira.data_loading.BaseCacheDataset._make_dataset">
-<code class="descname">_make_dataset</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#BaseCacheDataset._make_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.BaseCacheDataset._make_dataset" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_make_dataset</code><span class="sig-paren">(</span><em>path: Union[str, list]</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/data_loading/dataset.html#BaseCacheDataset._make_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.data_loading.BaseCacheDataset._make_dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper Function to make a dataset containing all samples in a certain
 directory</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – path to data samples</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – if data_path is a string, _sample_fn is called for all items inside
+the specified directory
+if data_path is a list, _sample_fn is called for elements in the
+list</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of sample paths</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of items which where returned from _sample_fn (typically dict)</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AssertionError</span></code></a> – if <cite>path</cite> is not a valid directory</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AssertionError</span></code></a> – if <cite>path</cite> is not a list and is not a valid directory</td>
 </tr>
 </tbody>
 </table>
@@ -685,7 +650,7 @@ implemented in <code class="docutils literal notranslate"><span class="pre">__ge
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">delira.data_loading.dataset.AbstractDataset</span></code></p>
 <dl class="method">
 <dt id="delira.data_loading.ConcatDataset._make_dataset">
-<code class="descname">_make_dataset</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#delira.data_loading.ConcatDataset._make_dataset" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_make_dataset</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="headerlink" href="#delira.data_loading.ConcatDataset._make_dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create dataset</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
