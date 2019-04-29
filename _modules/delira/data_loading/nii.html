@@ -317,7 +317,7 @@
     <span class="k">return</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">ReadImage</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="load_sample_nii"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/nii.html#delira.data_loading.nii.load_sample_nii">[docs]</a><span class="nd">@make_deprecated</span><span class="p">(</span><span class="s1">&#39;LoadSample function can be used this replicate the behavior.&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="load_sample_nii"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/nii.html#delira.data_loading.nii.load_sample_nii">[docs]</a><span class="nd">@make_deprecated</span><span class="p">(</span><span class="s1">&#39;LoadSample&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">load_sample_nii</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">label_load_cls</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load sample from multiple ITK files</span>
@@ -358,13 +358,13 @@
     <span class="k">return</span> <span class="n">sample</span></div>
 
 
-<div class="viewcode-block" id="BaseLabelGenerator"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/nii.html#delira.data_loading.nii.BaseLabelGenerator">[docs]</a><span class="nd">@make_deprecated</span><span class="p">(</span><span class="s2">&quot;Labels can now be provided by a function which returns &quot;</span>
-                 <span class="s2">&quot;a dictionary.&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">BaseLabelGenerator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseLabelGenerator"><a class="viewcode-back" href="../../../_api/_build/delira/data_loading/nii.html#delira.data_loading.nii.BaseLabelGenerator">[docs]</a><span class="k">class</span> <span class="nc">BaseLabelGenerator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base Class to load labels from json files</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@make_deprecated</span><span class="p">(</span><span class="s1">&#39;dict containing labels&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fpath</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 

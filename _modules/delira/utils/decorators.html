@@ -383,10 +383,19 @@
     <span class="k">def</span> <span class="nf">deprecation</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">func_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_func</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">new_func_name</span> <span class="o">=</span> <span class="n">new_func</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_func_name</span> <span class="o">=</span> <span class="n">new_func</span>
+
+            <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__init__&#39;</span><span class="p">:</span>
+                <span class="n">old_func_name</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">old_func_name</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="ne">DeprecationWarning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is deprecated in favor of </span><span class="si">%s</span><span class="s2">&quot;</span>
                                              <span class="s2">&quot; and will be removed at next &quot;</span>
-                                             <span class="s2">&quot;release&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-                                                          <span class="n">new_func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)))</span>
+                                             <span class="s2">&quot;release&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">old_func_name</span><span class="p">,</span>
+                                                          <span class="n">new_func_name</span><span class="p">)))</span>
             <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">func_wrapper</span>

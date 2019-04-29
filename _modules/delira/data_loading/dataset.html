@@ -867,12 +867,12 @@
         <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">dset</span><span class="p">)</span> <span class="k">for</span> <span class="n">dset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span></div>
 
 
-<span class="nd">@make_deprecated</span><span class="p">(</span><span class="s1">&#39;Will be removed in favour of LoadSample function.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Nii3DLazyDataset</span><span class="p">(</span><span class="n">BaseLazyDataset</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">       Dataset to load 3D medical images (e.g. from .nii files) during training</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+    <span class="nd">@make_deprecated</span><span class="p">(</span><span class="s1">&#39;LoadSample&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">,</span> <span class="n">img_extensions</span><span class="p">,</span> <span class="n">gt_extensions</span><span class="p">,</span>
                  <span class="n">img_files</span><span class="p">,</span> <span class="n">label_file</span><span class="p">,</span> <span class="o">**</span><span class="n">load_kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -923,12 +923,12 @@
         <span class="k">return</span> <span class="n">data</span>
 
 
-<span class="nd">@make_deprecated</span><span class="p">(</span><span class="s1">&#39;Will be removed in favour of LoadSample function.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Nii3DCacheDatset</span><span class="p">(</span><span class="n">BaseCacheDataset</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Dataset to load 3D medical images (e.g. from .nii files) before training</span>
 <span class="sd">     &quot;&quot;&quot;</span>
 
+    <span class="nd">@make_deprecated</span><span class="p">(</span><span class="s1">&#39;LoadSample&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">,</span> <span class="n">load_fn</span><span class="p">,</span> <span class="n">img_extensions</span><span class="p">,</span> <span class="n">gt_extensions</span><span class="p">,</span>
                  <span class="n">img_files</span><span class="p">,</span> <span class="n">label_file</span><span class="p">,</span> <span class="o">**</span><span class="n">load_kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
