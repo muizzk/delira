@@ -297,9 +297,6 @@
 <span class="kn">from</span> <span class="nn">delira.models.abstract_network</span> <span class="k">import</span> <span class="n">AbstractTfNetwork</span>
 <span class="kn">from</span> <span class="nn">delira.models.classification.ResNet18</span> <span class="k">import</span> <span class="n">ResNet18</span>
 
-<span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">set_image_data_format</span><span class="p">(</span><span class="s1">&#39;channels_first&#39;</span><span class="p">)</span>
-
-
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
@@ -325,6 +322,7 @@
 <span class="sd">        n_outputs : int</span>
 <span class="sd">            number of outputs (usually same as number of classes)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">set_image_data_format</span><span class="p">(</span><span class="s1">&#39;channels_first&#39;</span><span class="p">)</span>
         <span class="c1"># register params by passing them as kwargs to parent class __init__</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
                          <span class="n">n_outputs</span><span class="o">=</span><span class="n">n_outputs</span><span class="p">,</span>
