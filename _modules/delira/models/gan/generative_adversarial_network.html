@@ -520,11 +520,11 @@
                                         <span class="s2">&quot;env_appendix&quot;</span><span class="p">:</span> <span class="s2">&quot;_</span><span class="si">%02d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">fold</span>
                                         <span class="p">}})</span>
 
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">({</span><span class="s1">&#39;image_grid&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;images&quot;</span><span class="p">:</span> <span class="n">batch</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;real_images&quot;</span><span class="p">,</span>
-                                        <span class="s2">&quot;env_appendix&quot;</span><span class="p">:</span> <span class="s2">&quot;_</span><span class="si">%02d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">fold</span><span class="p">}})</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">({</span><span class="s2">&quot;image_grid&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;images&quot;</span><span class="p">:</span> <span class="n">fake_image_batch</span><span class="p">,</span>
-                                        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;fake_images&quot;</span><span class="p">,</span>
-                                        <span class="s2">&quot;env_appendix&quot;</span><span class="p">:</span> <span class="s2">&quot;_</span><span class="si">%02d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">fold</span><span class="p">}})</span>
+<span class="c1">#             logging.info({&#39;image_grid&#39;: {&quot;images&quot;: batch, &quot;name&quot;: &quot;real_images&quot;,</span>
+<span class="c1">#                                         &quot;env_appendix&quot;: &quot;_%02d&quot; % fold}})</span>
+<span class="c1">#             logging.info({&quot;image_grid&quot;: {&quot;images&quot;: fake_image_batch,</span>
+<span class="c1">#                                         &quot;name&quot;: &quot;fake_images&quot;,</span>
+<span class="c1">#                                         &quot;env_appendix&quot;: &quot;_%02d&quot; % fold}})</span>
 
             <span class="k">return</span> <span class="n">metric_vals</span><span class="p">,</span> <span class="n">loss_vals</span><span class="p">,</span> <span class="p">[</span><span class="n">fake_image_batch</span><span class="p">,</span> <span class="n">discr_pred_fake</span><span class="p">,</span>
                                             <span class="n">discr_pred_real</span><span class="p">]</span></div>
