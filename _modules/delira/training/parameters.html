@@ -294,6 +294,8 @@
 <span></span><span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">LookupConfig</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span><span class="p">,</span> <span class="n">copy</span>
+
 
 <div class="viewcode-block" id="Parameters"><a class="viewcode-back" href="../../../_api/_build/delira/training/parameters.html#delira.training.Parameters">[docs]</a><span class="k">class</span> <span class="nc">Parameters</span><span class="p">(</span><span class="n">LookupConfig</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -507,11 +509,103 @@
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.yml&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
                       <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span></div>
-        
+
+<div class="viewcode-block" id="Parameters.update"><a class="viewcode-back" href="../../../_api/_build/delira/training/parameters.html#delira.training.Parameters.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_like</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+               <span class="n">allow_dict_overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update entries in the Parameters</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dict_like : dict</span>
+<span class="sd">            Update source</span>
+<span class="sd">        deep : bool</span>
+<span class="sd">            Make deep copies of all references in the source.</span>
+<span class="sd">        ignore : Iterable</span>
+<span class="sd">            Iterable of keys to ignore in update</span>
+<span class="sd">        allow_dict_overwrite : bool</span>
+<span class="sd">            Allow overwriting with dict.</span>
+<span class="sd">            Regular dicts only update on the highest level while we recurse</span>
+<span class="sd">            and merge Configs. This flag decides whether it is possible to</span>
+<span class="sd">            overwrite a &#39;regular&#39; value with a dict/Config at lower levels.</span>
+<span class="sd">            See examples for an illustration of the difference</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">        ---------</span>
+<span class="sd">        The following illustrates the update behaviour if</span>
+<span class="sd">        :obj:allow_dict_overwrite is active. If it isn&#39;t, an AttributeError</span>
+<span class="sd">        would be raised, originating from trying to update &quot;string&quot;::</span>
+
+<span class="sd">            config1 = Config(config={</span>
+<span class="sd">                &quot;lvl0&quot;: {</span>
+<span class="sd">                    &quot;lvl1&quot;: &quot;string&quot;,</span>
+<span class="sd">                    &quot;something&quot;: &quot;else&quot;</span>
+<span class="sd">                }</span>
+<span class="sd">            })</span>
+
+<span class="sd">            config2 = Config(config={</span>
+<span class="sd">                &quot;lvl0&quot;: {</span>
+<span class="sd">                    &quot;lvl1&quot;: {</span>
+<span class="sd">                        &quot;lvl2&quot;: &quot;string&quot;</span>
+<span class="sd">                    }</span>
+<span class="sd">                }</span>
+<span class="sd">            })</span>
+
+<span class="sd">            config1.update(config2, allow_dict_overwrite=True)</span>
+
+<span class="sd">            &gt;&gt;&gt;config1</span>
+<span class="sd">            {</span>
+<span class="sd">                &quot;lvl0&quot;: {</span>
+<span class="sd">                    &quot;lvl1&quot;: {</span>
+<span class="sd">                        &quot;lvl2&quot;: &quot;string&quot;</span>
+<span class="sd">                    },</span>
+<span class="sd">                    &quot;something&quot;: &quot;else&quot;</span>
+<span class="sd">                }</span>
+<span class="sd">            }</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">empty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variability_on_top</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">training_on_top</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">empty</span><span class="p">:</span>
+            <span class="n">variability_on_top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variability_on_top</span>
+
+            <span class="k">if</span> <span class="n">variability_on_top</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dict_like</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">):</span>
+                    <span class="n">dict_like_variability_on_top</span> <span class="o">=</span> <span class="n">dict_like</span><span class="o">.</span><span class="n">variability_on_top</span>
+                    <span class="n">dict_like</span> <span class="o">=</span> <span class="n">dict_like</span><span class="o">.</span><span class="n">permute_variability_on_top</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s2">&quot;fixed&quot;</span> <span class="ow">in</span> <span class="n">dict_like</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                            <span class="ow">or</span> <span class="s2">&quot;variable&quot;</span> <span class="ow">in</span> <span class="n">dict_like</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unsafe to Update from dict with &quot;</span>
+                                           <span class="s2">&quot;another structre as current &quot;</span>
+                                           <span class="s2">&quot;parameters&quot;</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dict_like</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">):</span>
+                    <span class="n">dict_like_variability_on_top</span> <span class="o">=</span> <span class="n">dict_like</span><span class="o">.</span><span class="n">variability_on_top</span>
+                    <span class="n">dict_like</span> <span class="o">=</span> <span class="n">dict_like</span><span class="o">.</span><span class="n">permute_training_on_top</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s2">&quot;model&quot;</span> <span class="ow">in</span> <span class="n">dict_like</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                            <span class="ow">or</span> <span class="s2">&quot;training&quot;</span> <span class="ow">in</span> <span class="n">dict_like</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unsafe to Update from dict with &quot;</span>
+                                           <span class="s2">&quot;another structre as current &quot;</span>
+                                           <span class="s2">&quot;parameters&quot;</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dict_like</span><span class="o">=</span><span class="n">dict_like</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="n">deep</span><span class="p">,</span>
+                       <span class="n">ignore</span><span class="o">=</span><span class="n">ignore</span><span class="p">,</span>
+                       <span class="n">allow_dict_overwrite</span><span class="o">=</span><span class="n">allow_dict_overwrite</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">empty</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dict_like</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">):</span>
+            <span class="c1"># restore original permutation of dict_like</span>
+            <span class="k">if</span> <span class="n">variability_on_top</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">dict_like_variability_on_top</span><span class="p">:</span>
+                <span class="c1"># dict_like changed to variability_on_top</span>
+                <span class="n">dict_like</span><span class="o">.</span><span class="n">permute_training_on_top</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">variability_on_top</span> <span class="ow">and</span> <span class="n">dict_like_variability_on_top</span><span class="p">:</span>
+                <span class="c1"># dict_like changed to training_on_top</span>
+                <span class="n">dict_like</span><span class="o">.</span><span class="n">permute_variability_on_top</span><span class="p">()</span></div>
+
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        String Representation of class</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        str</span>
@@ -524,9 +618,54 @@
                 <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
                 <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">s</span></div>
+        <span class="k">return</span> <span class="n">s</span>
 
-    
+    <span class="k">def</span> <span class="nf">__copy__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enables shallow copy</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`Parameters`</span>
+<span class="sd">            copied parameters</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">var_top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variability_on_top</span>
+
+        <span class="n">_params</span> <span class="o">=</span> <span class="n">Parameters</span><span class="p">()</span>
+        <span class="n">_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">copy</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permute_variability_on_top</span><span class="p">())))</span>
+
+        <span class="k">if</span> <span class="n">var_top</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_params</span><span class="o">.</span><span class="n">permute_variability_on_top</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># restore original perumation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">permute_training_on_top</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">_params</span><span class="o">.</span><span class="n">permute_training_on_top</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enables deepcopy</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`Parameters`</span>
+<span class="sd">            deepcopied parameters</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">var_top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variability_on_top</span>
+
+        <span class="n">_params</span> <span class="o">=</span> <span class="n">Parameters</span><span class="p">()</span>
+        <span class="n">_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permute_variability_on_top</span><span class="p">()),</span>
+                                <span class="n">memo</span><span class="o">=</span><span class="n">memo</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">var_top</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_params</span><span class="o">.</span><span class="n">permute_variability_on_top</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># restore original perumation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">permute_training_on_top</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">_params</span><span class="o">.</span><span class="n">permute_training_on_top</span><span class="p">()</span></div>
 </pre></div>
 
            </div>

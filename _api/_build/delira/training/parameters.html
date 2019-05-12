@@ -461,6 +461,64 @@ No Value was found for key and no default value was given</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="delira.training.Parameters.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>dict_like</em>, <em>deep=False</em>, <em>ignore=None</em>, <em>allow_dict_overwrite=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/delira/training/parameters.html#Parameters.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#delira.training.Parameters.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update entries in the Parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dict_like</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – Update source</li>
+<li><strong>deep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Make deep copies of all references in the source.</li>
+<li><strong>ignore</strong> (<em>Iterable</em>) – Iterable of keys to ignore in update</li>
+<li><strong>allow_dict_overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Allow overwriting with dict.
+Regular dicts only update on the highest level while we recurse
+and merge Configs. This flag decides whether it is possible to
+overwrite a ‘regular’ value with a dict/Config at lower levels.
+See examples for an illustration of the difference</li>
+<li><strong>Examples</strong> – </li>
+<li><strong>---------</strong> – </li>
+<li><strong>following illustrates the update behaviour if</strong> (<em>The</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>:param :
+:type : obj:allow_dict_overwrite is active. If it isn’t, an AttributeError
+:param would be raised, originating from trying to update “string”::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">config1</span> <span class="o">=</span> <span class="n">Config</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;lvl0&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;lvl1&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;something&quot;</span><span class="p">:</span> <span class="s2">&quot;else&quot;</span>
+    <span class="p">}</span>
+<span class="p">})</span>
+
+<span class="n">config2</span> <span class="o">=</span> <span class="n">Config</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;lvl0&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;lvl1&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;lvl2&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">})</span>
+
+<span class="n">config1</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config2</span><span class="p">,</span> <span class="n">allow_dict_overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span><span class="n">config1</span>
+<span class="p">{</span>
+    <span class="s2">&quot;lvl0&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;lvl1&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;lvl2&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;something&quot;</span><span class="p">:</span> <span class="s2">&quot;else&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="delira.training.Parameters.variability_on_top">
 <code class="descname">variability_on_top</code><a class="headerlink" href="#delira.training.Parameters.variability_on_top" title="Permalink to this definition">¶</a></dt>
