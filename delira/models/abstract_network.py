@@ -332,3 +332,36 @@ if "TF" in get_backends():
                 return self._sess.run(self.outputs_train, feed_dict=_feed_dict)
             else:
                 return self._sess.run(self.outputs_eval, feed_dict=_feed_dict)
+
+if "MX" in get_backends():
+    import mxnet
+    from mxnet import gluon
+
+    class AbstractMXNetwork(AbstractNetwork, gluon.Block):
+        def __init__(self, **kwargs):
+            AbstractNetwork.__init__(self, **kwargs)
+            gluon.Block.__init__(self, prefix=kwargs.get("prefix", None),
+                                 params=kwargs.get("params", None))
+
+        def __call__(self, *args, **kwargs):
+
+            # only positional arguments supported -> forward kwargs.values(),
+            # which is ordered from python 3.7 on
+            return gluon.Block.__call__(self, *args, *kwargs.values())
+
+        @abc.abstractmethod
+        def forward(self, *args):
+            raise NotImplementedError
+
+        @staticmethod
+        def prepare_batch(batch: dict, input_device: mxnet.Context,
+                          output_device: mxnet.Context):
+            for key, val in batch.items():
+                if key == "data":
+                    device = input_device
+                else:
+                    device = output_device
+
+                batch[key] = mxnet.nd.array(val).astype("float").copyto(device)
+
+            return batch

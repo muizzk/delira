@@ -215,3 +215,24 @@ if "TF" in get_backends():
 
         """
         return convert_batch_to_numpy_identity(*args, **kwargs)
+
+if "MX" in get_backends():
+    import mxnet
+
+    def convert_mxnet_tensor_to_npy(*args, **kwargs):
+        args = list(args)
+
+        for idx, arg in enumerate(args):
+            if isinstance(arg, mxnet.nd.NDArray):
+                args[idx] = arg.asnumpy()
+
+        for key, val in kwargs.items():
+            if isinstance(val, mxnet.nd.NDArray):
+                kwargs[key] = val.asnumpy()
+
+        return convert_batch_to_numpy_identity(*args, **kwargs)
+
+    def create_optims_default_mx(model, optim_cls: str, **optim_params):
+        return {"default": mxnet.gluon.Trainer(model.collect_parameters(),
+                                               optim_cls, optim_params)}
+

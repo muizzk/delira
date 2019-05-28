@@ -14,3 +14,6 @@ if "TORCH" in get_backends():
 if "TF" in get_backends():
     from .abstract_network import AbstractTfNetwork
     from .classification import ClassificationNetworkBaseTf
+
+if "MX" in get_backends():
+    from .abstract_network import AbstractMXNetwork
