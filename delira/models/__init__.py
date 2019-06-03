@@ -17,3 +17,4 @@ if "TF" in get_backends():
 
 if "MX" in get_backends():
     from .abstract_network import AbstractMXNetwork
+    from .mxnet_data_parallel import DataParallel as MXDataParallel

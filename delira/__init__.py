@@ -1,21 +1,18 @@
 __version__ = '0.3.3'
 
-# from .models import AbstractNetwork
-# from .logging import TrixiHandler, MultiStreamHandler
-# from .data_loading import BaseCacheDataset, BaseLazyDataset, BaseDataManager, \
-#     RandomSampler, SequentialSampler
+
 import json
 import os
 import warnings
 warnings.simplefilter('default', DeprecationWarning)
 warnings.simplefilter('ignore', ImportWarning)
 
-# to register new pssible backends, they have to be added to this list.
+# to register new possible backends, they have to be added to this list.
 # each backend should consist of a tuple of length 2 with the first entry
 # being the package import name and the second being the backend abbreviation.
-# E.g. TensorFlow's package is named 'tensorflow' but if the package is found,
-# it will be considered as 'tf' later on
-__POSSIBLE_BACKENDS = [("torch", "torch"), ("tensorflow", "tf")]
+# E.g. TensorFlow's package is named 'tensorflow', but the backend will be
+# considered as 'tf' later on
+__POSSIBLE_BACKENDS = [("torch", "torch"), ("tensorflow", "tf"), ("mxnet", "mx")]
 __BACKENDS = []
 
 
@@ -27,7 +24,7 @@ def _determine_backends():
 
     if not os.path.isfile(_config_file):
         _backends = {}
-        # try to import all possible backends to determine valid backends
+        # try to import all possible backends to determine valid backends once
 
         import importlib
         for curr_backend in __POSSIBLE_BACKENDS:
@@ -74,9 +71,3 @@ def get_backends():
     if not __BACKENDS:
         _determine_backends()
     return __BACKENDS
-
-
-# if "TORCH" in get_backends():
-#     from .io import torch_load_checkpoint, torch_save_checkpoint
-#     from .models import AbstractPyTorchNetwork
-#     from .data_loading import TorchvisionClassificationDataset

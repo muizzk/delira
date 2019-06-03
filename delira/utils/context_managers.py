@@ -2,6 +2,67 @@ import contextlib
 
 from delira import get_backends
 from .decorators import make_deprecated
+import os
+
+import zipfile
+
+
+class TemporaryUnzip(object):
+    """
+    Context manager to temporary extract a member of a zipfile
+    """
+    def __init__(self, zip_file: zipfile.ZipFile, name, target_dir=None):
+        """
+
+        Parameters
+        ----------
+        zip_file : :class:`zipfile.ZipFile`
+            the zipfile to extract the member from
+        name : str
+            the name of the member to extract
+        target_dir : str
+            the target directory to extract the member to;
+            default: None -> uses cwd
+
+        """
+        self._zip_file = zip_file
+        self._name = name
+
+        if target_dir is None:
+            target_dir = os.getcwd()
+            remove_dir = False
+        else:
+            remove_dir = True
+
+        self._target_dir = target_dir
+        self._remove_dir = remove_dir
+
+    def __enter__(self):
+        """
+        Extracts the member on context entrance
+        """
+        self._zip_file.extract(self._name, self._target_dir)
+
+    def __exit__(self, *args, **kwargs):
+        """
+        Deletes extracted member on context exit
+
+        Parameters
+        ----------
+        *args :
+            arbitrary positional arguments (ignored here,
+            just provided for API-compatibility with other context managers)
+        **kwargs :
+            arbitrary keyword arguments (ignored here,
+            just provided for API-compatibility with other context managers)
+
+        """
+        if os.path.isfile(os.path.join(self._target_dir, self._name)):
+            os.remove(os.path.join(self._target_dir, self._name))
+
+        if self._remove_dir:
+            os.rmdir(self._target_dir)
+
 
 if "TORCH" in get_backends():
     import torch

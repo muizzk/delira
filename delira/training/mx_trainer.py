@@ -210,7 +210,7 @@ if "MX" in get_backends():
                     self.module = DataParallel(self.module,
                                                devices=[mxnet.gpu(_id)
                                                         for _id in gpu_ids],
-                                               outpu_device=mxnet.cpu(0),
+                                               output_device=mxnet.cpu(0),
                                                batch_dim=0)
 
                     # use output device as output-device
@@ -436,19 +436,17 @@ if "MX" in get_backends():
 
             Returns
             -------
-            :class:`PyTorchNetworkTrainer`
+            :class:`MxNetworkTrainer`
                 the trainer with a modified state
 
             """
 
             if "model" in new_state:
-                self.module.load_state_dict(new_state.pop("model"))
+                self.module = new_state.pop("model")
 
             if "optimizer" in new_state and new_state["optimizer"]:
                 optim_state = new_state.pop("optimizer")
-                for key in self.optimizers.keys():
-                    self.optimizers[key].load_state_dict(
-                        optim_state[key])
+                self.optimizers.update(optim_state)
 
             if "epoch" in new_state:
                 self.start_epoch = new_state.pop("epoch")

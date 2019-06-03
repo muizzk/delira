@@ -9,6 +9,7 @@ if "MX" in get_backends():
         """
         Scatters inputs to target devices; Slicing will be done against a given
         dimension
+
         Parameters
         ----------
         inputs : :class:`mxnet.nd.NDArray`
@@ -17,6 +18,7 @@ if "MX" in get_backends():
             the target devices to scatter to
         dim : int
             the dimension to use for slicing
+
         Returns
         -------
         list
@@ -27,6 +29,7 @@ if "MX" in get_backends():
             """
             Slices the input variable along a given dimension from start to end
             and pushes it to correct device
+
             Parameters
             ----------
             input_var : :class:`mxnet.nd.NDArray`
@@ -41,6 +44,7 @@ if "MX" in get_backends():
                 the end value for slicing (excluded)
             target_device: :class:`mxnet.context.Context`
                 the device to push to
+
             Returns
             -------
             :class:`mxnet.nd.NDArray`
@@ -91,6 +95,7 @@ if "MX" in get_backends():
     def _scatter(inputs, target_devices: list, dim):
         """
         Scatters all inputs across given target_devices
+
         Parameters
         ----------
         inputs : Any
@@ -107,6 +112,7 @@ if "MX" in get_backends():
         def _scatter_map(inputs):
             """
             Scatters all inputs across given target_devices
+
             Parameters
             ----------
             inputs : Any
@@ -184,17 +190,21 @@ if "MX" in get_backends():
         training by splitting the batches
         """
         def __init__(self, module: AbstractMXNetwork, devices: list,
-                     batch_dim=0):
+                     output_device=None, batch_dim=0):
             """
+
             Parameters
             ----------
-            module : :class:`xnet.gluon.Block`
+            module : :class:`mxnet.gluon.Block`
                 the module to wrap (will be replicated on all devices)
             devices : list
                 a list containing the devices to use (either as strings or as
                 chainer.backend.Device). The first device will be used as output
                 device. Make sure, your labels are also on this device for loss
                 calculation!
+            output_device : :class:`mxnet.context.Context`
+                the device to accumulate outputs to. If None: uses the first
+                item of ``devices``; default: None
             batch_dim : int
                 the index of the batchdimension (usually 0, but can become
                 e.g. 1 in NLP tasks)
@@ -206,7 +216,9 @@ if "MX" in get_backends():
 
             self.devices = devices
 
-            self._output_device = devices[0]
+            if output_device is None:
+                output_device = devices[0]
+            self._output_device = output_device
             assert self._output_device in self.devices
             self._output_device_idx = self.devices.index(self._output_device)
             self.dim = batch_dim
@@ -216,6 +228,7 @@ if "MX" in get_backends():
             Scatters the inputs (both positional and keyword arguments) across
             all devices, feeds them through model replicas and re-builds
             batches on output device
+
             Parameters
             ----------
             *args :
@@ -238,176 +251,67 @@ if "MX" in get_backends():
 
             return predictions
 
-    # TODO: Adapt these changes to gluon
-
-    class ParallelOptimizerCumulateGradientsHook(object):
-        """
-        A hook which sums up all replication's gradients in a
-        DataParallel-Scenario
-        """
-
-        name = "DataParallelCumulateGradients"
-        call_for_each_param = False
-        timing = 'pre'
-
-        def __call__(self, optimizer: chainer.Optimizer):
+        @staticmethod
+        def _scatter(inputs, kwargs, target_devices: list, dim=0):
             """
-            Summing up all parameters if the target is an instance of
-            ``DataParallel``
+            Scatters all inputs (args and kwargs) to target devices and splits
+            along given dimension
+
             Parameters
             ----------
-            optimizer : chainer.Optimizer
-                the optimizer holding the target, whoose gradients should be
-                summed across the replications
+            inputs : list or tuple
+                positional arguments
+            kwargs : dict
+                keyword arguments
+            target_devices : list
+                list of target devices (each item must be of type
+                :class:`mxnet.context.Context`)
+            dim : int
+                the dimension, which should be used for splitting the batch
+
+            Returns
+            -------
+            tuple
+                scattered positional arguments
+            tuple
+                scattered keyword arguments
             """
-            if isinstance(optimizer.target, DataParallel):
-                for module in optimizer.target.modules[1:]:
-                    optimizer.target.modules[0].addgrads(module)
 
+            # scatter inputs if given
+            inputs = _scatter(inputs, target_devices, dim) if inputs else []
+            # scatter kwargs if given
+            kwargs = _scatter(kwargs, target_devices, dim) if kwargs else []
 
-    class ParallelOptimizerUpdateModelParameters(object):
-        """
-        A hook to replicate all parameters from the root model, to all
-        model-replicas after the optimizer step
-        """
+            # extend lengths by empty tuples if necessary
+            if len(inputs) < len(kwargs):
+                inputs.extend([() for _ in range(len(kwargs) - len(inputs))])
+            elif len(kwargs) < len(inputs):
+                kwargs.extend([{} for _ in range(len(inputs) - len(kwargs))])
 
-        name = "DataParallelUpdateModelParams"
-        call_for_each_param = False
-        timing = "post"
+            inputs = tuple(inputs)
+            kwargs = tuple(kwargs)
 
-        def __call__(self, optimizer: chainer.Optimizer):
-            if isinstance(optimizer.target, DataParallel):
-                for module in optimizer.target.modules[1:]:
-                    module.copyparams(optimizer.target.modules[0])
+            return inputs, kwargs
 
-    class DataParallelOptimizer(chainer.Optimizer):
-        """
-        An Optimizer-Wrapper to enable DataParallel. Basically this forwards
-        all functions to the interal optimizer, but registers the additional
-        hooks needed for DataParallel (namely
-        :class:`ParallelOptimizerUpdateModelParameters` as a post-update hook
-        and :class:`ParallelOptimizerCumulateGradientsHook` as a pre-update hook)
-        """
-        def __init__(self, optimizer):
+        @staticmethod
+        def _gather(predictions, dim, target_device):
             """
+            Re-Builds batches on the target device
+
             Parameters
             ----------
-            optimizer : :class:`chainer.Optimizer`
-                the optimizer to wrap
+            predictions : list
+                list containing the predictions from all replicated models
+            dim : int
+                dimension to use for concatenating single predictions
+            target_device : :class:`mxnet.context.Context`
+                the device, the re-built batch should lie on
+
+            Returns
+            -------
+            Any
+                the rebuild batch (lying on ``target_device``)
             """
-            if isinstance(optimizer, chainer.Optimizer):
-                self._optimizer = optimizer
 
-            else:
-                raise RuntimeError("Invalid optimizer class given: Expected "
-                                   "instance of chainer.Optimizer, but got %s"
-                                   % optimizer.__class__.__name__)
+            return _gather(predictions, target_device, dim)
 
-        @classmethod
-        def from_optimizer_class(cls, optim_cls, *args, **kwargs):
-            """
-            Parameters
-            ----------
-            optim_cls : subclass of :class:`chainer.Optimizer`
-                the optimizer to use internally
-            *args :
-                arbitrary positional arguments (will be used for
-                initialization of internally used optimizer)
-            **kwargs :
-                arbitrary keyword arguments (will be used for initialization
-                of internally used optimizer)
-            """
-            if optim_cls is not None and issubclass(optim_cls,
-                                                    chainer.Optimizer):
-                _optim = optim_cls(*args, **kwargs)
-            else:
-                raise RuntimeError("Invalid optimizer class given: Expected "
-                                   "Subclass of chainer.Optimizer, but got %s"
-                                   % optim_cls.__name__)
-            return cls(_optim)
-
-        def setup(self, link):
-            """
-            Calls the setup method of the internal optimizer and registers the
-            necessary grads for data-parallel behavior
-            Parameters
-            ----------
-            link : :class:`DataParallel`
-                the target, whoose parameters should be updated
-            """
-            self._optimizer.setup(link)
-
-            self._optimizer.add_hook(ParallelOptimizerCumulateGradientsHook())
-            self._optimizer.add_hook(ParallelOptimizerUpdateModelParameters())
-
-        @property
-        def target(self):
-            return self._optimizer.target
-
-        @property
-        def epoch(self):
-            return self._optimizer.epoch
-
-        @property
-        def _pre_update_hooks(self):
-            return self._optimizer._pre_update_hooks
-
-        @property
-        def _loss_scale(self):
-            return self._optimizer._loss_scale
-
-        @property
-        def _loss_scale_max(self):
-            return self._optimizer._loss_scale_max
-
-        @property
-        def _loss_scaling_is_dynamic(self):
-            return self._optimizer._loss_scaling_is_dynamic
-
-        @property
-        def use_auto_new_epoch(self):
-            return self._optimizer.use_auto_new_epoch
-
-        @property
-        def update(self):
-            return self._optimizer.update
-
-        @property
-        def new_epoch(self):
-            return self._optimizer.new_epoch
-
-        @property
-        def add_hook(self):
-            return self._optimizer.add_hook
-
-        @property
-        def remove_hook(self):
-            return self._optimizer.remove_hook
-
-        @property
-        def call_hooks(self):
-            return self._optimizer.call_hooks
-
-        @property
-        def serialize(self):
-            return self._optimizer.serialize
-
-        @property
-        def loss_scaling(self):
-            return self._optimizer.loss_scaling
-
-        @property
-        def set_loss_scale(self):
-            return self._optimizer.set_loss_scale
-
-        @property
-        def check_nan_in_grads(self):
-            return self._optimizer.check_nan_in_grads
-
-        @property
-        def is_safe_to_update(self):
-            return self._optimizer.is_safe_to_update
-
-        @property
-        def update_loss_scale(self):
-return self._optimizer.update_loss_scale
