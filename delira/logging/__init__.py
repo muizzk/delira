@@ -2,7 +2,7 @@ from .tensorboard_backend import TensorboardBackend
 from .visdom_backend import VisdomBackend
 from .base_backend import BaseBackend
 from .writer_backend import WriterLoggingBackend
-from .base_logger import Logger, SingleThreadedLogger,make_logger
+from .base_logger import Logger, SingleThreadedLogger, make_logger
 from .utils import unregister_logger, register_logger, get_logger, \
     logger_exists, log as _log
 from .logging_context import LoggingContext

@@ -10,6 +10,7 @@ class TensorboardBackend(WriterLoggingBackend):
     """
     The tensorboard logging backend
     """
+
     def __init__(self, writer_kwargs: dict = {},
                  abort_event: Event = None, queue: Queue = None):
         """
@@ -55,8 +56,8 @@ class TensorboardBackend(WriterLoggingBackend):
 class TensorboardThreadedBackend(ThreadedBaseBackend, TensorboardBackend):
     def __init__(self, writer_kwargs: dict = {}, abort_event: Event = None,
                  queue: Queue = None, name: str = None):
-        ThreadedBaseBackend.__init__(self, abort_event=abort_event, queue=queue,
-                                     name=name)
+        ThreadedBaseBackend.__init__(
+            self, abort_event=abort_event, queue=queue, name=name)
         TensorboardBackend.__init__(self, writer_kwargs=writer_kwargs,
                                     abort_event=abort_event, queue=queue)
 
@@ -65,5 +66,3 @@ class TensorboardThreadedBackend(ThreadedBaseBackend, TensorboardBackend):
 
     def _call_exec_fn(self, exec_fn, args):
         return TensorboardBackend._call_exec_fn(self, exec_fn, args)
-
-

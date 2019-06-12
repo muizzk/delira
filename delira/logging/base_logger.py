@@ -7,6 +7,7 @@ class Logger(object):
     """
     Basic Logger class
     """
+
     def __init__(self, backend: BaseBackend, max_queue_size: int = None,
                  level=logging.NOTSET):
         """
@@ -100,8 +101,11 @@ class SingleThreadedLogger(Logger):
 
 
 class MultiThreadedLogger(Logger):
-    def __init__(self, backend: ThreadedBaseBackend, max_queue_size: int = None,
-                 level=logging.NOTSET):
+    def __init__(
+            self,
+            backend: ThreadedBaseBackend,
+            max_queue_size: int = None,
+            level=logging.NOTSET):
 
         if not isinstance(backend, ThreadedBaseBackend):
             raise ValueError("A non-threaded Backend lives in the main thread "
