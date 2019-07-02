@@ -9,28 +9,28 @@ class AbstractTransform(object):
     """
     Interface Class for Abstract Transforms
     """
-    
+
     @abstractmethod
     def __call__(self, **data_dict) -> dict:
         """
         Makes Transforms callable
-        
+
         Parameters
         ----------
         **data_dict :
             the dictionary containing all the data batches
-            
+
         Returns
         -------
         dict
             the data dict with transformed batches
-            
+
         Raises
         ------
         NotImplementedError
             if not overwritten by subclass
         """"
-        
+
         raise NotImplementedError
 
     def __add__(self, other):
@@ -57,25 +57,26 @@ class AbstractTransform(object):
 
 class BaseTransform(AbstractTransform):
     """
-    Base transform, most transforms should be derived from. Implements the 
-    mappings from dict to single batches and from batches to sample 
+    Base transform, most transforms should be derived from. Implements the
+    mappings from dict to single batches and from batches to sample
     transformation.
     """
+
     def __init__(self, source_keys, destination_keys=None, concatenate=True):
         """
-        
+
         Parameters
         ----------
         source_keys : str or Iterable
             the source keys specifying which samples to transform
         destination_keys : str or Iterable
-            the destination keys specifying under which key the 
-            transformed sample should be stored; If None: defaults to 
+            the destination keys specifying under which key the
+            transformed sample should be stored; If None: defaults to
             :param:`source_keys`
         concatenate : bool
             whether to concatenate the transformed samples to batches or not
         """
-        
+
         if destination_keys is None:
             destination_keys = source_keys
 
@@ -96,12 +97,12 @@ class BaseTransform(AbstractTransform):
     def __call__(self, **data_dict) -> dict:
         """
         Makes Transforms callable
-        
+
         Parameters
         ----------
         **data_dict :
             the dictionary containing all the data batches
-            
+
         Returns
         -------
         dict
@@ -116,22 +117,22 @@ class BaseTransform(AbstractTransform):
 
     def _apply_batch_trafo(self, batch: np.ndarray):
         """
-        Utility Function to map the batch-transformation to sample 
+        Utility Function to map the batch-transformation to sample
         transformations
-        
+
         Parameters
         ----------
         batch : :class:`np.ndarray`
             the batch to transform
-            
+
         Returns
         -------
         :class:`np.ndarray` or list
             the transformed batch; if :attr::`self.concatenate` is True,
             a numpy array is returned and else a list is returned
-            
+
         """
-        
+
         transformed_batch = []
         for idx, _sample in enumerate(batch):
             transformed_batch.append(self._apply_sample_trafo(_sample))
@@ -143,4 +144,3 @@ class BaseTransform(AbstractTransform):
 
     def _apply_sample_trafo(self, sample: np.ndarray):
         raise NotImplementedError
-
