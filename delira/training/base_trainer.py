@@ -431,7 +431,7 @@ class BaseNetworkTrainer(Predictor):
                 total_metrics = {
                     **train_metrics,
                     **train_losses}
-
+                
                 # validate network
                 if datamgr_valid is not None and (epoch % self.val_freq == 0):
                     # next must be called here because self.predict_data_mgr
@@ -472,27 +472,27 @@ class BaseNetworkTrainer(Predictor):
                     is_best = self._is_better_val_scores(
                         best_val_score, new_val_score, val_score_mode)
 
-                    # set best_val_score to new_val_score if is_best
-                    if is_best:
-                        best_val_score = new_val_score
+                # set best_val_score to new_val_score if is_best
+                if is_best:
+                    best_val_score = new_val_score
 
-                    if is_best and verbose:
-                        logging.info("New Best Value at Epoch %03d : %03.3f" %
-                                     (epoch, best_val_score))
+                if is_best and verbose:
+                    logging.info("New Best Value at Epoch %03d : %03.3f" %
+                                    (epoch, best_val_score))
 
-                    # log metrics and loss values
-                    for key, val in total_metrics.items():
-                        log({"value": {"scalar_value": val, "tag": key
-                                       }})
+                # log metrics and loss values
+                for key, val in total_metrics.items():
+                    log({"value": {"scalar_value": val, "tag": key
+                                    }})
 
-                    self._at_epoch_end(total_metrics, val_score_key, epoch,
-                                       is_best)
+                self._at_epoch_end(total_metrics, val_score_key, epoch,
+                                    is_best)
 
-                    is_best = False
+                is_best = False
 
-                    # stop training (might be caused by early stopping)
-                    if self.stop_training:
-                        break
+                # stop training (might be caused by early stopping)
+                if self.stop_training:
+                    break
 
         return self._at_training_end()
 
