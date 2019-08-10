@@ -431,7 +431,7 @@ class BaseNetworkTrainer(Predictor):
                 total_metrics = {
                     **train_metrics,
                     **train_losses}
-                
+
                 # validate network
                 if datamgr_valid is not None and (epoch % self.val_freq == 0):
                     # next must be called here because self.predict_data_mgr
@@ -478,15 +478,15 @@ class BaseNetworkTrainer(Predictor):
 
                 if is_best and verbose:
                     logging.info("New Best Value at Epoch %03d : %03.3f" %
-                                    (epoch, best_val_score))
+                                 (epoch, best_val_score))
 
                 # log metrics and loss values
                 for key, val in total_metrics.items():
                     log({"value": {"scalar_value": val, "tag": key
-                                    }})
+                                   }})
 
                 self._at_epoch_end(total_metrics, val_score_key, epoch,
-                                    is_best)
+                                   is_best)
 
                 is_best = False
 
