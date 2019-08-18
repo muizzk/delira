@@ -264,4 +264,3 @@ def set_default_backend(backend: str):
 
 def get_default_backend():
     return __DEFAULT_BACKEND
-
