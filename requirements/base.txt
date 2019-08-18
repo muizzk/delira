@@ -15,3 +15,4 @@ batchgenerators>=0.18.2,!=0.19.2
 tensorboardX
 psutil
 nested_lookup
+packaging

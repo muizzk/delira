@@ -63,7 +63,7 @@ requirement_files = {
     "base": "base.txt",
     "sklearn": "base.txt",  # no extra requirements necessary
     "torch": "torch.txt",
-    "torchscript": "torch.txt",
+    "torchscript": "torchscript.txt",
     "tensorflow": "tensorflow.txt",
     "tensorflow_eager": "tensorflow.txt",
     "chainer": "chainer.txt"

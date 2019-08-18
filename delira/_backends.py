@@ -7,11 +7,136 @@ from delira._version import get_versions as _get_versions
 # being the package import name and the second being the backend abbreviation.
 # E.g. TensorFlow's package is named 'tensorflow' but if the package is found,
 # it will be considered as 'tf' later on
-__POSSIBLE_BACKENDS = (("torch", "torch"),
-                       ("tensorflow", "tf"),
-                       ("chainer", "chainer"),
-                       ("sklearn", "sklearn"))
+
+__POSSIBLE_BACKENDS = []
+
 __BACKENDS = ()
+__BACKEND_CLASSES = {}
+__DEFAULT_BACKEND = None
+
+
+class NoDefaultWrapper(object):
+    def __init__(*args, **kwargs):
+        raise RuntimeError("No default backend specified so far")
+
+
+_TRAINER_CLS = NoDefaultWrapper
+_MODEL_CLS = NoDefaultWrapper
+_EXPERIMENT_CLS = NoDefaultWrapper
+
+
+def _check_import(backend_name):
+    import importlib
+    bcknd = importlib.util.find_spec(backend_name)
+    return bcknd is not None
+
+
+def _check_torch_backend():
+    return _check_import("torch")
+
+
+def _check_torchscript_backend():
+    importable = _check_import("torch")
+    if importable:
+        try:
+            import torch
+            from packaging import version
+            return version.parse(torch.__version__) >= version.parse("1.2.0")
+        finally:
+            del torch
+            del version
+
+    return False
+
+
+def _check_chainer_backend():
+    return _check_import("chainer")
+
+
+def _check_tf_eager_backend():
+    importable = _check_import("tensorflow")
+    if importable:
+        try:
+            import tensorflow
+            return hasattr(tensorflow, "enable_eager_execution")
+
+        finally:
+            del tensorflow
+    return False
+
+
+def _check_tf_graph_backend():
+    importable = _check_import("tensorflow")
+    if importable:
+        try:
+            import tensorflow
+            return hasattr(tensorflow, "disable_eager_execution")
+
+        finally:
+            del tensorflow
+    return False
+
+
+def _check_tf_backend():
+    return _check_import("tensorflow")
+
+
+def _check_sklearn_backend():
+    return _check_import("sklearn")
+
+
+def _register_possible_backend(backend_name, check_fn, classes):
+    __POSSIBLE_BACKENDS.append((backend_name, check_fn))
+    __BACKEND_CLASSES[backend_name.upper()] = classes
+
+
+_register_possible_backend(
+    "torch", _check_torch_backend,
+    (
+        "delira.training.backends.PyTorchNetworkTrainer",
+        "delira.training.backends.PyTorchExperiment",
+        "delira.models.backends.AbstractPyTorchNetwork"
+    )
+)
+_register_possible_backend(
+    "torchscript", _check_torchscript_backend,
+    ("delira.training.backends.TorchScriptNetworkTrainer",
+     "delira.training.backends.TorchScriptExperiment",
+     "delira.models.backends.AbstractPyTorchNetwork"
+     )
+)
+_register_possible_backend(
+    "tfeager", _check_tf_eager_backend,
+    (
+        "delira.training.backends.TfEagerNetworkTrainer",
+        "delira.training.backends.TfEagerExperiment",
+        "delira.models.backends.AbstractTfEagerNetwork"
+    )
+)
+_register_possible_backend(
+    "tf_graph", _check_tf_graph_backend,
+    (
+        "delira.training.backends.TfGraphNetworkTrainer",
+        "delira.training.backends.TfGraphExperiment",
+        "delira.models.backends.AbstractTfGraphNetwork"
+    )
+)
+_register_possible_backend(
+    "chainer", _check_chainer_backend,
+    (
+        "delira.training.backends.ChainerNetworkTrainer",
+        "delira.training.backends.ChainerExperiment",
+        "delira.models.backends.AbstractChainerNetwork"
+    )
+)
+_register_possible_backend(
+    "sklearn", _check_sklearn_backend,
+    (
+        "delira.training.backends.SklearnEstimatorTrainer",
+        "delira.training.backends.SklearnExperiment",
+        "delira.models.backends.SklearnEstimator"
+    )
+)
 
 
 def _determine_backends():
@@ -30,21 +155,17 @@ def _determine_backends():
         _backends = {}
         # try to import all possible backends to determine valid backends
 
-        import importlib
         for curr_backend in __POSSIBLE_BACKENDS:
             try:
                 assert len(curr_backend) == 2
-                assert all([isinstance(_tmp, str) for _tmp in curr_backend]), \
-                    "All entries in current backend must be strings"
 
-                # check if backend can be imported
-                bcknd = importlib.util.find_spec(curr_backend[0])
+                _backend_name, _check_fn = curr_backend
 
-                if bcknd is not None:
+                # check for current backend
+                if _check_fn():
                     _backends[curr_backend[1]] = True
                 else:
                     _backends[curr_backend[1]] = False
-                del bcknd
 
             except ValueError:
                 _backends[curr_backend[1]] = False
@@ -106,11 +227,13 @@ def seed_all(seed):
     import random
     random.seed = seed
 
-    if "torch" in sys.modules and "TORCH" in get_backends():
+    if "torch" in sys.modules and ("TORCH" in get_backends()
+                                   or "TORCHSCRIPT" in get_backends()):
         import torch
         torch.random.manual_seed(seed)
 
-    elif "tensorflow" in sys.modules and "TF" in get_backends():
+    elif "tensorflow" in sys.modules and ("TFEAGER" in get_backends()
+                                          or "TFGRAPH" in get_backends()):
         import tensorflow as tf
         tf.random.set_random_seed(seed)
 
@@ -120,3 +243,25 @@ def seed_all(seed):
             cupy.random.seed(seed)
         except ImportError:
             pass
+
+
+def set_default_backend(backend: str):
+    backend = backend.upper()
+    assert backend in get_backends()
+
+    global __DEFAULT_BACKEND
+    __DEFAULT_BACKEND = backend
+
+    global _TRAINER_CLS
+    global _MODEL_CLS
+    global _EXPERIMENT_CLS
+
+    import importlib
+
+    _TRAINER_CLS, _MODEL_CLS, _EXPERIMENT_CLS = (
+        importlib.import_module(_cls) for _cls in __BACKEND_CLASSES[backend])
+
+
+def get_default_backend():
+    return __DEFAULT_BACKEND
+

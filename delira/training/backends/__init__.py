@@ -7,10 +7,14 @@ if "CHAINER" in _get_backends():
 if "SKLEARN" in _get_backends():
     from delira.training.backends.sklearn import *
 
-if "TF" in _get_backends():
+if "TFEAGER" in _get_backends():
     from delira.training.backends.tf_graph import *
+
+if "TFGRAPH" in _get_backends():
     from delira.training.backends.tf_eager import *
 
 if "TORCH" in _get_backends():
     from delira.training.backends.torch import *
+
+if "TORCHSCRIPT" in _get_backends():
     from delira.training.backends.torchscript import *
