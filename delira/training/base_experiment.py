@@ -17,11 +17,11 @@ from delira.models import AbstractNetwork
 from delira.training.parameters import Parameters
 from delira.training.base_trainer import BaseNetworkTrainer
 from delira.training.predictor import Predictor
-
+from delira.training.utils import convert_to_numpy_identity
 logger = logging.getLogger(__name__)
 
 
-class BaseExperiment(object):
+class BaseExperimentOld(object):
     """
     Baseclass for Experiments.
 
@@ -709,3 +709,190 @@ class BaseExperiment(object):
 
     def __setstate__(self, state):
         vars(self).update(state)
+
+
+class BaseExperiment(object):
+    def __init__(self,
+                 model_cls: AbstractNetwork,
+                 name=None,
+                 save_path=None,
+                 key_mapping=None,
+                 verbose=True,
+                 logging_type="tensorboard",
+                 logging_kwargs=None,
+                 convert_to_npy=convert_to_numpy_identity
+                 ):
+
+        if name is None:
+            name = "UnnamedExperiment"
+        self.name = name
+
+        if save_path is None:
+            save_path = os.path.abspath(".")
+
+        self.save_path = os.path.join(save_path, name,
+                                      str(datetime.now().strftime(
+                                          "%y-%m-%d_%H-%M-%S")))
+
+        if os.path.isdir(self.save_path):
+            logger.warning("Save Path %s already exists")
+
+        os.makedirs(self.save_path, exist_ok=True)
+
+        assert key_mapping is not None
+        self.key_mapping = key_mapping
+
+        self.model_cls = model_cls
+        self._run = 0
+        self.verbose = verbose
+        self._logging_type = logging_type
+        self._logging_kwargs = logging_kwargs
+        self._convert_to_npy = convert_to_npy
+
+    def run(self, params, train_data: BaseDataManager,
+            val_data: BaseDataManager, optim_builder, gpu_ids=None,
+            checkpoint_freq=1, reduce_mode='mean', val_score_key=None,
+            val_score_mode="lowest",
+            trainer_cls=BaseNetworkTrainer, **kwargs):
+
+        params.permute_training_on_top()
+        training_params = params.training
+        trainer = self._setup_training(params, gpu_ids=gpu_ids,
+                                       optim_builder=optim_builder,
+                                       callbacks=callbacks,
+                                       checkpoint_freq=checkpoint_freq,
+                                       val_freq=val_freq,
+                                       trainer_cls=trainer_cls,
+                                       **kwargs)
+
+
+        self._run += 1
+
+        num_epochs = training_params.nested_get("num_epochs")
+
+        return trainer.train(num_epochs, train_data, val_data,
+                             val_score_key, val_score_mode,
+                             reduce_mode=reduce_mode)
+
+    def resume(self, save_path, params, train_data: BaseDataManager,
+               val_data: BaseDataManager, optim_builder, gpu_ids=None,
+               checkpoint_freq=1, reduce_mode='mean', val_score_key=None,
+               trainer_cls=BaseNetworkTrainer, **kwargs):
+
+        return self.run(params=params, train_data=train_data,
+                        val_data=val_data, optim_builder=optim_builder,
+                        gpu_ids=gpu_ids, checkpoint_freq=checkpoint_freq,
+                        reduce_mode=reduce_mode,
+                        val_score_key=val_score_key,
+                        trainer_cls=trainer_cls, save_path=save_path, **kwargs)
+
+    def test(self, model, test_data, prepare_batch, callbacks, predictor_cls,
+             metrics, metric_keys, **kwargs):
+
+        predictor = self.setup(None, training=False, model=model,
+                               prepare_batch_fn=prepare_batch, **kwargs)
+
+        # return first item of generator
+        return next(predictor.predict_data_mgr_cache_all(test_data, 1, metrics,
+                                                         metric_keys,
+                                                         self.verbose))
+
+    def _setup_training(self, params, gpu_ids, optim_builder, callbacks,
+                        checkpoint_freq, val_freq, trainer_cls,
+                        save_path=None, **kwargs):
+        """
+        Handles the setup for training case
+
+        Parameters
+        ----------
+        params : :class:`Parameters`
+            the parameters containing the model and training kwargs
+        **kwargs :
+            additional keyword arguments
+
+        Returns
+        -------
+        :class:`BaseNetworkTrainer`
+            the created trainer
+
+        """
+        model_params = params.permute_training_on_top().model
+
+        model_kwargs = {**model_params.fixed, **model_params.variable}
+
+        model = self.model_cls(**model_kwargs)
+
+        training_params = params.permute_training_on_top().training
+        losses = training_params.nested_get("losses")
+        optimizer_cls = training_params.nested_get("optimizer_cls")
+        optimizer_params = training_params.nested_get("optimizer_params")
+        train_metrics = training_params.nested_get("train_metrics", {})
+        lr_scheduler_cls = training_params.nested_get("lr_sched_cls", None)
+        lr_scheduler_params = training_params.nested_get("lr_sched_params",
+                                                         {})
+        val_metrics = training_params.nested_get("val_metrics", {})
+
+        # necessary for resuming training from a given path
+        if save_path is None:
+            save_path = os.path.join(
+                self.save_path,
+                "checkpoints",
+                "run_%02d" % self._run)
+
+        return trainer_cls(
+            network=model,
+            save_path=save_path,
+            losses=losses,
+            optimizer_cls=optimizer_cls,
+            optimizer_params=optimizer_params,
+            train_metrics=train_metrics,
+            val_metrics=val_metrics,
+            lr_scheduler_cls=lr_scheduler_cls,
+            lr_scheduler_params=lr_scheduler_params,
+            gpu_ids=gpu_ids,
+            save_freq=checkpoint_freq,
+            optim_fn=optim_builder,
+            key_mapping=self.key_mapping,
+            logging_type=self._logging_type,
+            logging_kwargs=self._logging_kwargs,
+            fold=self._run,
+            callbacks=callbacks,
+            start_epoch=1,
+            metric_keys=None,
+            convert_batch_to_npy_fn=self._convert_to_npy,
+            val_freq=val_freq,
+            **kwargs
+        )
+
+        def _setup_test(self, params, model, convert_batch_to_npy_fn,
+                        prepare_batch_fn, **kwargs):
+            """
+
+            Parameters
+            ----------
+            params : :class:`Parameters`
+                the parameters containing the model and training kwargs
+                (ignored here, just passed for subclassing and unified API)
+            model : :class:`AbstractNetwork`
+                the model to test
+            convert_batch_to_npy_fn : function
+                function to convert a batch of tensors to numpy
+            prepare_batch_fn : function
+                function to convert a batch-dict to a format accepted by the model.
+                This conversion typically includes dtype-conversion, reshaping,
+                wrapping to backend-specific tensors and pushing to correct devices
+            **kwargs :
+                additional keyword arguments
+
+            Returns
+            -------
+            :class:`Predictor`
+                the created predictor
+
+            """
+            predictor = self.predictor_cls(
+                model=model, key_mapping=self.key_mapping,
+                convert_batch_to_npy_fn=convert_batch_to_npy_fn,
+                prepare_batch_fn=prepare_batch_fn, **kwargs)
+            return predictor
+
