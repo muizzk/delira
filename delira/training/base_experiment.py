@@ -765,7 +765,6 @@ class BaseExperiment(object):
                                        trainer_cls=trainer_cls,
                                        **kwargs)
 
-
         self._run += 1
 
         num_epochs = training_params.nested_get("num_epochs")
@@ -895,4 +894,3 @@ class BaseExperiment(object):
                 convert_batch_to_npy_fn=convert_batch_to_npy_fn,
                 prepare_batch_fn=prepare_batch_fn, **kwargs)
             return predictor
-
