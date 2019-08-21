@@ -10,16 +10,26 @@ class SklearnEstimator(AbstractNetwork):
     compatibility
     """
 
-    def __init__(self, module: BaseEstimator):
+    def __init__(self, module: BaseEstimator = None, module_cls=None,
+                 **module_kwargs):
         """
 
         Parameters
         ----------
         module : :class:`sklearn.base.BaseEstimator`
             the module to wrap
+        module_cls : class
+            the class to create the module from; will only be used,
+            if :param:`module` is None
+        **module_kwargs :
+            the keyword arguments to for creating the module with
+            :param:`module_cls`
+
         """
 
         super().__init__()
+        if module is None:
+            module = module_cls(**module_kwargs)
 
         self.module = module
 
