@@ -24,6 +24,7 @@ class TfGraphExperiment(TfEagerExperiment):
     --------
     :class:`BaseExperiment`
     """
+
     def __init__(self,
                  model_cls: AbstractTfGraphNetwork,
                  name=None,

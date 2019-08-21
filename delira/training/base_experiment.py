@@ -28,6 +28,7 @@ class BaseExperiment(object):
     * The K-Fold logic (including stratified and random splitting)
     * Argument Handling
     """
+
     def __init__(self,
                  model_cls: AbstractNetwork,
                  name=None,
@@ -485,7 +486,7 @@ class BaseExperiment(object):
                              gpu_ids=gpu_ids, checkpoint_freq=checkpoint_freq,
                              reduce_mode=reduce_mode,
                              val_score_key=val_score_key,
-                             val_score_mode=val_score_mode,val_freq=val_freq,
+                             val_score_mode=val_score_mode, val_freq=val_freq,
                              callbacks=callbacks, trainer_cls=trainer_cls,
                              fold=idx, **kwargs)
 

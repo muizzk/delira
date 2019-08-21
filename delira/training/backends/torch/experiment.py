@@ -22,6 +22,7 @@ class PyTorchExperiment(BaseExperiment):
     --------
     :class:`BaseExperiment`
     """
+
     def __init__(self,
                  model_cls: AbstractPyTorchNetwork,
                  name=None,

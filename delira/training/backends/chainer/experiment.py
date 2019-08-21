@@ -19,6 +19,7 @@ class ChainerExperiment(BaseExperiment):
     --------
     :class:`BaseExperiment`
     """
+
     def __init__(self,
                  model_cls: AbstractChainerNetwork,
                  name=None,

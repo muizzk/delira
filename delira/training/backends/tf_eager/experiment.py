@@ -23,6 +23,7 @@ class TfEagerExperiment(BaseExperiment):
     --------
     :class:`BaseExperiment`
     """
+
     def __init__(self,
                  model_cls: AbstractTfEagerNetwork,
                  name=None,

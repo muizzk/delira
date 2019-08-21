@@ -18,6 +18,7 @@ class TorchScriptExperiment(PyTorchExperiment):
     --------
     :class:`BaseExperiment`
     """
+
     def __init__(self,
                  model_cls: AbstractTorchScriptNetwork,
                  name=None,
