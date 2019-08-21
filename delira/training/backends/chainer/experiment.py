@@ -1,10 +1,10 @@
-import typing
 from functools import partial
 
 from delira.models.backends.chainer import AbstractChainerNetwork
 from delira.data_loading import BaseDataManager
 from delira.training.base_experiment import BaseExperiment
 from delira.training.parameters import Parameters
+from delira.training.predictor import Predictor
 
 from delira.training.backends.chainer.utils import create_optims_default
 from delira.training.backends.chainer.utils import convert_to_numpy
@@ -12,31 +12,29 @@ from delira.training.backends.chainer.trainer import ChainerNetworkTrainer
 
 
 class ChainerExperiment(BaseExperiment):
+    """
+    Class for running Chainer Experiments.
+
+    See Also
+    --------
+    :class:`BaseExperiment`
+    """
     def __init__(self,
-                 params: typing.Union[str, Parameters],
                  model_cls: AbstractChainerNetwork,
-                 n_epochs=None,
                  name=None,
                  save_path=None,
                  key_mapping=None,
-                 val_score_key=None,
-                 optim_builder=create_optims_default,
-                 checkpoint_freq=1,
-                 trainer_cls=ChainerNetworkTrainer,
-                 **kwargs):
+                 verbose=True,
+                 logging_type="tensorboard",
+                 logging_kwargs=None,
+                 convert_to_npy=convert_to_numpy
+                 ):
         """
 
         Parameters
         ----------
-        params : :class:`Parameters` or str
-            the training parameters, if string is passed,
-            it is treated as a path to a pickle file, where the
-            parameters are loaded from
         model_cls : Subclass of :class:`AbstractChainerNetwork`
             the class implementing the model to train
-        n_epochs : int or None
-            the number of epochs to train, if None: can be specified later
-            during actual training
         name : str or None
             the Experiment's name
         save_path : str or None
@@ -44,49 +42,100 @@ class ChainerExperiment(BaseExperiment):
             if None: Current working directory will be used
         key_mapping : dict
             mapping between data_dict and model inputs (necessary for
-            prediction with :class:`Predictor`-API), if no keymapping is
-            given, a default key_mapping of {"x": "data"} will be used here
-        val_score_key : str or None
-            key defining which metric to use for validation (determining
-            best model and scheduling lr); if None: No validation-based
-            operations will be done (model might still get validated,
-            but validation metrics can only be logged and not used further)
-        optim_builder : function
-            Function returning a dict of backend-specific optimizers.
-            defaults to :func:`create_optims_default_chainer`
-        checkpoint_freq : int
-            frequency of saving checkpoints (1 denotes saving every epoch,
-            2 denotes saving every second epoch etc.); default: 1
-        trainer_cls : subclass of :class:`ChainerNetworkTrainer`
-            the trainer class to use for training the model, defaults to
-            :class:`ChainerNetworkTrainer`
-        **kwargs :
-            additional keyword arguments
+            prediction with :class:`Predictor`-API)
+        verbose : bool
+            verbosity argument
+        logging_type : str
+            which type of logging to use; must be one of
+            'visdom' | 'tensorboad'
+            Defaults to 'tensorboard'
+        logging_kwargs : dict
+            a dictionary containing all necessary keyword arguments to
+            properly initialize the logging
+        convert_to_npy : function
+            function to convert all outputs and metrics to numpy types
 
         """
 
         if key_mapping is None:
             key_mapping = {"x": "data"}
-        super().__init__(params=params, model_cls=model_cls,
-                         n_epochs=n_epochs, name=name, save_path=save_path,
-                         key_mapping=key_mapping,
-                         val_score_key=val_score_key,
-                         optim_builder=optim_builder,
-                         checkpoint_freq=checkpoint_freq,
-                         trainer_cls=trainer_cls,
-                         **kwargs)
 
-    def test(self, network: AbstractChainerNetwork,
-             test_data: BaseDataManager,
-             metrics: dict, metric_keys=None,
-             verbose=False, prepare_batch=None,
-             convert_fn=convert_to_numpy, **kwargs):
+        super().__init__(
+            model_cls=model_cls,
+            name=name,
+            save_path=save_path,
+            key_mapping=key_mapping,
+            verbose=verbose,
+            logging_type=logging_type,
+            logging_kwargs=logging_kwargs,
+            convert_to_npy=convert_to_npy
+        )
+
+    def run(self, params, train_data: BaseDataManager,
+            val_data: BaseDataManager, optim_builder=create_optims_default,
+            gpu_ids=None, checkpoint_freq=1, reduce_mode='mean',
+            val_score_key=None, val_score_mode="lowest", val_freq=1,
+            callbacks=None, trainer_cls=ChainerNetworkTrainer, **kwargs):
         """
-        Setup and run testing on a given network
+        Function to run the actual training
 
         Parameters
         ----------
-        network : :class:`AbstractNetwork`
+        params : :class:`Parameters`
+            the parameters containing the model and training kwargs
+        train_data : :class:`BaseDataManager`
+            the datamanager containing the training data
+        val_data : :class:`BaseDataManager` or None
+            the datamanager containing the validation data (may also be None
+            for no validation)
+        optim_builder : function
+            the function creating suitable optimizers and returns them as dict
+        gpu_ids : list
+            a list of integers representing the GPUs to use;
+            if empty or None: No gpus will be used at all
+        checkpoint_freq : int
+            determines how often to checkpoint the training
+        reduce_mode : str
+            determines how to reduce metrics; must be one of
+            'mean' | 'sum' | 'first_only'
+        val_score_key : str
+            specifies which metric to use for best model selection.
+        val_score_mode : str
+            determines whether a high or a low val_score is best. Must be one
+            of 'highest' | 'lowest'
+        val_freq : int
+            specifies how often to run a validation step
+        callbacks : list
+            list of callbacks to use during training. Each callback should be
+            derived from :class:`delira.training.callbacks.AbstractCallback`
+        trainer_cls : type
+            the class implementing the actual training routine
+        **kwargs :
+            additional keyword arguments
+
+        Returns
+        -------
+        :class:`AbstractChainerNetwork`
+            the trained model
+
+        """
+
+        return super().run(
+            params=params, train_data=train_data, val_data=val_data,
+            optim_builder=optim_builder, gpu_ids=gpu_ids,
+            checkpoint_freq=checkpoint_freq, reduce_mode=reduce_mode,
+            val_score_key=val_score_key, val_score_mode=val_score_mode,
+            val_freq=val_freq, callbacks=callbacks,
+            trainer_cls=trainer_cls, **kwargs)
+
+    def test(self, model, test_data, prepare_batch, callbacks=None,
+             predictor_cls=Predictor, metrics=None, metric_keys=None,
+             **kwargs):
+        """
+        Setup and run testing on a given network
+        Parameters
+        ----------
+        model : :class:`AbstractNetwork`
             the (trained) network to test
         test_data : :class:`BaseDataManager`
             the data to use for testing
@@ -96,45 +145,196 @@ class ChainerExperiment(BaseExperiment):
             the batch_dict keys to use for each metric to calculate.
             Should contain a value for each key in ``metrics``.
             If no values are given for a key, per default ``pred`` and
-            ``label``
-             will be used for metric calculation
-        verbose : bool
-            verbosity of the test process
+            ``label`` will be used for metric calculation
         prepare_batch : function
-            function to convert a batch-dict to a format accepted by the
-            model. This conversion typically includes dtype-conversion,
-            reshaping, wrapping to backend-specific tensors and
-            pushing to correct devices. If not further specified uses the
-            ``network``'s ``prepare_batch`` with CPU devices
-        convert_fn : function
-            function to convert a batch of tensors to numpy
-            if not specified defaults to
-            :func:`convert_chainer_tensor_to_npy`
-
+            function to convert a batch-dict to a format accepted by the model.
+            This conversion typically includes dtype-conversion, reshaping,
+            wrapping to backend-specific tensors and pushing to correct devices
+        callbacks : list
+            list of callbacks to use during training. Each callback should be
+            derived from :class:`delira.training.callbacks.AbstractCallback`
+        predictor_cls : type
+            the class implementing the actual prediction routine
         **kwargs :
             additional keyword arguments
 
         Returns
         -------
         dict
-            all predictions obtained by feeding the ``test_data`` through
-            the ``network``
+            all predictions obtained by feeding the ``test_data`` through the
+            ``network``
         dict
             all metrics calculated upon the ``test_data`` and the obtained
             predictions
-
         """
 
-        # use backend-specific and model-specific prepare_batch fn
-        # (runs on same device as passed network per default)
-
-        device = network.device
         if prepare_batch is None:
-            prepare_batch = partial(network.prepare_batch,
+            device = model.device
+            prepare_batch = partial(model.prepare_batch,
                                     input_device=device,
                                     output_device=device)
 
-        return super().test(network=network, test_data=test_data,
-                            metrics=metrics, metric_keys=metric_keys,
-                            verbose=verbose, prepare_batch=prepare_batch,
-                            convert_fn=convert_fn, **kwargs)
+        return super().test(model=model, test_data=test_data,
+                            prepare_batch=prepare_batch, callbacks=callbacks,
+                            predictor_cls=predictor_cls, metrics=metrics,
+                            metric_keys=metric_keys, **kwargs)
+
+    def kfold(self,
+              data: BaseDataManager,
+              params,
+              optim_builder,
+              gpu_ids=None,
+              checkpoint_freq=1,
+              reduce_mode='mean',
+              val_score_key=None,
+              val_score_mode="lowest",
+              val_freq=1,
+              callbacks=None,
+              num_splits=None,
+              shuffle=False,
+              random_seed=None,
+              split_type="random",
+              val_split=0.2,
+              label_key="label",
+              train_kwargs: dict = None,
+              test_kwargs: dict = None,
+              prepare_batch=None,
+              ):
+        """
+        Performs a k-fold cross validation
+
+        Parameters
+        ----------
+        data : :class:`BaseDataManager`
+            the datamanager containing all the data for training, testing
+            and (optional) validation
+        params : :class:`Parameters`
+            the parameters containing the model and training kwargs
+        optim_builder : function
+            the function creating suitable optimizers and returns them as dict
+        gpu_ids : list
+            a list of integers representing the GPUs to use;
+            if empty or None: No gpus will be used at all
+        checkpoint_freq : int
+            determines how often to checkpoint the training
+        reduce_mode : str
+            determines how to reduce metrics; must be one of
+            'mean' | 'sum' | 'first_only'
+        val_score_key : str
+            specifies which metric to use for best model selection.
+        val_score_mode : str
+            determines whether a high or a low val_score is best. Must be one
+            of 'highest' | 'lowest'
+        val_freq : int
+            specifies how often to run a validation step
+        callbacks : list
+            list of callbacks to use during training. Each callback should be
+            derived from :class:`delira.training.callbacks.AbstractCallback`
+        num_splits : int or None
+            the number of splits to extract from ``data``.
+            If None: uses a default of 10
+        shuffle : bool
+            whether to shuffle the data before splitting or not (implemented by
+            index-shuffling rather than actual data-shuffling to retain
+            potentially lazy-behavior of datasets)
+        random_seed : None
+            seed to seed numpy, the splitting functions and the used
+            backend-framework
+        split_type : str
+            must be one of ['random', 'stratified']
+            if 'random': uses random data splitting
+            if 'stratified': uses stratified data splitting. Stratification
+            will be based on ``label_key``
+        val_split : float or None
+            the fraction of the train data to use as validation set. If None:
+            No validation will be done during training; only testing for each
+            fold after the training is complete
+        label_key : str
+            the label to use for stratification. Will be ignored unless
+            ``split_type`` is 'stratified'. Default: 'label'
+        train_kwargs : dict or None
+            kwargs to update the behavior of the :class:`BaseDataManager`
+            containing the train data. If None: empty dict will be passed
+        test_kwargs : dict or None
+            kwargs to update the behavior of the :class:`BaseDataManager`
+            containing the test and validation data.
+            If None: empty dict will be passed
+        prepare_batch : function
+            function to convert a batch-dict to a format accepted by the model.
+            This conversion typically includes dtype-conversion, reshaping,
+            wrapping to backend-specific tensors and pushing to correct devices
+        **kwargs :
+            additional keyword arguments
+
+        Returns
+        -------
+        dict
+            all predictions from all folds
+        dict
+            all metric values from all folds
+
+        Raises
+        ------
+        ValueError
+            if ``split_type`` is neither 'random', nor 'stratified'
+
+        See Also
+        --------
+
+        * :class:`sklearn.model_selection.KFold`
+        and :class:`sklearn.model_selection.ShuffleSplit`
+        for random data-splitting
+
+        * :class:`sklearn.model_selection.StratifiedKFold`
+        and :class:`sklearn.model_selection.StratifiedShuffleSplit`
+        for stratified data-splitting
+
+        * :meth:`BaseDataManager.update_from_state_dict` for updating the
+        data managers by kwargs
+
+        * :meth:`BaseExperiment.run` for the training
+
+        * :meth:`BaseExperiment.test` for the testing
+
+        Notes
+        -----
+        using stratified splits may be slow during split-calculation, since
+        each item must be loaded once to obtain the labels necessary for
+        stratification.
+
+        """
+
+        if prepare_batch is None:
+            import chainer
+            if chainer.chainerx.is_available():
+                gpu_device_prefix = "cuda:"
+                cpu_device_prefix = "native"
+            else:
+                gpu_device_prefix = "@cupy:"
+                cpu_device_prefix = "@numpy"
+
+            if gpu_ids:
+                device = gpu_device_prefix + str(gpu_ids[0])
+            else:
+                device = cpu_device_prefix
+            prepare_batch = partial(prepare_batch, input_device=device,
+                                    output_device=device)
+
+        return super().kfold(data=data, params=params,
+                             optim_builder=optim_builder,
+                             gpu_ids=gpu_ids,
+                             checkpoint_freq=checkpoint_freq,
+                             reduce_mode=reduce_mode,
+                             val_score_key=val_score_key,
+                             val_score_mode=val_score_mode,
+                             val_freq=val_freq,
+                             callbacks=callbacks,
+                             num_splits=num_splits,
+                             shuffle=shuffle,
+                             random_seed=random_seed,
+                             split_type=split_type,
+                             val_split=val_split,
+                             label_key=label_key,
+                             train_kwargs=train_kwargs,
+                             test_kwargs=test_kwargs,
+                             prepare_batch=prepare_batch)

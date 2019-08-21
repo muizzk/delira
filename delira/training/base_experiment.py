@@ -1,5 +1,3 @@
-
-import typing
 import logging
 import pickle
 import os
@@ -21,47 +19,31 @@ from delira.training.utils import convert_to_numpy_identity
 logger = logging.getLogger(__name__)
 
 
-class BaseExperimentOld(object):
+class BaseExperiment(object):
     """
     Baseclass for Experiments.
-
     Implements:
-
     * Setup-Behavior for Models, Trainers and Predictors (depending on train
         and test case)
-
     * The K-Fold logic (including stratified and random splitting)
-
     * Argument Handling
-
     """
-
     def __init__(self,
-                 params: typing.Union[str, Parameters],
                  model_cls: AbstractNetwork,
-                 n_epochs=None,
                  name=None,
                  save_path=None,
                  key_mapping=None,
-                 val_score_key=None,
-                 optim_builder=None,
-                 checkpoint_freq=1,
-                 trainer_cls=BaseNetworkTrainer,
-                 predictor_cls=Predictor,
-                 **kwargs):
+                 verbose=True,
+                 logging_type="tensorboard",
+                 logging_kwargs=None,
+                 convert_to_npy=convert_to_numpy_identity
+                 ):
         """
 
         Parameters
         ----------
-        params : :class:`Parameters` or str
-            the training parameters, if string is passed,
-            it is treated as a path to a pickle file, where the
-            parameters are loaded from
         model_cls : Subclass of :class:`AbstractNetwork`
             the class implementing the model to train
-        n_epochs : int or None
-            the number of epochs to train, if None: can be specified later
-            during actual training
         name : str or None
             the Experiment's name
         save_path : str or None
@@ -70,37 +52,19 @@ class BaseExperimentOld(object):
         key_mapping : dict
             mapping between data_dict and model inputs (necessary for
             prediction with :class:`Predictor`-API)
-        val_score_key : str or None
-            key defining which metric to use for validation (determining best
-            model and scheduling lr); if None: No validation-based operations
-            will be done (model might still get validated, but validation
-            metrics
-            can only be logged and not used further)
-        optim_builder : function
-            Function returning a dict of backend-specific optimizers
-        checkpoint_freq : int
-            frequency of saving checkpoints (1 denotes saving every epoch,
-            2 denotes saving every second epoch etc.); default: 1
-        trainer_cls : subclass of :class:`BaseNetworkTrainer`
-            the trainer class to use for training the model
-        predictor_cls : subclass of :class:`Predictor`
-            the predictor class to use for testing the model
-        **kwargs :
-            additional keyword arguments
+        verbose : bool
+            verbosity argument
+        logging_type : str
+            which type of logging to use; must be one of
+            'visdom' | 'tensorboad'
+            Defaults to 'tensorboard'
+        logging_kwargs : dict
+            a dictionary containing all necessary keyword arguments to
+            properly initialize the logging
+        convert_to_npy : function
+            function to convert all outputs and metrics to numpy types
 
         """
-
-        # params could also be a file containing a pickled instance of
-        # parameters
-        if isinstance(params, str):
-            with open(params, "rb") as f:
-                params = pickle.load(f)
-
-        if n_epochs is None:
-            n_epochs = params.nested_get("n_epochs",
-                                         params.nested_get("num_epochs"))
-
-        self.n_epochs = n_epochs
 
         if name is None:
             name = "UnnamedExperiment"
@@ -109,6 +73,7 @@ class BaseExperimentOld(object):
         if save_path is None:
             save_path = os.path.abspath(".")
 
+        # append name and date-time-stamp to save_path
         self.save_path = os.path.join(save_path, name,
                                       str(datetime.now().strftime(
                                           "%y-%m-%d_%H-%M-%S")))
@@ -118,248 +83,149 @@ class BaseExperimentOld(object):
 
         os.makedirs(self.save_path, exist_ok=True)
 
-        self.trainer_cls = trainer_cls
-        self.predictor_cls = predictor_cls
-
-        if val_score_key is None:
-            if params.nested_get("val_metrics", False):
-                val_score_key = sorted(
-                    params.nested_get("val_metrics").keys())[0]
-        self.val_score_key = val_score_key
-
         assert key_mapping is not None
         self.key_mapping = key_mapping
 
-        self.params = params
         self.model_cls = model_cls
-
-        self._optim_builder = optim_builder
-        self.checkpoint_freq = checkpoint_freq
-
         self._run = 0
+        self.verbose = verbose
+        self._logging_type = logging_type
+        self._logging_kwargs = logging_kwargs
+        self._convert_to_npy = convert_to_npy
 
-        self.kwargs = kwargs
-
-    def setup(self, params, training=True, **kwargs):
+    def run(self, params, train_data: BaseDataManager,
+            val_data: BaseDataManager, optim_builder, gpu_ids=None,
+            checkpoint_freq=1, reduce_mode='mean', val_score_key=None,
+            val_score_mode="lowest", val_freq=1, callbacks=None,
+            trainer_cls=BaseNetworkTrainer, **kwargs):
         """
-        Defines the setup behavior (model, trainer etc.) for training and
-        testing case
-
-        Parameters
-        ----------
-        params : :class:`Parameters`
-            the parameters to use for setup
-        training : bool
-            whether to setup for training case or for testing case
-        **kwargs :
-            additional keyword arguments
-
-        Returns
-        -------
-        :class:`BaseNetworkTrainer`
-            the created trainer (if ``training=True``)
-        :class:`Predictor`
-            the created predictor (if ``training=False``)
-
-        See Also
-        --------
-
-        * :meth:`BaseExperiment._setup_training` for training setup
-
-        * :meth:`BaseExperiment._setup_test` for test setup
-
-        """
-        if training:
-            return self._setup_training(params, **kwargs)
-
-        return self._setup_test(params, **kwargs)
-
-    def _setup_training(self, params, **kwargs):
-        """
-        Handles the setup for training case
+        Function to run the actual training
 
         Parameters
         ----------
         params : :class:`Parameters`
             the parameters containing the model and training kwargs
-        **kwargs :
-            additional keyword arguments
-
-        Returns
-        -------
-        :class:`BaseNetworkTrainer`
-            the created trainer
-
-        """
-        model_params = params.permute_training_on_top().model
-
-        model_kwargs = {**model_params.fixed, **model_params.variable}
-
-        model = self.model_cls(**model_kwargs)
-
-        training_params = params.permute_training_on_top().training
-        losses = training_params.nested_get("losses")
-        optimizer_cls = training_params.nested_get("optimizer_cls")
-        optimizer_params = training_params.nested_get("optimizer_params")
-        train_metrics = training_params.nested_get("train_metrics", {})
-        lr_scheduler_cls = training_params.nested_get("lr_sched_cls", None)
-        lr_scheduler_params = training_params.nested_get("lr_sched_params",
-                                                         {})
-        val_metrics = training_params.nested_get("val_metrics", {})
-
-        # necessary for resuming training from a given path
-        save_path = kwargs.pop("save_path", os.path.join(
-            self.save_path,
-            "checkpoints",
-            "run_%02d" % self._run))
-
-        return self.trainer_cls(
-            network=model,
-            save_path=save_path,
-            losses=losses,
-            key_mapping=self.key_mapping,
-            optimizer_cls=optimizer_cls,
-            optimizer_params=optimizer_params,
-            train_metrics=train_metrics,
-            val_metrics=val_metrics,
-            lr_scheduler_cls=lr_scheduler_cls,
-            lr_scheduler_params=lr_scheduler_params,
-            optim_fn=self._optim_builder,
-            save_freq=self.checkpoint_freq,
-            **kwargs
-        )
-
-    def _setup_test(self, params, model, convert_batch_to_npy_fn,
-                    prepare_batch_fn, **kwargs):
-        """
-
-        Parameters
-        ----------
-        params : :class:`Parameters`
-            the parameters containing the model and training kwargs
-            (ignored here, just passed for subclassing and unified API)
-        model : :class:`AbstractNetwork`
-            the model to test
-        convert_batch_to_npy_fn : function
-            function to convert a batch of tensors to numpy
-        prepare_batch_fn : function
-            function to convert a batch-dict to a format accepted by the model.
-            This conversion typically includes dtype-conversion, reshaping,
-            wrapping to backend-specific tensors and pushing to correct devices
-        **kwargs :
-            additional keyword arguments
-
-        Returns
-        -------
-        :class:`Predictor`
-            the created predictor
-
-        """
-        predictor = self.predictor_cls(
-            model=model, key_mapping=self.key_mapping,
-            convert_batch_to_npy_fn=convert_batch_to_npy_fn,
-            prepare_batch_fn=prepare_batch_fn, **kwargs)
-        return predictor
-
-    def run(self, train_data: BaseDataManager,
-            val_data: BaseDataManager = None,
-            params: Parameters = None, **kwargs):
-        """
-        Setup and run training
-
-        Parameters
-        ----------
         train_data : :class:`BaseDataManager`
-            the data to use for training
+            the datamanager containing the training data
         val_data : :class:`BaseDataManager` or None
-            the data to use for validation (no validation is done
-            if passing None); default: None
-        params : :class:`Parameters` or None
-            the parameters to use for training and model instantiation
-            (will be merged with ``self.params``)
+            the datamanager containing the validation data (may also be None
+            for no validation)
+        optim_builder : function
+            the function creating suitable optimizers and returns them as dict
+        gpu_ids : list
+            a list of integers representing the GPUs to use;
+            if empty or None: No gpus will be used at all
+        checkpoint_freq : int
+            determines how often to checkpoint the training
+        reduce_mode : str
+            determines how to reduce metrics; must be one of
+            'mean' | 'sum' | 'first_only'
+        val_score_key : str
+            specifies which metric to use for best model selection.
+        val_score_mode : str
+            determines whether a high or a low val_score is best. Must be one
+            of 'highest' | 'lowest'
+        val_freq : int
+            specifies how often to run a validation step
+        callbacks : list
+            list of callbacks to use during training. Each callback should be
+            derived from :class:`delira.training.callbacks.AbstractCallback`
+        trainer_cls : type
+            the class implementing the actual training routine
         **kwargs :
             additional keyword arguments
 
         Returns
         -------
         :class:`AbstractNetwork`
-            The trained network returned by the trainer (usually best network)
-
-        See Also
-        --------
-        :class:`BaseNetworkTrainer` for training itself
+            the trained model
 
         """
-
-        params = self._resolve_params(params)
-        kwargs = self._resolve_kwargs(kwargs)
 
         params.permute_training_on_top()
         training_params = params.training
-
-        trainer = self.setup(params, training=True, **kwargs)
+        trainer = self._setup_training(params, gpu_ids=gpu_ids,
+                                       optim_builder=optim_builder,
+                                       callbacks=callbacks,
+                                       checkpoint_freq=checkpoint_freq,
+                                       val_freq=val_freq,
+                                       trainer_cls=trainer_cls,
+                                       **kwargs)
 
         self._run += 1
 
-        num_epochs = kwargs.get("num_epochs", training_params.nested_get(
-            "num_epochs", self.n_epochs))
-
-        if num_epochs is None:
-            num_epochs = self.n_epochs
+        num_epochs = training_params.nested_get("num_epochs")
 
         return trainer.train(num_epochs, train_data, val_data,
-                             self.val_score_key, kwargs.get("val_score_mode",
-                                                            "lowest"))
+                             val_score_key, val_score_mode,
+                             reduce_mode=reduce_mode)
 
-    def resume(self, save_path: str, train_data: BaseDataManager,
-               val_data: BaseDataManager = None,
-               params: Parameters = None, **kwargs):
+    def resume(self, save_path, params, train_data: BaseDataManager,
+               val_data: BaseDataManager, optim_builder, gpu_ids=None,
+               checkpoint_freq=1, reduce_mode='mean', val_score_key=None,
+               val_score_mode="lowest", val_freq=1, callbacks=None,
+               **kwargs):
         """
-        Resumes a previous training by passing an explicit ``save_path``
-        instead of generating a new one
+        Function to resume the training from an earlier state
 
         Parameters
         ----------
         save_path : str
-            path to previous training
+            the path containing the earlier training state
+        params : :class:`Parameters`
+            the parameters containing the model and training kwargs
         train_data : :class:`BaseDataManager`
-            the data to use for training
+            the datamanager containing the training data
         val_data : :class:`BaseDataManager` or None
-            the data to use for validation (no validation is done
-            if passing None); default: None
-        params : :class:`Parameters` or None
-            the parameters to use for training and model instantiation
-            (will be merged with ``self.params``)
+            the datamanager containing the validation data (may also be None
+            for no validation)
+        optim_builder : function
+            the function creating suitable optimizers and returns them as dict
+        gpu_ids : list
+            a list of integers representing the GPUs to use;
+            if empty or None: No gpus will be used at all
+        checkpoint_freq : int
+            determines how often to checkpoint the training
+        reduce_mode : str
+            determines how to reduce metrics; must be one of
+            'mean' | 'sum' | 'first_only'
+        val_score_key : str
+            specifies which metric to use for best model selection.
+        val_score_mode : str
+            determines whether a high or a low val_score is best. Must be one
+            of 'highest' | 'lowest'
+        val_freq : int
+            specifies how often to run a validation step
+        callbacks : list
+            list of callbacks to use during training. Each callback should be
+            derived from :class:`delira.training.callbacks.AbstractCallback`
         **kwargs :
             additional keyword arguments
 
         Returns
         -------
         :class:`AbstractNetwork`
-            The trained network returned by the trainer (usually best network)
-
-        See Also
-        --------
-        :class:`BaseNetworkTrainer` for training itself
+            the trained model
 
         """
-        return self.run(
-            train_data=train_data,
-            val_data=val_data,
-            params=params,
-            save_path=save_path,
-            **kwargs)
 
-    def test(self, network, test_data: BaseDataManager,
-             metrics: dict, metric_keys=None,
-             verbose=False, prepare_batch=None,
-             convert_fn=lambda *x, **y: (x, y), **kwargs):
+        return self.run(params=params, train_data=train_data,
+                        val_data=val_data, optim_builder=optim_builder,
+                        gpu_ids=gpu_ids, checkpoint_freq=checkpoint_freq,
+                        reduce_mode=reduce_mode,
+                        val_score_key=val_score_key,
+                        val_score_mode=val_score_mode, val_freq=val_freq,
+                        callbacks=callbacks,
+                        save_path=save_path, **kwargs)
+
+    def test(self, model, test_data, prepare_batch, callbacks=None,
+             predictor_cls=Predictor, metrics=None, metric_keys=None,
+             **kwargs):
         """
         Setup and run testing on a given network
-
         Parameters
         ----------
-        network : :class:`AbstractNetwork`
+        model : :class:`AbstractNetwork`
             the (trained) network to test
         test_data : :class:`BaseDataManager`
             the data to use for testing
@@ -370,14 +236,15 @@ class BaseExperimentOld(object):
             Should contain a value for each key in ``metrics``.
             If no values are given for a key, per default ``pred`` and
             ``label`` will be used for metric calculation
-        verbose : bool
-            verbosity of the test process
         prepare_batch : function
             function to convert a batch-dict to a format accepted by the model.
             This conversion typically includes dtype-conversion, reshaping,
             wrapping to backend-specific tensors and pushing to correct devices
-        convert_fn : function
-            function to convert a batch of tensors to numpy
+        callbacks : list
+            list of callbacks to use during training. Each callback should be
+            derived from :class:`delira.training.callbacks.AbstractCallback`
+        predictor_cls : type
+            the class implementing the actual prediction routine
         **kwargs :
             additional keyword arguments
 
@@ -389,37 +256,78 @@ class BaseExperimentOld(object):
         dict
             all metrics calculated upon the ``test_data`` and the obtained
             predictions
-
         """
 
-        kwargs = self._resolve_kwargs(kwargs)
+        if metrics is None:
+            metrics = {}
 
-        predictor = self.setup(None, training=False, model=network,
-                               convert_batch_to_npy_fn=convert_fn,
-                               prepare_batch_fn=prepare_batch, **kwargs)
+        if metric_keys is None:
+            metric_keys = {}
+
+        if callbacks is None:
+            callbacks = []
+
+        predictor = self._setup_test(model=model,
+                                     prepare_batch_fn=prepare_batch,
+                                     callbacks=callbacks,
+                                     predictor_cls=predictor_cls, **kwargs)
 
         # return first item of generator
         return next(predictor.predict_data_mgr_cache_all(test_data, 1, metrics,
-                                                         metric_keys, verbose))
+                                                         metric_keys,
+                                                         self.verbose))
 
-    def kfold(self, data: BaseDataManager, metrics: dict, num_epochs=None,
-              num_splits=None, shuffle=False, random_seed=None,
-              split_type="random", val_split=0.2, label_key="label",
-              train_kwargs: dict = None, metric_keys: dict = None,
-              test_kwargs: dict = None, params=None, verbose=False, **kwargs):
+    def kfold(self,
+              data: BaseDataManager,
+              params,
+              optim_builder,
+              gpu_ids=None,
+              checkpoint_freq=1,
+              reduce_mode='mean',
+              val_score_key=None,
+              val_score_mode="lowest",
+              val_freq=1,
+              callbacks=None,
+              num_splits=None,
+              shuffle=False,
+              random_seed=None,
+              split_type="random",
+              val_split=0.2,
+              label_key="label",
+              train_kwargs: dict = None,
+              test_kwargs: dict = None,
+              prepare_batch=lambda x: x,
+              ):
         """
-        Performs a k-Fold cross-validation
+        Performs a k-fold cross validation
 
         Parameters
         ----------
         data : :class:`BaseDataManager`
-            the data to use for training(, validation) and testing. Will be
-            split based on ``split_type`` and ``val_split``
-        metrics : dict
-            dictionary containing the metrics to evaluate during k-fold
-        num_epochs : int or None
-            number of epochs to train (if not given, will either be extracted
-            from ``params``, ``self.parms`` or ``self.n_epochs``)
+            the datamanager containing all the data for training, testing
+            and (optional) validation
+        params : :class:`Parameters`
+            the parameters containing the model and training kwargs
+        optim_builder : function
+            the function creating suitable optimizers and returns them as dict
+        gpu_ids : list
+            a list of integers representing the GPUs to use;
+            if empty or None: No gpus will be used at all
+        checkpoint_freq : int
+            determines how often to checkpoint the training
+        reduce_mode : str
+            determines how to reduce metrics; must be one of
+            'mean' | 'sum' | 'first_only'
+        val_score_key : str
+            specifies which metric to use for best model selection.
+        val_score_mode : str
+            determines whether a high or a low val_score is best. Must be one
+            of 'highest' | 'lowest'
+        val_freq : int
+            specifies how often to run a validation step
+        callbacks : list
+            list of callbacks to use during training. Each callback should be
+            derived from :class:`delira.training.callbacks.AbstractCallback`
         num_splits : int or None
             the number of splits to extract from ``data``.
             If None: uses a default of 10
@@ -445,20 +353,14 @@ class BaseExperimentOld(object):
         train_kwargs : dict or None
             kwargs to update the behavior of the :class:`BaseDataManager`
             containing the train data. If None: empty dict will be passed
-        metric_keys : dict of tuples
-            the batch_dict keys to use for each metric to calculate.
-            Should contain a value for each key in ``metrics``.
-            If no values are given for a key, per default ``pred`` and
-            ``label`` will be used for metric calculation
         test_kwargs : dict or None
             kwargs to update the behavior of the :class:`BaseDataManager`
             containing the test and validation data.
             If None: empty dict will be passed
-        params : :class:`Parameters`or None
-            the training and model parameters
-            (will be merged with ``self.params``)
-        verbose : bool
-            verbosity
+        prepare_batch : function
+            function to convert a batch-dict to a format accepted by the model.
+            This conversion typically includes dtype-conversion, reshaping,
+            wrapping to backend-specific tensors and pushing to correct devices
         **kwargs :
             additional keyword arguments
 
@@ -505,6 +407,9 @@ class BaseExperimentOld(object):
             num_splits = 10
             logger.warning("num_splits not defined, using default value of \
                                     10 splits instead ")
+
+        metrics = params.nested_get("val_metrics", {})
+        metric_keys = params.nested_get("metric_keys", {})
 
         metrics_test, outputs = {}, {}
         split_idxs = list(range(len(data.dataset)))
@@ -575,19 +480,159 @@ class BaseExperimentOld(object):
 
                     train_data = train_data.get_subset(_train_idxs)
 
-            model = self.run(train_data=train_data, val_data=val_data,
-                             params=params, num_epochs=num_epochs, fold=idx,
-                             **kwargs)
+            model = self.run(params=params, train_data=train_data,
+                             val_data=val_data, optim_builder=optim_builder,
+                             gpu_ids=gpu_ids, checkpoint_freq=checkpoint_freq,
+                             reduce_mode=reduce_mode,
+                             val_score_key=val_score_key,
+                             val_score_mode=val_score_mode,val_freq=val_freq,
+                             callbacks=callbacks, trainer_cls=trainer_cls,
+                             fold=idx, **kwargs)
 
-            _outputs, _metrics_test = self.test(model, test_data,
+            _outputs, _metrics_test = self.test(model=model, test_data=test_data,
+                                                prepare_batch=prepare_batch,
+                                                callbacks=callbacks,
+                                                predictor_cls=predictor_cls,
                                                 metrics=metrics,
                                                 metric_keys=metric_keys,
-                                                verbose=verbose)
+                                                **kwargs)
 
             outputs[str(idx)] = _outputs
             metrics_test[str(idx)] = _metrics_test
 
         return outputs, metrics_test
+
+    def _setup_training(self, params, gpu_ids, optim_builder, callbacks,
+                        checkpoint_freq, val_freq, trainer_cls,
+                        save_path=None, **kwargs):
+        """
+        Function to prepare the actual training
+
+        Parameters
+        ----------
+        params : :class:`Parameters`
+            the parameters containing the model and training kwargs
+        gpu_ids : list
+            a list of integers representing the GPUs to use;
+            if empty or None: No gpus will be used at all
+        optim_builder : function
+            the function creating suitable optimizers and returns them as dict
+        callbacks : list
+            list of callbacks to use during training. Each callback should be
+            derived from :class:`delira.training.callbacks.AbstractCallback`
+        checkpoint_freq : int
+            determines how often to checkpoint the training
+        val_freq : int
+            specifies how often to run a validation step
+        trainer_cls : type
+            the class implementing the actual training routine
+        save_path : str
+            the path where to save the results. If None: the experiments
+            attribute :attr:`self.save_path` will be used
+        **kwargs :
+            additional keyword arguments
+
+        Returns
+        -------
+        :class:`AbstractNetwork`
+            the trained model
+
+        """
+        model_params = params.permute_training_on_top().model
+
+        model_kwargs = {**model_params.fixed, **model_params.variable}
+
+        model = self.model_cls(**model_kwargs)
+
+        training_params = params.permute_training_on_top().training
+        losses = training_params.nested_get("losses")
+        optimizer_cls = training_params.nested_get("optimizer_cls")
+        optimizer_params = training_params.nested_get("optimizer_params")
+        train_metrics = training_params.nested_get("train_metrics", {})
+        lr_scheduler_cls = training_params.nested_get("lr_sched_cls", None)
+        lr_scheduler_params = training_params.nested_get("lr_sched_params",
+                                                         {})
+        val_metrics = training_params.nested_get("val_metrics", {})
+
+        # necessary for resuming training from a given path
+        if save_path is None:
+            save_path = os.path.join(
+                self.save_path,
+                "checkpoints",
+                "run_%02d" % self._run)
+
+        if callbacks is None:
+            callbacks = []
+
+        if gpu_ids is None:
+            gpu_ids = []
+
+        fold = kwargs.get("fold", self._run)
+
+        return trainer_cls(
+            network=model,
+            save_path=save_path,
+            losses=losses,
+            optimizer_cls=optimizer_cls,
+            optimizer_params=optimizer_params,
+            train_metrics=train_metrics,
+            val_metrics=val_metrics,
+            lr_scheduler_cls=lr_scheduler_cls,
+            lr_scheduler_params=lr_scheduler_params,
+            gpu_ids=gpu_ids,
+            save_freq=checkpoint_freq,
+            optim_fn=optim_builder,
+            key_mapping=self.key_mapping,
+            logging_type=self._logging_type,
+            logging_kwargs=self._logging_kwargs,
+            fold=fold,
+            callbacks=callbacks,
+            start_epoch=1,
+            metric_keys=None,
+            convert_batch_to_npy_fn=self._convert_to_npy,
+            val_freq=val_freq,
+            **kwargs
+        )
+
+    def _setup_test(self, model, prepare_batch, callbacks, predictor_cls,
+                    metrics, metric_keys, **kwargs):
+        """
+
+        Parameters
+        ----------
+        model : :class:`AbstractNetwork`
+            the model to test
+        prepare_batch_fn : function
+            function to convert a batch-dict to a format accepted by the model.
+            This conversion typically includes dtype-conversion, reshaping,
+            wrapping to backend-specific tensors and pushing to correct devices
+        callbacks : list
+            list of callbacks to use during training. Each callback should be
+            derived from :class:`delira.training.callbacks.AbstractCallback`
+        predictor_cls : type
+            class implementing the actual prediction routine
+        metrics: dict
+            dictionary containing all metrics to evaluate
+        metric_keys : dict
+            dictionary containing all keys for calculating each metric
+        **kwargs :
+            additional keyword arguments
+
+        Returns
+        -------
+        :class:`Predictor`
+            the created predictor
+
+        """
+        predictor = predictor_cls(
+            model=model, key_mapping=self.key_mapping,
+            convert_batch_to_npy_fn=self._convert_to_npy,
+            prepare_batch_fn=prepare_batch,
+            verbose=self.verbose, **kwargs
+
+        )
+
+        return predictor
 
     def __str__(self):
         """
@@ -632,8 +677,6 @@ class BaseExperimentOld(object):
                   "wb") as f:
             pickle.dump(self, f)
 
-        self.params.save(os.path.join(self.save_path, "parameters"))
-
     @staticmethod
     def load(file_name):
         """
@@ -648,251 +691,8 @@ class BaseExperimentOld(object):
         with open(file_name, "rb") as f:
             return pickle.load(f)
 
-    def _resolve_params(self, params: typing.Union[Parameters, None]):
-        """
-        Merges the given params with ``self.params``.
-        If the same argument is given in both params,
-        the one from the currently given parameters is used here
-
-        Parameters
-        ----------
-        params : :class:`Parameters` or None
-            the parameters to merge with ``self.params``
-
-
-        Returns
-        -------
-        :class:`Parameters`
-            the merged parameter instance
-
-        """
-        if params is None:
-            params = Parameters()
-
-        if hasattr(self, "params") and isinstance(self.params, Parameters):
-            _params = params
-            params = self.params
-            params.update(_params)
-
-        return params
-
-    def _resolve_kwargs(self, kwargs: typing.Union[dict, None]):
-        """
-        Merges given kwargs with ``self.kwargs``
-        If same argument is present in both kwargs, the one from the given
-        kwargs will be used here
-
-        Parameters
-        ----------
-        kwargs : dict
-            the given kwargs to merge with self.kwargs
-
-        Returns
-        -------
-        dict
-            merged kwargs
-
-        """
-
-        if kwargs is None:
-            kwargs = {}
-
-        if hasattr(self, "kwargs") and isinstance(self.kwargs, dict):
-            _kwargs = kwargs
-            kwargs = self.kwargs
-            kwargs.update(_kwargs)
-
-        return kwargs
-
     def __getstate__(self):
         return vars(self)
 
     def __setstate__(self, state):
         vars(self).update(state)
-
-
-class BaseExperiment(object):
-    def __init__(self,
-                 model_cls: AbstractNetwork,
-                 name=None,
-                 save_path=None,
-                 key_mapping=None,
-                 verbose=True,
-                 logging_type="tensorboard",
-                 logging_kwargs=None,
-                 convert_to_npy=convert_to_numpy_identity
-                 ):
-
-        if name is None:
-            name = "UnnamedExperiment"
-        self.name = name
-
-        if save_path is None:
-            save_path = os.path.abspath(".")
-
-        self.save_path = os.path.join(save_path, name,
-                                      str(datetime.now().strftime(
-                                          "%y-%m-%d_%H-%M-%S")))
-
-        if os.path.isdir(self.save_path):
-            logger.warning("Save Path %s already exists")
-
-        os.makedirs(self.save_path, exist_ok=True)
-
-        assert key_mapping is not None
-        self.key_mapping = key_mapping
-
-        self.model_cls = model_cls
-        self._run = 0
-        self.verbose = verbose
-        self._logging_type = logging_type
-        self._logging_kwargs = logging_kwargs
-        self._convert_to_npy = convert_to_npy
-
-    def run(self, params, train_data: BaseDataManager,
-            val_data: BaseDataManager, optim_builder, gpu_ids=None,
-            checkpoint_freq=1, reduce_mode='mean', val_score_key=None,
-            val_score_mode="lowest",
-            trainer_cls=BaseNetworkTrainer, **kwargs):
-
-        params.permute_training_on_top()
-        training_params = params.training
-        trainer = self._setup_training(params, gpu_ids=gpu_ids,
-                                       optim_builder=optim_builder,
-                                       callbacks=callbacks,
-                                       checkpoint_freq=checkpoint_freq,
-                                       val_freq=val_freq,
-                                       trainer_cls=trainer_cls,
-                                       **kwargs)
-
-
-        self._run += 1
-
-        num_epochs = training_params.nested_get("num_epochs")
-
-        return trainer.train(num_epochs, train_data, val_data,
-                             val_score_key, val_score_mode,
-                             reduce_mode=reduce_mode)
-
-    def resume(self, save_path, params, train_data: BaseDataManager,
-               val_data: BaseDataManager, optim_builder, gpu_ids=None,
-               checkpoint_freq=1, reduce_mode='mean', val_score_key=None,
-               trainer_cls=BaseNetworkTrainer, **kwargs):
-
-        return self.run(params=params, train_data=train_data,
-                        val_data=val_data, optim_builder=optim_builder,
-                        gpu_ids=gpu_ids, checkpoint_freq=checkpoint_freq,
-                        reduce_mode=reduce_mode,
-                        val_score_key=val_score_key,
-                        trainer_cls=trainer_cls, save_path=save_path, **kwargs)
-
-    def test(self, model, test_data, prepare_batch, callbacks, predictor_cls,
-             metrics, metric_keys, **kwargs):
-
-        predictor = self.setup(None, training=False, model=model,
-                               prepare_batch_fn=prepare_batch, **kwargs)
-
-        # return first item of generator
-        return next(predictor.predict_data_mgr_cache_all(test_data, 1, metrics,
-                                                         metric_keys,
-                                                         self.verbose))
-
-    def _setup_training(self, params, gpu_ids, optim_builder, callbacks,
-                        checkpoint_freq, val_freq, trainer_cls,
-                        save_path=None, **kwargs):
-        """
-        Handles the setup for training case
-
-        Parameters
-        ----------
-        params : :class:`Parameters`
-            the parameters containing the model and training kwargs
-        **kwargs :
-            additional keyword arguments
-
-        Returns
-        -------
-        :class:`BaseNetworkTrainer`
-            the created trainer
-
-        """
-        model_params = params.permute_training_on_top().model
-
-        model_kwargs = {**model_params.fixed, **model_params.variable}
-
-        model = self.model_cls(**model_kwargs)
-
-        training_params = params.permute_training_on_top().training
-        losses = training_params.nested_get("losses")
-        optimizer_cls = training_params.nested_get("optimizer_cls")
-        optimizer_params = training_params.nested_get("optimizer_params")
-        train_metrics = training_params.nested_get("train_metrics", {})
-        lr_scheduler_cls = training_params.nested_get("lr_sched_cls", None)
-        lr_scheduler_params = training_params.nested_get("lr_sched_params",
-                                                         {})
-        val_metrics = training_params.nested_get("val_metrics", {})
-
-        # necessary for resuming training from a given path
-        if save_path is None:
-            save_path = os.path.join(
-                self.save_path,
-                "checkpoints",
-                "run_%02d" % self._run)
-
-        return trainer_cls(
-            network=model,
-            save_path=save_path,
-            losses=losses,
-            optimizer_cls=optimizer_cls,
-            optimizer_params=optimizer_params,
-            train_metrics=train_metrics,
-            val_metrics=val_metrics,
-            lr_scheduler_cls=lr_scheduler_cls,
-            lr_scheduler_params=lr_scheduler_params,
-            gpu_ids=gpu_ids,
-            save_freq=checkpoint_freq,
-            optim_fn=optim_builder,
-            key_mapping=self.key_mapping,
-            logging_type=self._logging_type,
-            logging_kwargs=self._logging_kwargs,
-            fold=self._run,
-            callbacks=callbacks,
-            start_epoch=1,
-            metric_keys=None,
-            convert_batch_to_npy_fn=self._convert_to_npy,
-            val_freq=val_freq,
-            **kwargs
-        )
-
-        def _setup_test(self, params, model, convert_batch_to_npy_fn,
-                        prepare_batch_fn, **kwargs):
-            """
-
-            Parameters
-            ----------
-            params : :class:`Parameters`
-                the parameters containing the model and training kwargs
-                (ignored here, just passed for subclassing and unified API)
-            model : :class:`AbstractNetwork`
-                the model to test
-            convert_batch_to_npy_fn : function
-                function to convert a batch of tensors to numpy
-            prepare_batch_fn : function
-                function to convert a batch-dict to a format accepted by the model.
-                This conversion typically includes dtype-conversion, reshaping,
-                wrapping to backend-specific tensors and pushing to correct devices
-            **kwargs :
-                additional keyword arguments
-
-            Returns
-            -------
-            :class:`Predictor`
-                the created predictor
-
-            """
-            predictor = self.predictor_cls(
-                model=model, key_mapping=self.key_mapping,
-                convert_batch_to_npy_fn=convert_batch_to_npy_fn,
-                prepare_batch_fn=prepare_batch_fn, **kwargs)
-            return predictor
-
