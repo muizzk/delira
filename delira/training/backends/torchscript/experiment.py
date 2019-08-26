@@ -106,7 +106,8 @@ class TorchScriptExperiment(PyTorchExperiment):
         trainer_cls : type
             the class implementing the actual training routine
         **kwargs :
-            additional keyword arguments
+            additional keyword arguments given to
+            :param:`trainer_cls` during initialization
 
         Returns
         -------

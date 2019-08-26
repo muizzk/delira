@@ -112,7 +112,8 @@ class ChainerExperiment(BaseExperiment):
         trainer_cls : type
             the class implementing the actual training routine
         **kwargs :
-            additional keyword arguments
+            additional keyword arguments given to
+            :param:`trainer_cls` during initialization
 
         Returns
         -------
@@ -134,19 +135,13 @@ class ChainerExperiment(BaseExperiment):
              **kwargs):
         """
         Setup and run testing on a given network
+
         Parameters
         ----------
         model : :class:`AbstractNetwork`
             the (trained) network to test
         test_data : :class:`BaseDataManager`
             the data to use for testing
-        metrics : dict
-            the metrics to calculate
-        metric_keys : dict of tuples
-            the batch_dict keys to use for each metric to calculate.
-            Should contain a value for each key in ``metrics``.
-            If no values are given for a key, per default ``pred`` and
-            ``label`` will be used for metric calculation
         prepare_batch : function
             function to convert a batch-dict to a format accepted by the model.
             This conversion typically includes dtype-conversion, reshaping,
@@ -156,8 +151,16 @@ class ChainerExperiment(BaseExperiment):
             derived from :class:`delira.training.callbacks.AbstractCallback`
         predictor_cls : type
             the class implementing the actual prediction routine
+        metrics : dict
+            the metrics to calculate
+        metric_keys : dict of tuples
+            the batch_dict keys to use for each metric to calculate.
+            Should contain a value for each key in ``metrics``.
+            If no values are given for a key, per default ``pred`` and
+            ``label`` will be used for metric calculation
         **kwargs :
-            additional keyword arguments
+            additional keyword arguments, additional keyword arguments, which are given to the :param:`predictor_cls`
+            during initialization
 
         Returns
         -------
@@ -264,8 +267,6 @@ class ChainerExperiment(BaseExperiment):
             function to convert a batch-dict to a format accepted by the model.
             This conversion typically includes dtype-conversion, reshaping,
             wrapping to backend-specific tensors and pushing to correct devices
-        **kwargs :
-            additional keyword arguments
 
         Returns
         -------
