@@ -189,7 +189,7 @@ class BaseNetworkTrainer(Predictor):
 
     def _at_training_begin(self, *args, **kwargs):
         """
-        Defines the behaviour at beginnig of the training
+        Defines the behaviour at beginning of the training
 
         Parameters
         ----------
@@ -494,6 +494,9 @@ class BaseNetworkTrainer(Predictor):
                 if self.stop_training:
                     break
 
+        # save last checkpoint regardless of save freq
+        self.save_state(os.path.join(self.save_path,
+                                     "checkpoint_epoch_%d" % num_epochs))
         return self._at_training_end()
 
     @property
@@ -765,7 +768,7 @@ class BaseNetworkTrainer(Predictor):
         str
             the file containing the latest checkpoint (if available)
         None
-            if no latst checkpoint was found
+            if no latest checkpoint was found
         int
             the latest epoch (1 if no checkpoint was found)
 
