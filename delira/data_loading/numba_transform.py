@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class NumbaTransformWrapper(AbstractTransform):
-    def __init__(self, transform: AbstractTransform, nopython:bool = True,
+    def __init__(self, transform: AbstractTransform, nopython: bool = True,
                  target: str = "cpu", parallel: bool = False, **options):
 
         if get_current_debug_mode():

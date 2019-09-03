@@ -114,7 +114,8 @@ class TensorboardBackend(WriterLoggingBackend):
 
         self._writer.add_graph(*converted_args, **converted_kwargs)
 
-    def _graph_tf(self, graph: tensorflow.Graph, run_metadata: Optional = None):
+    def _graph_tf(self, graph: tensorflow.Graph,
+                  run_metadata: Optional = None):
         """
         Function to log a TensorFlow Graph
 

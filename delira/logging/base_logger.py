@@ -11,8 +11,11 @@ class Logger(object):
     logging backend if appropriate or to python's logging module if not
     """
 
-    def __init__(self, backend: BaseBackend, max_queue_size: Optional[int] = None,
-                 level: int =logging.NOTSET):
+    def __init__(
+            self,
+            backend: BaseBackend,
+            max_queue_size: Optional[int] = None,
+            level: int = logging.NOTSET):
         """
 
         Parameters

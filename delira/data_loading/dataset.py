@@ -513,7 +513,7 @@ class BaseExtendCacheDataset(BaseCacheDataset):
 
 
 class ConcatDataset(AbstractDataset):
-    def __init__(self, *datasets : AbstractDataset):
+    def __init__(self, *datasets: AbstractDataset):
         """
         Concatenate multiple datasets to one
 

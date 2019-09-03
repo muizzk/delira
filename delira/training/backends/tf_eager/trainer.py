@@ -254,7 +254,7 @@ class TfEagerNetworkTrainer(BaseNetworkTrainer):
         return self.module
 
     def _train_single_epoch(self, batchgen: BaseDataManager, epoch: int,
-                            verbose: bool=False):
+                            verbose: bool = False):
         """
         Trains the network a single epoch
 

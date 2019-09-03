@@ -85,7 +85,7 @@ class TfEagerExperiment(BaseExperiment):
               num_epochs: Optional[int] = None,
               num_splits: Optional[int] = None, shuffle: bool = False,
               random_seed: Optional[int] = None,
-              split_type: str="random", val_split: float = 0.2,
+              split_type: str = "random", val_split: float = 0.2,
               label_key: str = "label",
               train_kwargs: Optional[dict] = None,
               test_kwargs: Optional[dict] = None,
