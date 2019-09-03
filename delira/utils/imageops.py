@@ -115,7 +115,7 @@ def sitk_resample_to_image(image: sitk.Image, reference_image: sitk.Image,
 
 def sitk_new_blank_image(size: SizeSpacing, spacing: SizeSpacing,
                          direction: Any, origin: SizeSpacing,
-                         default_value: float=0.):
+                         default_value: float = 0.):
     """
     Create a new blank image with given properties
 

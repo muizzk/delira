@@ -7,6 +7,7 @@ from delira import get_backends
 
 from typing import ClassVar, Any, Union, Callable
 
+
 def dtype_func(class_object: ClassVar[Any]):
     """
     Decorator to Check whether the first argument of the decorated function is

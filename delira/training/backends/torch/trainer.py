@@ -35,7 +35,7 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
             self,
             network: AbstractPyTorchNetwork,
             save_path: str,
-            key_mapping : dict,
+            key_mapping: dict,
             losses: dict,
             optimizer_cls: ClassVar[torch.optim.Optimizer],
             optimizer_params: Optional[dict] = None,
@@ -432,10 +432,14 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
         return super()._train_single_epoch(batchgen, epoch,
                                            verbose=verbose)
 
-    def predict_data_mgr(self, datamgr: BaseDataManager, batchsize: int = None,
-                         metrics: Optional[dict] = None,
-                         metric_keys: Optional[dict] = None, verbose: bool = False,
-                         **kwargs):
+    def predict_data_mgr(
+            self,
+            datamgr: BaseDataManager,
+            batchsize: int = None,
+            metrics: Optional[dict] = None,
+            metric_keys: Optional[dict] = None,
+            verbose: bool = False,
+            **kwargs):
         """
         Defines a routine to predict data obtained from a batchgenerator
 

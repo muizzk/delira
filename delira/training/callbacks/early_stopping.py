@@ -4,7 +4,6 @@ from typing import Union
 import numpy as np
 
 
-
 class EarlyStopping(AbstractCallback):
     """
     Implements Early Stopping as callback
