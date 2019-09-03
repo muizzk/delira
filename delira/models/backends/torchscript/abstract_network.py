@@ -1,6 +1,9 @@
 import abc
 import torch
 from delira.models.abstract_network import AbstractNetwork
+from typing import Union, Optional, Iterable
+
+Device = Union[torch.device, str]
 
 
 class AbstractTorchScriptNetwork(AbstractNetwork, torch.jit.ScriptModule):
@@ -16,7 +19,7 @@ class AbstractTorchScriptNetwork(AbstractNetwork, torch.jit.ScriptModule):
     """
 
     @abc.abstractmethod
-    def __init__(self, optimize=True, **kwargs):
+    def __init__(self, optimize: bool = True, **kwargs):
         """
 
         Parameters
@@ -50,7 +53,8 @@ class AbstractTorchScriptNetwork(AbstractNetwork, torch.jit.ScriptModule):
         return torch.jit.ScriptModule.__call__(self, *args, **kwargs)
 
     @staticmethod
-    def prepare_batch(batch: dict, input_device, output_device):
+    def prepare_batch(batch: dict, input_device: Device,
+                      output_device: Device):
         """
         Helper Function to prepare Network Inputs and Labels (convert them
         to correct type and shape and push them to correct devices)
@@ -83,8 +87,8 @@ class AbstractTorchScriptNetwork(AbstractNetwork, torch.jit.ScriptModule):
         return return_dict
 
     @staticmethod
-    def closure(model, data_dict: dict, optimizers: dict, losses={},
-                metrics={}, fold=0, **kwargs):
+    def closure(model, data_dict: dict, optimizers: dict, losses: dict,
+                metrics: Optional[dict] = None, fold: int = 0, **kwargs):
         """
         closure method to do a single backpropagation step
 
@@ -121,6 +125,9 @@ class AbstractTorchScriptNetwork(AbstractNetwork, torch.jit.ScriptModule):
             if optimizers or losses are empty or the optimizers are not
             specified
         """
+
+        if metrics is None:
+            metrics = {}
 
         assert (optimizers and losses) or not optimizers, \
             "Criterion dict cannot be emtpy, if optimizers are passed"

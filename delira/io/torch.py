@@ -4,12 +4,15 @@ import torch
 import logging
 import os
 from collections import OrderedDict
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
 
-def save_checkpoint_torch(file: str, model=None, optimizers=None,
-                          epoch=None, **kwargs):
+def save_checkpoint_torch(file: str,
+                          model: Optional[AbstractPyTorchNetwork] = None,
+                          optimizers: Optional[dict] = None,
+                          epoch: Optional[int] = None, **kwargs):
     """
     Save checkpoint
 
@@ -58,7 +61,7 @@ def save_checkpoint_torch(file: str, model=None, optimizers=None,
     torch.save(state, file, **kwargs)
 
 
-def load_checkpoint_torch(file, **kwargs):
+def load_checkpoint_torch(file: str, **kwargs):
     """
     Loads a saved model
 
@@ -85,8 +88,11 @@ def load_checkpoint_torch(file, **kwargs):
     return checkpoint
 
 
-def save_checkpoint_torchscript(file: str, model=None, optimizers=None,
-                                epoch=None, **kwargs):
+def save_checkpoint_torchscript(
+        file: str,
+        model: Optional[AbstractTorchScriptNetwork] = None,
+        optimizers: Optional[dict] = None,
+        epoch: Optional[int] = None, **kwargs):
     """
     Save current checkpoint to two different files:
         1.) ``file + "_model.ptj"``: Will include the state of the model

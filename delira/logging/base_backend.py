@@ -4,6 +4,7 @@ from abc import abstractmethod, ABCMeta
 from threading import Event
 from queue import Queue
 import warnings
+from typing import Callable, Optional, Iterable, Mapping, Union
 
 _FUNCTIONS_WITHOUT_STEP = ("graph_pytorch", "graph_tf", "graph_onnx",
                            "embedding")
@@ -29,7 +30,8 @@ class BaseBackend(object, metaclass=ABCMeta):
         the figure to logging writer during exit
         """
 
-        def __init__(self, push_fn, figure_kwargs: dict, push_kwargs: dict):
+        def __init__(self, push_fn: Callable, figure_kwargs: dict,
+                     push_kwargs: dict):
             """
 
             Parameters
@@ -77,7 +79,8 @@ class BaseBackend(object, metaclass=ABCMeta):
             close(self._fig)
             self._fig = None
 
-    def __init__(self, abort_event: Event = None, queue: Queue = None):
+    def __init__(self, abort_event: Optional[Event] = None,
+                 queue: Optional[Queue] = None):
         """
 
         Parameters
@@ -178,7 +181,7 @@ class BaseBackend(object, metaclass=ABCMeta):
             raise ValueError("Invalid Value passed for logging: %s"
                              % str(process_item))
 
-    def _resolve_global_step(self, key, **val):
+    def _resolve_global_step(self, key: str, **val):
         """
         Helper function to resolve the global step from given Arguments
 
@@ -273,7 +276,9 @@ class BaseBackend(object, metaclass=ABCMeta):
         """
         self._abort_event = event
 
-    def _call_exec_fn(self, exec_fn, args):
+    def _call_exec_fn(self, exec_fn: Callable,
+                      args: Union[Union[list, tuple, Iterable],
+                                  Union[dict, Mapping]]):
         """
         Helper Function calling the actual  mapped function
 
@@ -609,7 +614,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         """
         raise NotImplementedError
 
-    def _scatter(self, plot_kwargs: dict, figure_kwargs: dict = None,
+    def _scatter(self, plot_kwargs: dict, figure_kwargs: Optional[dict] = None,
                  **kwargs):
         """
         Function to create a scatter plot and push it
@@ -633,7 +638,8 @@ class BaseBackend(object, metaclass=ABCMeta):
 
             scatter(self, **plot_kwargs)
 
-    def _line(self, plot_kwargs=None, figure_kwargs=None, **kwargs):
+    def _line(self, plot_kwargs: Optional[dict] = None,
+              figure_kwargs: Optional[dict] = None, **kwargs):
         """
         Function to create a line plot and push it
 
@@ -657,7 +663,8 @@ class BaseBackend(object, metaclass=ABCMeta):
             from matplotlib.pyplot import plot
             plot(**plot_kwargs)
 
-    def _stem(self, plot_kwargs=None, figure_kwargs=None, **kwargs):
+    def _stem(self, plot_kwargs: Optional[dict] = None,
+              figure_kwargs: Optional[dict] = None, **kwargs):
         """
         Function to create a stem plot and push it
 
@@ -680,7 +687,8 @@ class BaseBackend(object, metaclass=ABCMeta):
             from matplotlib.pyplot import stem
             stem(**plot_kwargs)
 
-    def _heatmap(self, plot_kwargs=None, figure_kwargs=None, **kwargs):
+    def _heatmap(self, plot_kwargs: Optional[dict] = None,
+                 figure_kwargs: Optional[dict] = None, **kwargs):
         """
         Function to create a heatmap plot and push it
 
@@ -703,7 +711,8 @@ class BaseBackend(object, metaclass=ABCMeta):
             from seaborn import heatmap
             heatmap(**plot_kwargs)
 
-    def _bar(self, plot_kwargs=None, figure_kwargs=None, **kwargs):
+    def _bar(self, plot_kwargs: Optional[dict] = None,
+             figure_kwargs: Optional[dict] = None, **kwargs):
         """
         Function to create a bar plot and push it
 
@@ -726,7 +735,8 @@ class BaseBackend(object, metaclass=ABCMeta):
             from matplotlib.pyplot import bar
             bar(**plot_kwargs)
 
-    def _boxplot(self, plot_kwargs=None, figure_kwargs=None, **kwargs):
+    def _boxplot(self, plot_kwargs: Optional[dict] = None,
+                 figure_kwargs: Optional[dict] = None, **kwargs):
         """
         Function to create a boxplot and push it
 
@@ -749,7 +759,8 @@ class BaseBackend(object, metaclass=ABCMeta):
             from matplotlib.pyplot import boxplot
             boxplot(**plot_kwargs)
 
-    def _surface(self, plot_kwargs=None, figure_kwargs=None, **kwargs):
+    def _surface(self, plot_kwargs: Optional[dict] = None,
+                 figure_kwargs: Optional[dict] = None, **kwargs):
         """
         Function to create a surface plot and push it
 
@@ -773,7 +784,8 @@ class BaseBackend(object, metaclass=ABCMeta):
 
             kdeplot(**plot_kwargs)
 
-    def _contour(self, plot_kwargs=None, figure_kwargs=None, **kwargs):
+    def _contour(self, plot_kwargs: Optional[dict] = None,
+                 figure_kwargs: Optional[dict] = None, **kwargs):
         """
         Function to create a contour plot and push it
 
@@ -797,7 +809,8 @@ class BaseBackend(object, metaclass=ABCMeta):
 
             contour(**plot_kwargs)
 
-    def _quiver(self, plot_kwargs=None, figure_kwargs=None, **kwargs):
+    def _quiver(self, plot_kwargs: Optional[dict] = None,
+                figure_kwargs: Optional[dict] = None, **kwargs):
         """
         Function to create a quiver plot and push it
 

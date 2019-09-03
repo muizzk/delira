@@ -12,9 +12,9 @@ class LoggingContext(object):
 
     def __init__(
             self,
-            name,
-            initialize_if_missing=False,
-            destroy_on_exit=None,
+            name: str,
+            initialize_if_missing: bool = False,
+            destroy_on_exit: Optional[bool] = None,
             **kwargs):
         """
 

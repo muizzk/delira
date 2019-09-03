@@ -1,10 +1,13 @@
 import chainer
-from delira.models.backends.chainer import DataParallelChainerOptimizer
+from delira.models.backends.chainer import DataParallelChainerOptimizer, \
+    AbstractChainerNetwork
 from delira.training.utils import convert_to_numpy_identity, \
     recursively_convert_elements
 
+from typing import ClassVar
 
-def _single_element_tensor_conversion(element):
+
+def _single_element_tensor_conversion(element: chainer.Variable):
     element.to_cpu()
     return element.array
 
@@ -36,7 +39,9 @@ def convert_to_numpy(*args, **kwargs):
     return convert_to_numpy_identity(*args, **kwargs)
 
 
-def create_optims_default(model, optim_cls, **optimizer_params):
+def create_optims_default(model: AbstractChainerNetwork,
+                          optim_cls: ClassVar[chainer.Optimizer],
+                          **optimizer_params):
     """
     Default function to create a single optimizer for chainer
     (also supports Data-Parallel)

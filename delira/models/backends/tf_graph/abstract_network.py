@@ -4,6 +4,7 @@ import tensorflow as tf
 import numpy as np
 
 from delira.models.abstract_network import AbstractNetwork
+from typing import ClassVar, Optional, Iterable, Union, Any
 
 
 class AbstractTfGraphNetwork(AbstractNetwork, metaclass=abc.ABCMeta):
@@ -17,7 +18,7 @@ class AbstractTfGraphNetwork(AbstractNetwork, metaclass=abc.ABCMeta):
     """
 
     @abc.abstractmethod
-    def __init__(self, sess=tf.Session, **kwargs):
+    def __init__(self, sess: ClassVar[tf.Session] = tf.Session, **kwargs):
         """
 
         Parameters
@@ -141,7 +142,8 @@ class AbstractTfGraphNetwork(AbstractNetwork, metaclass=abc.ABCMeta):
             self.outputs_train["default_step"] = step
 
     @staticmethod
-    def prepare_batch(batch: dict, input_device, output_device):
+    def prepare_batch(batch: dict, input_device: Optional[Any] = None,
+                      output_device: Optional[Any] = None):
         """
         Helper Function to prepare Network Inputs and Labels (convert them to
         correct type and shape and push them to correct devices)
@@ -167,8 +169,8 @@ class AbstractTfGraphNetwork(AbstractNetwork, metaclass=abc.ABCMeta):
         return {k: v.astype(np.float32) for k, v in batch.items()}
 
     @staticmethod
-    def closure(model, data_dict: dict, optimizers: dict, losses={},
-                metrics={}, fold=0, **kwargs):
+    def closure(model, data_dict: dict, optimizers: dict, losses: dict,
+                metrics: Optional[dict] = None, fold: int = 0, **kwargs):
         """
         default closure method to do a single training step;
         Could be overwritten for more advanced models
@@ -203,6 +205,9 @@ class AbstractTfGraphNetwork(AbstractNetwork, metaclass=abc.ABCMeta):
             dictionary containing all predictions
 
         """
+        if metrics is None:
+            metrics = {}
+
         loss_vals = {}
         metric_vals = {}
 

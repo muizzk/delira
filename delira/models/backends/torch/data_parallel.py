@@ -1,7 +1,9 @@
 import torch
 
 from delira.models.backends.torch.abstract_network import \
-    AbstractPyTorchNetwork
+    AbstractPyTorchNetwork, Device
+
+from typing import Optional, Iterable, Union, List, Tuple
 
 
 class DataParallelPyTorchNetwork(AbstractPyTorchNetwork,
@@ -11,8 +13,12 @@ class DataParallelPyTorchNetwork(AbstractPyTorchNetwork,
     implement parallel training by splitting the batches
     """
 
-    def __init__(self, module: AbstractPyTorchNetwork,
-                 device_ids=None, output_device=None, dim=0):
+    def __init__(
+            self, module: AbstractPyTorchNetwork,
+            device_ids: Optional[Union[List[Device],
+                                       Iterable[Device],
+                                       Tuple[Device]]] = None,
+            output_device: Optional[Device] = None, dim: int = 0):
         """
 
         Parameters

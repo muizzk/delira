@@ -6,9 +6,10 @@ from skimage.io import imread
 from skimage.transform import resize
 
 from delira.utils.decorators import make_deprecated
+from typing import Union, List, Callable, Iterable
 
 
-def norm_range(mode):
+def norm_range(mode: str):
     """
     Closure function for range normalization
 
@@ -23,7 +24,7 @@ def norm_range(mode):
     callable
         normalization function
     """
-    def norm_fn(data):
+    def norm_fn(data: np.ndarray):
         """
         Returns the input data normalized to the range
 
@@ -50,7 +51,7 @@ def norm_range(mode):
     return norm_fn
 
 
-def norm_zero_mean_unit_std(data):
+def norm_zero_mean_unit_std(data: np.ndarray):
     """
     Return normalized data with mean 0, standard deviation 1
 
@@ -67,9 +68,10 @@ def norm_zero_mean_unit_std(data):
 
 
 @make_deprecated("LoadSample")
-def is_valid_image_file(fname, img_extensions, gt_extensions):
+def is_valid_image_file(fname: str, img_extensions: Union[List, Iterable],
+                        gt_extensions: Union[List, Iterable]):
     """
-    Helper Function to check wheter file is image file and has at least
+    Helper Function to check whether file is image file and has at least
     one label file
 
     .. deprecated-removed:: 0.3.4 0.3.5
@@ -102,7 +104,9 @@ def is_valid_image_file(fname, img_extensions, gt_extensions):
 
 
 @make_deprecated("LoadSample")
-def default_load_fn_2d(img_file, *label_files, img_shape, n_channels=1):
+def default_load_fn_2d(img_file: str, *label_files: str,
+                       img_shape: Union[list, tuple, Iterable],
+                       n_channels: int = 1):
     """
     loading single 2d sample with arbitrary number of samples
 
@@ -239,11 +243,11 @@ class LoadSample:
 class LoadSampleLabel(LoadSample):
     def __init__(self,
                  sample_ext: dict,
-                 sample_fn: collections.abc.Callable,
+                 sample_fn: Callable,
                  label_ext: str,
-                 label_fn: collections.abc.Callable,
+                 label_fn: Callable,
                  dtype: dict = None, normalize: tuple = (),
-                 norm_fn=norm_range('-1,1'),
+                 norm_fn: Callable = norm_range('-1,1'),
                  sample_kwargs=None, **kwargs):
         """
         Load sample and label from folder
@@ -289,7 +293,7 @@ class LoadSampleLabel(LoadSample):
         self._label_fn = label_fn
         self._label_kwargs = kwargs
 
-    def __call__(self, path) -> dict:
+    def __call__(self, path: str) -> dict:
         """
         Loads a sample and a label
 

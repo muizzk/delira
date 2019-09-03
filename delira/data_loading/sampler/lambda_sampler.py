@@ -1,4 +1,5 @@
 from delira.data_loading.sampler.abstract_sampler import AbstractSampler
+from typing import Union, List, Iterable, Callable
 
 
 class LambdaSampler(AbstractSampler):
@@ -8,7 +9,8 @@ class LambdaSampler(AbstractSampler):
 
     """
 
-    def __init__(self, indices, sampling_fn):
+    def __init__(self, indices: Union[List, Iterable],
+                 sampling_fn: Callable):
         """
 
         Parameters
@@ -27,7 +29,7 @@ class LambdaSampler(AbstractSampler):
 
         self._sampling_fn = sampling_fn
 
-    def _get_indices(self, n_indices):
+    def _get_indices(self, n_indices: int):
         """
         Actual Sampling
 

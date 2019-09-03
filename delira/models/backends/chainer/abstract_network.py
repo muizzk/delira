@@ -1,8 +1,10 @@
 import abc
 import chainer
 import numpy as np
-
+from typing import Union, Optional
 from delira.models.abstract_network import AbstractNetwork
+
+Device = Union[chainer.backend.Device, str]
 
 
 # Use this Mixin Class to set __call__ to None, because there is an
@@ -73,7 +75,8 @@ class AbstractChainerNetwork(chainer.Chain, ChainerMixin):
         return chainer.Chain.__call__(self, *args, **kwargs)
 
     @staticmethod
-    def prepare_batch(batch: dict, input_device, output_device):
+    def prepare_batch(batch: dict, input_device: Device,
+                      output_device: Device):
         """
         Helper Function to prepare Network Inputs and Labels (convert them
         to correct type and shape and push them to correct devices)
@@ -109,8 +112,8 @@ class AbstractChainerNetwork(chainer.Chain, ChainerMixin):
         return new_batch
 
     @staticmethod
-    def closure(model, data_dict: dict, optimizers: dict, losses={},
-                metrics={}, fold=0, **kwargs):
+    def closure(model: AbstractNetwork, data_dict: dict, optimizers: dict,
+                losses, metrics=None, fold: int = 0, **kwargs):
         """
         default closure method to do a single training step;
         Could be overwritten for more advanced models
@@ -145,6 +148,8 @@ class AbstractChainerNetwork(chainer.Chain, ChainerMixin):
             dictionary containing all predictions
 
         """
+        if metrics is None:
+            metrics = {}
         assert (optimizers and losses) or not optimizers, \
             "Criterion dict cannot be emtpy, if optimizers are passed"
 

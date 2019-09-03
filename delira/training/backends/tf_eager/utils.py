@@ -1,10 +1,11 @@
 import tensorflow as tf
+from typing import ClassVar
 
 from delira.training.utils import convert_to_numpy_identity, \
     recursively_convert_elements
 
 
-def _single_element_tensor_conversion(element):
+def _single_element_tensor_conversion(element: tf.Tensor):
     return element.numpy()
 
 
@@ -35,7 +36,8 @@ def convert_to_numpy(*args, **kwargs):
     return convert_to_numpy_identity(*args, **kwargs)
 
 
-def create_optims_default(optim_cls, **optim_params):
+def create_optims_default(optim_cls: ClassVar[tf.train.Optimizer],
+                          **optim_params):
     """
     Function to create a optimizer dictionary
     (in this case only one optimizer)

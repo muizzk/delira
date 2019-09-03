@@ -3,6 +3,7 @@ from random import shuffle
 
 from delira.data_loading.sampler.abstract_sampler import AbstractSampler
 from delira.data_loading.dataset import AbstractDataset
+from typing import Union, List, Iterable
 
 
 class SequentialSampler(AbstractSampler):
@@ -10,7 +11,7 @@ class SequentialSampler(AbstractSampler):
     Implements Sequential Sampling from whole Dataset
     """
 
-    def __init__(self, indices):
+    def __init__(self, indices: Union[List, Iterable]):
         """
 
         Parameters
@@ -24,7 +25,7 @@ class SequentialSampler(AbstractSampler):
 
         self._indices = list(range(len(indices)))
 
-    def _get_indices(self, n_indices):
+    def _get_indices(self, n_indices: int):
         """
         Actual Sampling
 
@@ -58,7 +59,8 @@ class PrevalenceSequentialSampler(AbstractSampler):
 
     """
 
-    def __init__(self, indices, shuffle_batch=True):
+    def __init__(self, indices: Union[List, Iterable],
+                 shuffle_batch: bool = True):
         """
 
         Parameters
@@ -109,7 +111,7 @@ class PrevalenceSequentialSampler(AbstractSampler):
         labels = [dataset[idx]['label'] for idx in indices]
         return cls(labels, **kwargs)
 
-    def _get_indices(self, n_indices):
+    def _get_indices(self, n_indices: int):
         """
         Actual Sampling
 
@@ -174,7 +176,8 @@ class StoppingPrevalenceSequentialSampler(AbstractSampler):
 
     """
 
-    def __init__(self, indices, shuffle_batch=True):
+    def __init__(self, indices: Union[List, Iterable],
+                 shuffle_batch: bool = True):
         """
 
         Parameters
@@ -225,7 +228,7 @@ class StoppingPrevalenceSequentialSampler(AbstractSampler):
         labels = [dataset[idx]['label'] for idx in indices]
         return cls(labels)
 
-    def _check_batchsize(self, n_indices):
+    def _check_batchsize(self, n_indices: int):
         """
         Checks if batchsize is valid for all classes
 
@@ -277,7 +280,7 @@ class StoppingPrevalenceSequentialSampler(AbstractSampler):
         finally:
             return samples
 
-    def _get_indices(self, n_indices):
+    def _get_indices(self, n_indices: int):
         """
         Actual Sampling
 

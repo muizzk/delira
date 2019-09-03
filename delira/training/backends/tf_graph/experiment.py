@@ -1,6 +1,5 @@
-import typing
 from functools import partial
-
+import typing
 import tensorflow as tf
 
 from delira.models.backends.tf_graph import AbstractTfGraphNetwork

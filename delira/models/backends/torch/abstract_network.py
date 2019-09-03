@@ -3,6 +3,9 @@ import torch
 from delira.models.abstract_network import AbstractNetwork
 
 from delira.models.backends.torch.utils import scale_loss
+from typing import Union, Optional
+
+Device = Union[torch.device, str]
 
 
 class AbstractPyTorchNetwork(AbstractNetwork, torch.nn.Module):
@@ -66,7 +69,8 @@ class AbstractPyTorchNetwork(AbstractNetwork, torch.nn.Module):
         return torch.jit.ScriptModule.__call__(self, *args, **kwargs)
 
     @staticmethod
-    def prepare_batch(batch: dict, input_device, output_device):
+    def prepare_batch(batch: dict, input_device: Device,
+                      output_device: Device):
         """
         Helper Function to prepare Network Inputs and Labels (convert them
         to correct type and shape and push them to correct devices)
@@ -99,8 +103,9 @@ class AbstractPyTorchNetwork(AbstractNetwork, torch.nn.Module):
         return return_dict
 
     @staticmethod
-    def closure(model, data_dict: dict, optimizers: dict, losses={},
-                metrics={}, fold=0, **kwargs):
+    def closure(model: AbstractNetwork, data_dict: dict, optimizers: dict,
+                losses: dict, metrics: Optional[dict] = None, fold: int = 0,
+                **kwargs):
         """
         closure method to do a single backpropagation step
 
@@ -137,6 +142,8 @@ class AbstractPyTorchNetwork(AbstractNetwork, torch.nn.Module):
             if optimizers or losses are empty or the optimizers are not
             specified
         """
+        if metrics is None:
+            metrics = {}
 
         assert (optimizers and losses) or not optimizers, \
             "Criterion dict cannot be emtpy, if optimizers are passed"

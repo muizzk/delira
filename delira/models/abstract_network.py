@@ -1,7 +1,10 @@
 import abc
 import logging
+from typing import Optional, Any
 
 file_logger = logging.getLogger(__name__)
+
+Device = Any
 
 
 class AbstractNetwork(object):
@@ -51,8 +54,8 @@ class AbstractNetwork(object):
 
     @staticmethod
     @abc.abstractmethod
-    def closure(model, data_dict: dict, optimizers: dict, losses=None,
-                metrics=None, fold=0, **kwargs):
+    def closure(model, data_dict: dict, optimizers: dict, losses: dict,
+                metrics: Optional[dict] = None, fold: int = 0, **kwargs):
         """
         Function which handles prediction from batch, logging, loss calculation
         and optimizer step
@@ -89,14 +92,13 @@ class AbstractNetwork(object):
             If not overwritten by subclass
 
         """
-        if losses is None:
-            losses = {}
         if metrics is None:
             metrics = {}
         raise NotImplementedError()
 
     @staticmethod
-    def prepare_batch(batch: dict, input_device, output_device):
+    def prepare_batch(batch: dict, input_device: Device,
+                      output_device: Device):
         """
         Converts a numpy batch of data and labels to suitable datatype and
         pushes them to correct devices

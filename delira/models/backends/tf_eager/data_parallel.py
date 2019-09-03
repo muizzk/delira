@@ -1,6 +1,7 @@
 import tensorflow as tf
 from delira.models.backends.tf_eager.abstract_network import \
     AbstractTfEagerNetwork
+from typing import Union, Iterable
 
 
 class DataParallelTfEagerNetwork(AbstractTfEagerNetwork):
@@ -12,7 +13,8 @@ class DataParallelTfEagerNetwork(AbstractTfEagerNetwork):
     This Module is highly experimental and not guaranteed to work properly!
     """
 
-    def __init__(self, module, devices):
+    def __init__(self, module: AbstractTfEagerNetwork,
+                 devices: Union[list, tuple, Iterable]):
         """
 
         Parameters

@@ -17,7 +17,7 @@ class BaseDataLoader(SlimDataLoaderBase):
 
     def __init__(self, dataset: AbstractDataset,
                  sampler_queues: list,
-                 batch_size=1, num_batches=None, seed=1):
+                 batch_size: int = 1, num_batches: int = None, seed: int = 1):
         """
 
         Parameters
@@ -101,7 +101,7 @@ class BaseDataLoader(SlimDataLoaderBase):
             except Empty:
                 pass
 
-    def _get_sample(self, index):
+    def _get_sample(self, index: int):
         """
         Helper functions which returns an element of the dataset
 

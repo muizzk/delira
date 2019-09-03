@@ -6,13 +6,15 @@ from numpy.random import choice, shuffle
 from delira.data_loading.sampler.abstract_sampler import AbstractSampler
 from delira.data_loading.dataset import AbstractDataset
 
+from typing import Union, List, Iterable
+
 
 class RandomSampler(AbstractSampler):
     """
     Implements Random Sampling With Replacement from whole Dataset
     """
 
-    def __init__(self, indices):
+    def __init__(self, indices: Union[List, Iterable]):
         """
 
         Parameters
@@ -28,7 +30,7 @@ class RandomSampler(AbstractSampler):
 
         self._replace = True
 
-    def _get_indices(self, n_indices):
+    def _get_indices(self, n_indices: int):
         """
         Actual Sampling
 
@@ -65,7 +67,7 @@ class RandomSamplerNoReplacement(RandomSampler):
     Implements Random Sampling Without Replacement from whole Dataset
     """
 
-    def __init__(self, indices):
+    def __init__(self, indices: Union[List, Iterable]):
         """
 
         Parameters
@@ -87,7 +89,8 @@ class PrevalenceRandomSampler(AbstractSampler):
 
     """
 
-    def __init__(self, indices, shuffle_batch=True):
+    def __init__(self, indices: Union[List, Iterable],
+                 shuffle_batch: bool = True):
         """
 
         Parameters
@@ -150,7 +153,7 @@ class PrevalenceRandomSampler(AbstractSampler):
         labels = [dataset[idx]['label'] for idx in indices]
         return cls(labels, **kwargs)
 
-    def _get_indices(self, n_indices):
+    def _get_indices(self, n_indices: int):
         """
         Actual Sampling
 
@@ -205,7 +208,8 @@ class StoppingPrevalenceRandomSampler(AbstractSampler):
 
     """
 
-    def __init__(self, indices, shuffle_batch=True):
+    def __init__(self, indices: Union[List, Iterable],
+                 shuffle_batch: bool = True):
         """
 
         Parameters
@@ -270,7 +274,7 @@ class StoppingPrevalenceRandomSampler(AbstractSampler):
         labels = [dataset[idx]['label'] for idx in indices]
         return cls(labels, **kwargs)
 
-    def _check_batchsize(self, n_indices):
+    def _check_batchsize(self, n_indices: int):
         """
         Checks if batchsize is valid for all classes
 
@@ -322,7 +326,7 @@ class StoppingPrevalenceRandomSampler(AbstractSampler):
         finally:
             return samples
 
-    def _get_indices(self, n_indices):
+    def _get_indices(self, n_indices: int):
         """
         Actual Sampling
 

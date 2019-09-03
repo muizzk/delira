@@ -2,6 +2,7 @@ from multiprocessing import Queue, Event
 from queue import Full
 from delira.logging.base_backend import BaseBackend
 import logging
+from typing import Optional
 
 
 class Logger(object):
@@ -10,8 +11,8 @@ class Logger(object):
     logging backend if appropriate or to python's logging module if not
     """
 
-    def __init__(self, backend: BaseBackend, max_queue_size: int = None,
-                 level=logging.NOTSET):
+    def __init__(self, backend: BaseBackend, max_queue_size: Optional[int] = None,
+                 level: int =logging.NOTSET):
         """
 
         Parameters
@@ -148,8 +149,8 @@ class SingleThreadedLogger(Logger):
         self._backend.run()
 
 
-def make_logger(backend: BaseBackend, max_queue_size: int = None,
-                level=logging.NOTSET):
+def make_logger(backend: BaseBackend, max_queue_size: Optional[int] = None,
+                level: int = logging.NOTSET):
     """
     Function to create a logger
 

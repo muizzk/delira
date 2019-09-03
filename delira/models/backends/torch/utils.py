@@ -1,4 +1,6 @@
 import contextlib
+import torch
+from typing import Union, List, Iterable, Optional
 
 try:
     # use apex loss scaling if possible
@@ -10,11 +12,12 @@ except ImportError:
 
 
 @contextlib.contextmanager
-def scale_loss(loss,
-               optimizers,
-               loss_id=0,
-               model=None,
-               delay_unscale=False,
+def scale_loss(loss: torch.Tensor,
+               optimizers: Union[List[torch.optim.Optimizer],
+                                 Iterable[torch.optim.Optimizer]],
+               loss_id: int = 0,
+               model: Optional[torch.nn.Module] = None,
+               delay_unscale: bool = False,
                **kwargs):
     """
     Context Manager which automatically switches between loss scaling via

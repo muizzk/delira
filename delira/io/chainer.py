@@ -2,9 +2,12 @@ import chainer
 import zipfile
 import os
 import json
+from typing import Optional, Any
 
 
-def save_checkpoint(file, model=None, optimizers=None, epoch=None):
+def save_checkpoint(file: str, model: Optional[chainer.link.Link] = None,
+                    optimizers: Optional[dict] = None,
+                    epoch: Optional[int] = None):
     """
     Saves the given checkpoint
 
@@ -71,7 +74,7 @@ def save_checkpoint(file, model=None, optimizers=None, epoch=None):
             os.remove(_file)
 
 
-def _deserialize_and_load(archive: zipfile.ZipFile, file: str, obj,
+def _deserialize_and_load(archive: zipfile.ZipFile, file: str, obj: Any,
                           temp_dir: str):
     """
     Helper Function to temporarily extract a file from a given archive,
@@ -105,8 +108,9 @@ def _deserialize_and_load(archive: zipfile.ZipFile, file: str, obj,
     return obj
 
 
-def load_checkpoint(file, old_state: dict = None,
-                    model: chainer.link.Link = None, optimizers: dict = None):
+def load_checkpoint(file: str, old_state: Optional[dict] = None,
+                    model: Optional[chainer.link.Link] = None,
+                    optimizers: Optional[dict] = None):
     """
     Loads a state from a given file
 

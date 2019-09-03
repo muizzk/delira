@@ -1,30 +1,34 @@
 from functools import partial
-import typing
+from typing import Union, Optional, ClassVar, Callable
 import os
 
 from sklearn.base import BaseEstimator
 
 from delira.models.backends.sklearn import SklearnEstimator
+from delira.models.abstract_network import AbstractNetwork
 
 from delira.training.base_experiment import BaseExperiment
+from delira.training.base_trainer import BaseNetworkTrainer
 from delira.training.parameters import Parameters
 
-from delira.training.backends.sklearn.trainer import SklearnEstimatorTrainer
+from delira.training.backends.sklearn.trainer import SklearnEstimatorTrainer \
+    as Trainer
 
 
 class SklearnExperiment(BaseExperiment):
-    def __init__(self,
-                 params: typing.Union[str, Parameters],
-                 model_cls: BaseEstimator,
-                 n_epochs=None,
-                 name=None,
-                 save_path=None,
-                 key_mapping=None,
-                 val_score_key=None,
-                 checkpoint_freq=1,
-                 trainer_cls=SklearnEstimatorTrainer,
-                 model_wrapper_cls=SklearnEstimator,
-                 **kwargs):
+    def __init__(
+            self,
+            params: Union[str, Parameters],
+            model_cls: BaseEstimator,
+            n_epochs: Optional[int] = None,
+            name: Optional[str] = None,
+            save_path: Optional[str] = None,
+            key_mapping: Optional[dict] = None,
+            val_score_key: Optional[str] = None,
+            checkpoint_freq: int = 1,
+            trainer_cls: ClassVar[BaseNetworkTrainer] = Trainer,
+            model_wrapper_cls: ClassVar[AbstractNetwork] = SklearnEstimator,
+            **kwargs):
         """
 
         Parameters
@@ -77,7 +81,7 @@ class SklearnExperiment(BaseExperiment):
                          **kwargs)
         self._model_wrapper_cls = model_wrapper_cls
 
-    def _setup_training(self, params, **kwargs):
+    def _setup_training(self, params: Parameters, **kwargs):
         """
             Handles the setup for training case
 
@@ -120,8 +124,9 @@ class SklearnExperiment(BaseExperiment):
             **kwargs
         )
 
-    def _setup_test(self, params, model, convert_batch_to_npy_fn,
-                    prepare_batch_fn, **kwargs):
+    def _setup_test(self, params: Parameters, model: SklearnEstimator,
+                    convert_batch_to_npy_fn: Callable,
+                    prepare_batch_fn: Callable, **kwargs):
         """
 
         Parameters

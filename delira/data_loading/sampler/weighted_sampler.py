@@ -3,6 +3,7 @@ from numpy.random import choice
 
 from delira.data_loading.sampler.abstract_sampler import AbstractSampler
 from delira.data_loading.dataset import AbstractDataset
+from typing import Iterable, Union, List
 
 
 class WeightedRandomSampler(AbstractSampler):
@@ -11,7 +12,8 @@ class WeightedRandomSampler(AbstractSampler):
 
     """
 
-    def __init__(self, indices, weights=None):
+    def __init__(self, indices: Union[List, Iterable],
+                 weights: Union[List, Iterable, np.ndarray] = None):
         """
 
         Parameters
@@ -51,7 +53,7 @@ class WeightedRandomSampler(AbstractSampler):
         labels = [d['label'] for d in dataset]
         return cls(labels, **kwargs)
 
-    def _get_indices(self, n_indices):
+    def _get_indices(self, n_indices: int):
         """
         Actual Sampling
 
@@ -84,7 +86,7 @@ class WeightedRandomSampler(AbstractSampler):
 
 
 class WeightedPrevalenceRandomSampler(WeightedRandomSampler):
-    def __init__(self, indices):
+    def __init__(self, indices: Union[List, Iterable]):
         """
         Implements random Per-Class Sampling and ensures uniform sampling
         of all classes

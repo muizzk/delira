@@ -1,9 +1,12 @@
 import logging
 import joblib
+from typing import Optional
+from delira.models.backends.sklearn import SklearnEstimator
 logger = logging.getLogger(__name__)
 
 
-def save_checkpoint(file: str, model=None, epoch=None, **kwargs):
+def save_checkpoint(file: str, model: Optional[SklearnEstimator] = None,
+                    epoch: Optional[int] = None, **kwargs):
     """
     Save model's parameters
 
@@ -23,7 +26,7 @@ def save_checkpoint(file: str, model=None, epoch=None, **kwargs):
     return return_val
 
 
-def load_checkpoint(file, **kwargs):
+def load_checkpoint(file: str, **kwargs):
     """
     Loads a saved model
 

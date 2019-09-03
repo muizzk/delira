@@ -10,6 +10,10 @@ from batchgenerators.dataloading import MultiThreadedAugmenter
 import os
 import logging
 from functools import partial
+from typing import Optional, ClassVar, Union, Iterable, Callable
+from delira.training.callbacks import AbstractCallback
+from delira.data_loading import BaseDataManager
+
 logger = logging.getLogger(__name__)
 
 
@@ -26,26 +30,26 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
     def __init__(self,
                  network: AbstractChainerNetwork,
                  save_path: str,
-                 key_mapping,
-                 losses=None,
-                 optimizer_cls=None,
-                 optimizer_params=None,
-                 train_metrics=None,
-                 val_metrics=None,
-                 lr_scheduler_cls=None,
-                 lr_scheduler_params=None,
-                 gpu_ids=None,
-                 save_freq=1,
-                 optim_fn=create_optims_default,
-                 logging_type="tensorboardx",
-                 logging_kwargs=None,
-                 fold=0,
-                 callbacks=None,
-                 start_epoch=1,
-                 metric_keys=None,
-                 convert_batch_to_npy_fn=convert_to_numpy,
-                 mixed_precision=False,
-                 val_freq=1,
+                 key_mapping: dict,
+                 losses: dict,
+                 optimizer_cls: Optional[ClassVar[chainer.Optimizer]] = None,
+                 optimizer_params: Optional[dict] = None,
+                 train_metrics: Optional[dict] = None,
+                 val_metrics: Optional[dict] = None,
+                 lr_scheduler_cls: Optional[ClassVar[AbstractCallback]] = None,
+                 lr_scheduler_params: Optional[dict] = None,
+                 gpu_ids: Optional[Union[list, Iterable, tuple]] = None,
+                 save_freq: int = 1,
+                 optim_fn: Callable = create_optims_default,
+                 logging_type: str = "tensorboardx",
+                 logging_kwargs: Optional[dict] = None,
+                 fold: int = 0,
+                 callbacks: Optional[list, tuple, Iterable] = None,
+                 start_epoch: int = 1,
+                 metric_keys: Optional[dict] = None,
+                 convert_batch_to_npy_fn: Callable = convert_to_numpy,
+                 mixed_precision: bool = False,
+                 val_freq: int = 1,
                  ** kwargs):
         """
 
@@ -148,9 +152,14 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
         for key, val in kwargs.items():
             setattr(self, key, val)
 
-    def _setup(self, network, optim_fn, optimizer_cls, optimizer_params,
-               lr_scheduler_cls, lr_scheduler_params, gpu_ids,
-               key_mapping, convert_batch_to_npy_fn, mixed_precision):
+    def _setup(self, network: AbstractChainerNetwork, optim_fn: Callable,
+               optimizer_cls: ClassVar[chainer.Optimizer],
+               optimizer_params: dict,
+               lr_scheduler_cls: ClassVar[AbstractCallback],
+               lr_scheduler_params: dict,
+               gpu_ids: Union[list, tuple, Iterable],
+               key_mapping: dict, convert_batch_to_npy_fn: Callable,
+               mixed_precision: bool):
         """
         Defines the Trainers Setup
 
@@ -318,8 +327,8 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
 
         return self.module
 
-    def _at_epoch_end(self, metrics_val, val_score_key, epoch, is_best,
-                      **kwargs):
+    def _at_epoch_end(self, metrics_val: dict, val_score_key: str, epoch: int,
+                      is_best: bool, **kwargs):
         """
         Defines behaviour at beginning of each epoch: Executes all
         callbacks's `at_epoch_end` method and saves current state if
@@ -362,8 +371,8 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
                                          "checkpoint_best.chain"),
                             epoch)
 
-    def _train_single_epoch(self, batchgen: MultiThreadedAugmenter, epoch,
-                            verbose=False):
+    def _train_single_epoch(self, batchgen: MultiThreadedAugmenter, epoch: int,
+                            verbose: bool = False):
         """
         Trains the network a single epoch
 
@@ -381,8 +390,11 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
         return super()._train_single_epoch(batchgen, epoch,
                                            verbose=verbose)
 
-    def predict_data_mgr(self, datamgr, batchsize=None, metrics={},
-                         metric_keys={}, verbose=False, **kwargs):
+    def predict_data_mgr(self, datamgr: BaseDataManager,
+                         batchsize: Optional[int] = None,
+                         metrics: Optional[dict] = None,
+                         metric_keys: Optional[dict] = None,
+                         verbose: bool = False, **kwargs):
         """
         Defines a routine to predict data obtained from a batchgenerator
 
@@ -411,12 +423,16 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
             calculated metrics
 
         """
+        if metrics is None:
+            metrics = {}
+        if metric_keys is None:
+            metric_keys = {}
         chainer.global_config.train = False
 
         return super().predict_data_mgr(datamgr, batchsize, metrics,
                                         metric_keys, verbose, **kwargs)
 
-    def save_state(self, file_name, epoch, **kwargs):
+    def save_state(self, file_name: str, epoch: int, **kwargs):
         """
         saves the current state via
         :func:`delira.io.chainer.save_checkpoint`
@@ -439,7 +455,7 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
                         **kwargs)
 
     @staticmethod
-    def load_state(file_name, **kwargs):
+    def load_state(file_name: str, **kwargs):
         """
         Loads the new state from file via
         :func:`delira.io.chainer.load_checkpoint`
@@ -462,7 +478,7 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
 
         return load_checkpoint(file_name, **kwargs)
 
-    def update_state(self, file_name, *args, **kwargs):
+    def update_state(self, file_name: str, *args, **kwargs):
         """
         Update internal state from a loaded state
 
@@ -487,7 +503,7 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
                                                "optimizers": self.optimizers},
                                            **kwargs))
 
-    def _update_state(self, new_state):
+    def _update_state(self, new_state: dict):
         """
         Update the state from a given new state
 
@@ -515,7 +531,9 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
         return super()._update_state(new_state)
 
     @staticmethod
-    def _search_for_prev_state(path, extensions=None):
+    def _search_for_prev_state(
+            path: str,
+            extensions: Optional[Union[list, Iterable]] = None):
         """
         Helper function to search in a given path for previous epoch states
         (indicated by extensions)

@@ -10,6 +10,7 @@ from tqdm import tqdm
 from delira import get_backends
 from delira.utils import subdirs
 from delira.utils.decorators import make_deprecated
+from typing import Callable
 
 
 class AbstractDataset:
@@ -51,7 +52,7 @@ class AbstractDataset:
         pass
 
     @abc.abstractmethod
-    def __getitem__(self, index):
+    def __getitem__(self, index: int):
         """
         return data with given index (and loads it before if lazy)
 
@@ -118,7 +119,7 @@ class AbstractDataset:
 
         return self.data[index]
 
-    def get_subset(self, indices):
+    def get_subset(self, indices: typing.Union[typing.List, typing.Iterable]):
         """
         Returns a Subset of the current dataset based on given indices
 
@@ -188,7 +189,7 @@ class _DatasetIter(object):
     Iterator for dataset
     """
 
-    def __init__(self, dset):
+    def __init__(self, dset: AbstractDataset):
         """
 
         Parameters
@@ -218,7 +219,8 @@ class BlankDataset(AbstractDataset):
 
     """
 
-    def __init__(self, data, old_getitem, **kwargs):
+    def __init__(self, data: typing.Iterable, old_getitem: Callable,
+                 **kwargs):
         """
 
         Parameters
@@ -239,7 +241,7 @@ class BlankDataset(AbstractDataset):
         for key, val in kwargs.items():
             setattr(self, key, val)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int):
         """
         returns single sample corresponding to ``index`` via the ``_sample_fn``
 
@@ -339,7 +341,7 @@ class BaseCacheDataset(AbstractDataset):
                                           **self._load_kwargs))
         return data
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int):
         """
         return data sample specified by index
 
@@ -416,7 +418,7 @@ class BaseLazyDataset(AbstractDataset):
             data = [os.path.join(path, p) for p in os.listdir(path)]
         return data
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int):
         """
         load data sample specified by index
 
@@ -511,13 +513,13 @@ class BaseExtendCacheDataset(BaseCacheDataset):
 
 
 class ConcatDataset(AbstractDataset):
-    def __init__(self, *datasets):
+    def __init__(self, *datasets : AbstractDataset):
         """
         Concatenate multiple datasets to one
 
         Parameters
         ----------
-        datasets:
+        datasets :
             variable number of datasets
         """
         super().__init__(None, None)
@@ -530,7 +532,7 @@ class ConcatDataset(AbstractDataset):
 
         self.data = datasets
 
-    def get_sample_from_index(self, index):
+    def get_sample_from_index(self, index: int):
         """
         Returns the data sample for a given index
         (without any loading if it would be necessary)
@@ -570,7 +572,7 @@ class ConcatDataset(AbstractDataset):
         raise IndexError("Index %d is out of range for %d items in datasets" %
                          (index, len(self)))
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int):
         return self.get_sample_from_index(index)
 
     def __len__(self):
@@ -585,10 +587,10 @@ class Nii3DLazyDataset(BaseLazyDataset):
     @make_deprecated('LoadSample')
     def __init__(
             self,
-            data_path,
-            load_fn,
-            img_files,
-            label_file,
+            data_path: str,
+            load_fn: Callable,
+            img_files: typing.Union[list, typing.Iterable],
+            label_file: str,
             **load_kwargs):
         """
          Parameters
@@ -613,7 +615,7 @@ class Nii3DLazyDataset(BaseLazyDataset):
         self.label_file = label_file
         super().__init__(data_path, load_fn, **load_kwargs)
 
-    def _make_dataset(self, path):
+    def _make_dataset(self, path: str):
         """
         Helper Function to make a dataset containing all samples in a certain
         directory
@@ -644,8 +646,9 @@ class Nii3DCacheDatset(BaseCacheDataset):
      """
 
     @make_deprecated('LoadSample')
-    def __init__(self, data_path, load_fn,
-                 img_files, label_file, **load_kwargs):
+    def __init__(self, data_path: str, load_fn: Callable,
+                 img_files: typing.Union[list, typing.Iterable],
+                 label_file: str, **load_kwargs):
         """
          Parameters
         ----------
@@ -669,19 +672,22 @@ class Nii3DCacheDatset(BaseCacheDataset):
         self.label_file = label_file
         super().__init__(data_path, load_fn, **load_kwargs)
 
-    def _make_dataset(self, path):
+    def _make_dataset(self, path: str):
         """
         Helper Function to make a dataset containing all samples in a certain
         directory
-         Parameters
+
+        Parameters
         ----------
         path: str
             path to data samples
-         Returns
+
+        Returns
         -------
         list
             list of samples
-         Raises
+
+        Raises
         ------
         AssertionError
             if `path` is not a valid directory
@@ -709,8 +715,11 @@ if "TORCH" in get_backends():
 
         """
 
-        def __init__(self, dataset, root="/tmp/", train=True, download=True,
-                     img_shape=(28, 28), one_hot=False, **kwargs):
+        def __init__(self, dataset: str, root: str = "/tmp/",
+                     train: bool = True, download: bool = True,
+                     img_shape: typing.Union[tuple, list,
+                                             typing.Iterable] = (28, 28),
+                     one_hot: bool = False, **kwargs):
             """
 
             Parameters
@@ -746,7 +755,7 @@ if "TORCH" in get_backends():
             self.one_hot = one_hot
             self.data = self._make_dataset(dataset, **kwargs)
 
-        def _make_dataset(self, dataset, **kwargs):
+        def _make_dataset(self, dataset: str, **kwargs):
             """
             Create the actual dataset
 
@@ -792,7 +801,7 @@ if "TORCH" in get_backends():
             return _dataset_cls(root=self.root, train=self.train,
                                 download=self.download, **kwargs)
 
-        def __getitem__(self, index):
+        def __getitem__(self, index: int):
             """
             return data sample specified by index
 

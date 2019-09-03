@@ -1,7 +1,10 @@
 from inspect import signature as get_signature
 from sklearn.base import BaseEstimator
+from typing import Optional
 
 from delira.models.abstract_network import AbstractNetwork
+
+Device = str
 
 
 class SklearnEstimator(AbstractNetwork):
@@ -72,7 +75,8 @@ class SklearnEstimator(AbstractNetwork):
         return hasattr(self, "partial_fit")
 
     @staticmethod
-    def prepare_batch(batch: dict, input_device, output_device):
+    def prepare_batch(batch: dict, input_device: Device,
+                      output_device: Device):
         """
         Helper Function to prepare Network Inputs and Labels (convert them to
         correct type and shape and push them to correct devices)
@@ -103,8 +107,8 @@ class SklearnEstimator(AbstractNetwork):
         return new_batch
 
     @staticmethod
-    def closure(model, data_dict: dict, optimizers: dict, losses={},
-                metrics={}, fold=0, **kwargs):
+    def closure(model, data_dict: dict, optimizers: dict, losses: dict,
+                metrics: Optional[dict] = None, fold: int = 0, **kwargs):
         """
         default closure method to do a single training step;
         Could be overwritten for more advanced models
@@ -139,6 +143,8 @@ class SklearnEstimator(AbstractNetwork):
             dictionary containing all predictions
 
         """
+        if metrics is None:
+            metrics = {}
 
         if model.iterative_training:
             fit_fn = model.partial_fit

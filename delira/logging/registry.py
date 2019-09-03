@@ -1,12 +1,13 @@
 from delira.logging.base_logger import Logger
 from collections import OrderedDict
+from typing import Optional
 
 # Registry dict containing all registered available Loggers
 # Use Ordered Dict here to use first logger for logging if no name was given
 _AVAILABLE_LOGGERS = OrderedDict()
 
 
-def log(msg: dict, name=None):
+def log(msg: dict, name: Optional[str] = None):
     """
     Global logging function
 
@@ -64,7 +65,7 @@ def logger_exists(name: str):
     return name in _AVAILABLE_LOGGERS
 
 
-def register_logger(logger: Logger, name: str, overwrite=False):
+def register_logger(logger: Logger, name: str, overwrite: bool = False):
     """
     Register a new logger to the Registry
 
@@ -107,7 +108,7 @@ def unregister_logger(name: str):
     return _AVAILABLE_LOGGERS.pop(name)
 
 
-def get_logger(name):
+def get_logger(name: str):
     """
     Returns a logger from the registry
 

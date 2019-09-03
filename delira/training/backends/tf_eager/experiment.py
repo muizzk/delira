@@ -1,5 +1,5 @@
-import typing
 from functools import partial
+from typing import Union, Iterable, Optional, Callable, ClassVar
 
 import tensorflow as tf
 
@@ -7,6 +7,7 @@ from delira.data_loading import BaseDataManager
 from delira.models.backends.tf_eager import AbstractTfEagerNetwork
 
 from delira.training.base_experiment import BaseExperiment
+from delira.training.base_trainer import BaseNetworkTrainer as BaseTrainer
 from delira.training.parameters import Parameters
 
 from delira.training.backends.tf_eager.trainer import TfEagerNetworkTrainer
@@ -16,16 +17,16 @@ from delira.training.backends.tf_eager.utils import convert_to_numpy
 
 class TfEagerExperiment(BaseExperiment):
     def __init__(self,
-                 params: typing.Union[str, Parameters],
+                 params: Union[str, Parameters],
                  model_cls: AbstractTfEagerNetwork,
-                 n_epochs=None,
-                 name=None,
-                 save_path=None,
-                 key_mapping=None,
-                 val_score_key=None,
-                 optim_builder=create_optims_default,
-                 checkpoint_freq=1,
-                 trainer_cls=TfEagerNetworkTrainer,
+                 n_epochs: Optional[int] = None,
+                 name: Optional[str] = None,
+                 save_path: Optional[str] = None,
+                 key_mapping: Optional[dict] = None,
+                 val_score_key: Optional[str] = None,
+                 optim_builder: Callable = create_optims_default,
+                 checkpoint_freq: int = 1,
+                 trainer_cls: ClassVar[BaseTrainer] = TfEagerNetworkTrainer,
                  **kwargs):
         """
 
@@ -80,11 +81,16 @@ class TfEagerExperiment(BaseExperiment):
                          trainer_cls=trainer_cls,
                          **kwargs)
 
-    def kfold(self, data: BaseDataManager, metrics: dict, num_epochs=None,
-              num_splits=None, shuffle=False, random_seed=None,
-              split_type="random", val_split=0.2, label_key="label",
-              train_kwargs: dict = None, test_kwargs: dict = None,
-              metric_keys: dict = None, params=None, verbose=False,
+    def kfold(self, data: BaseDataManager, metrics: dict,
+              num_epochs: Optional[int] = None,
+              num_splits: Optional[int] = None, shuffle: bool = False,
+              random_seed: Optional[int] = None,
+              split_type: str="random", val_split: float = 0.2,
+              label_key: str = "label",
+              train_kwargs: Optional[dict] = None,
+              test_kwargs: Optional[dict] = None,
+              metric_keys: Optional[dict] = None,
+              params: Optional[Parameters] = None, verbose: bool = False,
               **kwargs):
         """
         Performs a k-Fold cross-validation
@@ -200,10 +206,10 @@ class TfEagerExperiment(BaseExperiment):
             verbose=verbose,
             **kwargs)
 
-    def test(self, network, test_data: BaseDataManager,
-             metrics: dict, metric_keys=None,
-             verbose=False, prepare_batch=lambda x: x,
-             convert_fn=None, **kwargs):
+    def test(self, network: AbstractTfEagerNetwork, test_data: BaseDataManager,
+             metrics: dict, metric_keys: Optional[dict] = None,
+             verbose: bool = False, prepare_batch: Callable = lambda x: x,
+             convert_fn: Optional[Callable] = None, **kwargs):
         """
         Setup and run testing on a given network
 
@@ -261,7 +267,7 @@ class TfEagerExperiment(BaseExperiment):
                             verbose=verbose, prepare_batch=prepare_batch,
                             convert_fn=convert_fn, **kwargs)
 
-    def setup(self, params, training=True, **kwargs):
+    def setup(self, params: Parameters, training: bool = True, **kwargs):
         """
         Defines the setup behavior (model, trainer etc.) for training and
         testing case

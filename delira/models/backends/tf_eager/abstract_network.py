@@ -3,6 +3,9 @@ import typing
 import tensorflow as tf
 import numpy as np
 from delira.models.abstract_network import AbstractNetwork
+from typing import Union, Iterable, Optional
+
+Device = str
 
 
 class AbstractTfEagerNetwork(AbstractNetwork, tf.keras.layers.Layer):
@@ -12,8 +15,9 @@ class AbstractTfEagerNetwork(AbstractNetwork, tf.keras.layers.Layer):
 
     """
 
-    def __init__(self, data_format="channels_first", trainable=True,
-                 name=None, dtype=None, **kwargs):
+    def __init__(self, data_format: str = "channels_first",
+                 trainable: bool = True, name: Optional[str] = None,
+                 dtype: Optional[Union[str, np.dtype]] = None, **kwargs):
         """
 
         Parameters
@@ -74,7 +78,8 @@ class AbstractTfEagerNetwork(AbstractNetwork, tf.keras.layers.Layer):
         return self.call(*args, **kwargs)
 
     @staticmethod
-    def prepare_batch(batch: dict, input_device, output_device):
+    def prepare_batch(batch: dict, input_device: Device,
+                      output_device: Device):
         """
         Helper Function to prepare Network Inputs and Labels (convert them to
         correct type and shape and push them to correct devices)
@@ -109,9 +114,12 @@ class AbstractTfEagerNetwork(AbstractNetwork, tf.keras.layers.Layer):
         return new_batch
 
     @staticmethod
-    def closure(model, data_dict: dict,
-                optimizers: typing.Dict[str, tf.train.Optimizer], losses={},
-                metrics={}, fold=0, **kwargs):
+    def closure(model: AbstractNetwork, data_dict: dict,
+                optimizers: typing.Dict[str, tf.train.Optimizer], losses: dict,
+                metrics: Optional[dict] = None, fold: int = 0, **kwargs):
+
+        if metrics is None:
+            metrics = {}
 
         loss_vals, metric_vals = {}, {}
 

@@ -1,5 +1,7 @@
 from threading import Event
 from queue import Queue
+from typing import Optional, Callable, Union, Iterable, Mapping
+import numpy as np
 
 from delira.logging.writer_backend import WriterLoggingBackend
 
@@ -7,10 +9,19 @@ from delira.logging.writer_backend import WriterLoggingBackend
 # capabilities
 try:
     from torch.utils.tensorboard import SummaryWriter
+    from delira.models.backends.torch import AbstractPyTorchNetwork
     LOGDIR_KWARG = "log_dir"
 except ImportError:
     from tensorboardX import SummaryWriter
     LOGDIR_KWARG = "logdir"
+    # Mock torch Tensor for Annotations if necessary
+    torch = type("torch", (), {'Tensor': None})
+
+try:
+    from tensorflow import Graph
+except ImportError:
+    # Mock Tensorflow if necessary for Annotations
+    tensorflow = type("tensorflow", (), {"Graph": None})
 
 
 class TensorboardBackend(WriterLoggingBackend):
@@ -18,8 +29,9 @@ class TensorboardBackend(WriterLoggingBackend):
     A Tensorboard logging backend
     """
 
-    def __init__(self, writer_kwargs=None,
-                 abort_event: Event = None, queue: Queue = None):
+    def __init__(self, writer_kwargs: Optional[dict] = None,
+                 abort_event: Optional[Event] = None,
+                 queue: Optional[Queue] = None):
         """
 
         Parameters
@@ -43,7 +55,9 @@ class TensorboardBackend(WriterLoggingBackend):
         super().__init__(SummaryWriter, writer_kwargs,
                          abort_event, queue)
 
-    def _call_exec_fn(self, exec_fn, args):
+    def _call_exec_fn(self, exec_fn: Callable,
+                      args: Union[Union[list, tuple, Iterable],
+                                  Union[dict, Mapping]]):
         """
         Helper Function calling the actual mapped function and flushing
         results to the writer afterwards
@@ -75,7 +89,9 @@ class TensorboardBackend(WriterLoggingBackend):
         """
         self._writer.file_writer.flush()
 
-    def _graph_pytorch(self, model, input_to_model=None, verbose=False,
+    def _graph_pytorch(self, model: AbstractPyTorchNetwork,
+                       input_to_model: Optional[torch.Tensor] = None,
+                       verbose: bool = False,
                        **kwargs):
         """
         Function to log a PyTorch graph
@@ -98,7 +114,7 @@ class TensorboardBackend(WriterLoggingBackend):
 
         self._writer.add_graph(*converted_args, **converted_kwargs)
 
-    def _graph_tf(self, graph, run_metadata=None):
+    def _graph_tf(self, graph: tensorflow.Graph, run_metadata: Optional = None):
         """
         Function to log a TensorFlow Graph
 
@@ -137,7 +153,7 @@ class TensorboardBackend(WriterLoggingBackend):
                 graph_def=graphdef.SerializeToString(),
                 tagged_run_metadata=run_metadata))
 
-    def _graph_onnx(self, prototxt):
+    def _graph_onnx(self, prototxt: str):
         """
         Function to log a ONNX graph to file
 
@@ -151,8 +167,11 @@ class TensorboardBackend(WriterLoggingBackend):
             prototxt=prototxt)
         self._writer.add_onnx_graph(*converted_args, **converted_kwargs)
 
-    def _embedding(self, mat, metadata=None, label_img=None, global_step=None,
-                   tag='default', metadata_header=None):
+    def _embedding(self, mat: Union[np.ndarray, Iterable],
+                   metadata: Optional = None,
+                   label_img: Optional[Union[np.array, Iterable]] = None,
+                   global_step: Optional[int] = None,
+                   tag: str = 'default', metadata_header: Optional = None):
         """
         Function to create an embedding of given data
 
@@ -180,8 +199,9 @@ class TensorboardBackend(WriterLoggingBackend):
         )
         self._writer.add_embedding(*converted_args, **converted_kwargs)
 
-    def _scalars(self, main_tag: str, tag_scalar_dict: dict, global_step=None,
-                 walltime=None, sep="/"):
+    def _scalars(self, main_tag: str, tag_scalar_dict: dict,
+                 global_step: Optional[int] = None,
+                 walltime: Optional = None, sep: int = "/"):
         """
         Function to log multiple scalars at once. Opposing to the base
         function, this is done sequentially rather then parallel to avoid

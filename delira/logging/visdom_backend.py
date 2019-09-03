@@ -1,6 +1,7 @@
 import tensorboardX
 from threading import Event
 from queue import Queue
+from typing import Optional
 
 from delira.logging.writer_backend import WriterLoggingBackend
 
@@ -10,8 +11,9 @@ class VisdomBackend(WriterLoggingBackend):
     A Visdom Logging backend
     """
 
-    def __init__(self, writer_kwargs: dict = None,
-                 abort_event: Event = None, queue: Queue = None):
+    def __init__(self, writer_kwargs: Optional[dict] = None,
+                 abort_event: Optional[Event] = None,
+                 queue: Optional[Queue] = None):
         """
 
         Parameters

@@ -1,9 +1,10 @@
-import typing
+from typing import Optional, Union, Iterable, ClassVar, Callable
 from functools import partial
 
 from delira.models.backends.chainer import AbstractChainerNetwork
 from delira.data_loading import BaseDataManager
 from delira.training.base_experiment import BaseExperiment
+from delira.training.base_trainer import BaseNetworkTrainer
 from delira.training.parameters import Parameters
 
 from delira.training.backends.chainer.utils import create_optims_default
@@ -12,18 +13,19 @@ from delira.training.backends.chainer.trainer import ChainerNetworkTrainer
 
 
 class ChainerExperiment(BaseExperiment):
-    def __init__(self,
-                 params: typing.Union[str, Parameters],
-                 model_cls: AbstractChainerNetwork,
-                 n_epochs=None,
-                 name=None,
-                 save_path=None,
-                 key_mapping=None,
-                 val_score_key=None,
-                 optim_builder=create_optims_default,
-                 checkpoint_freq=1,
-                 trainer_cls=ChainerNetworkTrainer,
-                 **kwargs):
+    def __init__(
+            self,
+            params: Union[str, Parameters],
+            model_cls: AbstractChainerNetwork,
+            n_epochs: Optional[int] = None,
+            name: Optional[str] = None,
+            save_path: Optional[str] = None,
+            key_mapping: Optional[dict] = None,
+            val_score_key: Optional[str] = None,
+            optim_builder: Callable = create_optims_default,
+            checkpoint_freq: int = 1,
+            trainer_cls: ClassVar[BaseNetworkTrainer] = ChainerNetworkTrainer,
+            **kwargs):
         """
 
         Parameters
@@ -78,9 +80,9 @@ class ChainerExperiment(BaseExperiment):
 
     def test(self, network: AbstractChainerNetwork,
              test_data: BaseDataManager,
-             metrics: dict, metric_keys=None,
-             verbose=False, prepare_batch=None,
-             convert_fn=convert_to_numpy, **kwargs):
+             metrics: dict, metric_keys: Optional[dict] = None,
+             verbose: bool = False, prepare_batch: Optional[Callable] = None,
+             convert_fn: Callable = convert_to_numpy, **kwargs):
         """
         Setup and run testing on a given network
 

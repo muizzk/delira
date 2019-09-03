@@ -1,6 +1,7 @@
 from delira.models.backends.chainer.abstract_network import \
-    AbstractChainerNetwork
+    AbstractChainerNetwork, Device
 import chainer
+from typing import Union, Iterable, Mapping, Optional, ClassVar
 
 
 def _apply_scatter(inputs: chainer.Variable, target_devices: list,
@@ -25,7 +26,8 @@ def _apply_scatter(inputs: chainer.Variable, target_devices: list,
 
     """
 
-    def _slice_inputs(input_var, dim, num_dims, start, end, target_device):
+    def _slice_inputs(input_var: chainer.Variable, dim: int, num_dims: int,
+                      start: int, end: int, target_device: Device):
         """
         Slices the input variable along a given dimension from start to end
         and pushes it to correct device
@@ -88,14 +90,16 @@ def _apply_scatter(inputs: chainer.Variable, target_devices: list,
     return scattered_inputs
 
 
-def _apply_gather(target_device, dim, *outputs):
+def _apply_gather(target_device: Device, dim: int, *outputs):
     for _output in outputs:
         _output.to_device(target_device)
 
     return chainer.functions.concat(outputs, dim)
 
 
-def _scatter(inputs, target_devices: list, dim):
+def _scatter(inputs: Union[Union[chainer.Variable, tuple, list, Iterable],
+                           Union[dict, Mapping]],
+             target_devices: list, dim: int):
     """
     Scatters all inputs across given target_devices
 
@@ -114,7 +118,9 @@ def _scatter(inputs, target_devices: list, dim):
 
     """
 
-    def _scatter_map(inputs):
+    def _scatter_map(
+            inputs: Union[Union[chainer.Variable, tuple, list, Iterable],
+                          Union[dict, Mapping]],):
         """
         Scatters all inputs across given target_devices
 
@@ -167,7 +173,9 @@ def _scatter(inputs, target_devices: list, dim):
         _scatter_map = None
 
 
-def _gather(outputs, target_device, dim=0):
+def _gather(outputs: Union[Union[chainer.Variable, tuple, list, Iterable],
+                           Union[dict, Mapping]],
+            target_device: Device, dim: int = 0):
     r"""
     Gathers tensors from different GPUs on a specified device
       (-1 means the CPU).
@@ -202,9 +210,10 @@ class DataParallelChainerNetwork(AbstractChainerNetwork):
     parallel training by splitting the batches
     """
 
-    def __init__(self, module: AbstractChainerNetwork, devices: list,
-                 output_device=None,
-                 batch_dim=0):
+    def __init__(self, module: AbstractChainerNetwork,
+                 devices: Union[list, Iterable],
+                 output_device: Optional[Device] = None,
+                 batch_dim: int = 0):
         """
 
         Parameters
@@ -280,7 +289,7 @@ class DataParallelChainerNetwork(AbstractChainerNetwork):
 
         return predictions
 
-    def params(self, include_uninit=True):
+    def params(self, include_uninit: bool = True):
         """
         Only the parameters of the module on the first device will actually
         be updated, all the other parameters will be replicated by the
@@ -297,7 +306,8 @@ class DataParallelChainerNetwork(AbstractChainerNetwork):
         return self.modules[0].params(include_uninit)
 
     @staticmethod
-    def _scatter(inputs, kwargs, target_devices: list, dim=0):
+    def _scatter(inputs: Union[list, tuple, Iterable], kwargs: dict,
+                 target_devices: Union[list, tuple, Iterable], dim: int = 0):
         """
         Scatters all inputs (args and kwargs) to target devices and splits
         along given dimension
@@ -339,7 +349,8 @@ class DataParallelChainerNetwork(AbstractChainerNetwork):
         return inputs, kwargs
 
     @staticmethod
-    def _gather(predictions, dim, target_device):
+    def _gather(predictions: Union[list, tuple, Iterable],
+                dim: int, target_device: Device):
         """
         Re-Builds batches on the target device
 
@@ -430,7 +441,7 @@ class DataParallelChainerOptimizer(chainer.Optimizer):
 
     """
 
-    def __init__(self, optimizer):
+    def __init__(self, optimizer: chainer.Optimizer):
         """
 
         Parameters
@@ -448,7 +459,8 @@ class DataParallelChainerOptimizer(chainer.Optimizer):
                                % optimizer.__class__.__name__)
 
     @classmethod
-    def from_optimizer_class(cls, optim_cls, *args, **kwargs):
+    def from_optimizer_class(cls, optim_cls: ClassVar[chainer.Optimizer],
+                             *args, **kwargs):
         """
 
         Parameters
@@ -472,7 +484,7 @@ class DataParallelChainerOptimizer(chainer.Optimizer):
                                % optim_cls.__name__)
         return cls(_optim)
 
-    def setup(self, link):
+    def setup(self, link: DataParallelChainerNetwork):
         """
         Calls the setup method of the internal optimizer and registers the
         necessary grads for data-parallel behavior

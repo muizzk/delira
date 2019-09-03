@@ -1,5 +1,6 @@
 from delira.models.backends.tf_eager import AbstractTfEagerNetwork
 import typing
+from typing import Optional, Dict
 import logging
 
 import tensorflow as tf
@@ -7,7 +8,8 @@ import tensorflow as tf
 logger = logging.getLogger(__name__)
 
 
-def save_checkpoint(file: str, model=None):
+def save_checkpoint(file: str,
+                    model: Optional[AbstractTfEagerNetwork] = None):
     """
     Save model's parameters contained in it's graph
 
@@ -21,7 +23,8 @@ def save_checkpoint(file: str, model=None):
     tf.train.Saver().save(model._sess, file)
 
 
-def load_checkpoint(file: str, model=None):
+def load_checkpoint(file: str,
+                    model: Optional[AbstractTfEagerNetwork] = None):
     """
     Loads a saved model
 
@@ -39,8 +42,8 @@ def load_checkpoint(file: str, model=None):
     return {}
 
 
-def _create_varlist(model: AbstractTfEagerNetwork = None,
-                    optimizer: typing.Dict[str, tf.train.Optimizer] = None):
+def _create_varlist(model: Optional[AbstractTfEagerNetwork] = None,
+                    optimizer: Optional[Dict[str, tf.train.Optimizer]] = None):
     variable_list = []
 
     if model is not None:
@@ -53,11 +56,11 @@ def _create_varlist(model: AbstractTfEagerNetwork = None,
     return variable_list
 
 
-def save_checkpoint_eager(file,
-                          model: AbstractTfEagerNetwork = None,
-                          optimizer: typing.Dict[str,
-                                                 tf.train.Optimizer] = None,
-                          epoch=None):
+def save_checkpoint_eager(
+        file: str,
+        model: Optional[AbstractTfEagerNetwork] = None,
+        optimizer: Optional[Dict[str, tf.train.Optimizer]] = None,
+        epoch: Optional[int] = None):
     variable_list = _create_varlist(model, optimizer)
 
     # can only save if variables exist, this is not the case if there was no
@@ -71,10 +74,10 @@ def save_checkpoint_eager(file,
                     "network yet, this is not an error, but expected behavior")
 
 
-def load_checkpoint_eager(file,
-                          model: AbstractTfEagerNetwork = None,
-                          optimizer: typing.Dict[str,
-                                                 tf.train.Optimizer] = None):
+def load_checkpoint_eager(
+        file: str,
+        model: Optional[AbstractTfEagerNetwork] = None,
+        optimizer: Optional[Dict[str, tf.train.Optimizer]] = None):
 
     variable_list = _create_varlist(model, optimizer)
 
