@@ -1,5 +1,4 @@
-
-import typing
+from typing import Union, Callable, Optional, ClassVar, Iterable
 import logging
 import pickle
 import os
@@ -36,19 +35,20 @@ class BaseExperiment(object):
 
     """
 
-    def __init__(self,
-                 params: typing.Union[str, Parameters],
-                 model_cls: AbstractNetwork,
-                 n_epochs=None,
-                 name=None,
-                 save_path=None,
-                 key_mapping=None,
-                 val_score_key=None,
-                 optim_builder=None,
-                 checkpoint_freq=1,
-                 trainer_cls=BaseNetworkTrainer,
-                 predictor_cls=Predictor,
-                 **kwargs):
+    def __init__(
+            self,
+            params: Union[str, Parameters],
+            model_cls: ClassVar[AbstractNetwork],
+            n_epochs: Optional[int] = None,
+            name: Optional[str] = None,
+            save_path: Optional[str] = None,
+            key_mapping: Optional[dict] = None,
+            val_score_key: Optional[str] = None,
+            optim_builder: Optional[Callable] = None,
+            checkpoint_freq: int = 1,
+            trainer_cls: ClassVar[BaseNetworkTrainer] = BaseNetworkTrainer,
+            predictor_cls: ClassVar[Predictor] = Predictor,
+            **kwargs):
         """
 
         Parameters
@@ -140,7 +140,7 @@ class BaseExperiment(object):
 
         self.kwargs = kwargs
 
-    def setup(self, params, training=True, **kwargs):
+    def setup(self, params: Parameters, training: bool = True, **kwargs):
         """
         Defines the setup behavior (model, trainer etc.) for training and
         testing case
@@ -174,7 +174,7 @@ class BaseExperiment(object):
 
         return self._setup_test(params, **kwargs)
 
-    def _setup_training(self, params, **kwargs):
+    def _setup_training(self, params: Parameters, **kwargs):
         """
         Handles the setup for training case
 
@@ -229,8 +229,9 @@ class BaseExperiment(object):
             **kwargs
         )
 
-    def _setup_test(self, params, model, convert_batch_to_npy_fn,
-                    prepare_batch_fn, **kwargs):
+    def _setup_test(self, params: Parameters, model: AbstractNetwork,
+                    convert_batch_to_npy_fn: Callable,
+                    prepare_batch_fn: Callable, **kwargs):
         """
 
         Parameters
@@ -262,8 +263,8 @@ class BaseExperiment(object):
         return predictor
 
     def run(self, train_data: BaseDataManager,
-            val_data: BaseDataManager = None,
-            params: Parameters = None, **kwargs):
+            val_data: Optional[BaseDataManager] = None,
+            params: Optional[Parameters] = None, **kwargs):
         """
         Setup and run training
 
@@ -312,8 +313,8 @@ class BaseExperiment(object):
                                                             "lowest"))
 
     def resume(self, save_path: str, train_data: BaseDataManager,
-               val_data: BaseDataManager = None,
-               params: Parameters = None, **kwargs):
+               val_data: Optional[BaseDataManager] = None,
+               params: Optional[Parameters] = None, **kwargs):
         """
         Resumes a previous training by passing an explicit ``save_path``
         instead of generating a new one
@@ -350,10 +351,10 @@ class BaseExperiment(object):
             save_path=save_path,
             **kwargs)
 
-    def test(self, network, test_data: BaseDataManager,
-             metrics: dict, metric_keys=None,
-             verbose=False, prepare_batch=None,
-             convert_fn=lambda *x, **y: (x, y), **kwargs):
+    def test(self, network: AbstractNetwork, test_data: BaseDataManager,
+             metrics: dict, metric_keys: Optional[dict] = None,
+             verbose: bool = False, prepare_batch: Optional[Callable] = None,
+             convert_fn: Callable = lambda *x, **y: (x, y), **kwargs):
         """
         Setup and run testing on a given network
 
@@ -402,11 +403,16 @@ class BaseExperiment(object):
         return next(predictor.predict_data_mgr_cache_all(test_data, 1, metrics,
                                                          metric_keys, verbose))
 
-    def kfold(self, data: BaseDataManager, metrics: dict, num_epochs=None,
-              num_splits=None, shuffle=False, random_seed=None,
-              split_type="random", val_split=0.2, label_key="label",
-              train_kwargs: dict = None, metric_keys: dict = None,
-              test_kwargs: dict = None, params=None, verbose=False, **kwargs):
+    def kfold(self, data: BaseDataManager, metrics: dict,
+              num_epochs: Optional[int] = None,
+              num_splits: Optional[int] = None, shuffle: bool = False,
+              random_seed: Optional[int] = None, split_type: str = "random",
+              val_split: float = 0.2, label_key: str = "label",
+              train_kwargs: Optional[dict] = None,
+              metric_keys: Optional[dict] = None,
+              test_kwargs: Optional[dict] = None,
+              params: Optional[Parameters] = None,
+              verbose: bool = False, **kwargs):
         """
         Performs a k-Fold cross-validation
 
@@ -635,7 +641,7 @@ class BaseExperiment(object):
         self.params.save(os.path.join(self.save_path, "parameters"))
 
     @staticmethod
-    def load(file_name):
+    def load(file_name: str):
         """
         Loads whole experiment
 
@@ -648,7 +654,7 @@ class BaseExperiment(object):
         with open(file_name, "rb") as f:
             return pickle.load(f)
 
-    def _resolve_params(self, params: typing.Union[Parameters, None]):
+    def _resolve_params(self, params: Optional[Parameters] = None):
         """
         Merges the given params with ``self.params``.
         If the same argument is given in both params,
@@ -676,7 +682,7 @@ class BaseExperiment(object):
 
         return params
 
-    def _resolve_kwargs(self, kwargs: typing.Union[dict, None]):
+    def _resolve_kwargs(self, kwargs: Optional[dict] = None):
         """
         Merges given kwargs with ``self.kwargs``
         If same argument is present in both kwargs, the one from the given

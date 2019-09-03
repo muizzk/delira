@@ -1,5 +1,5 @@
 from functools import partial
-import typing
+from typing import Union, Optional, Callable, ClassVar
 import tensorflow as tf
 
 from delira.models.backends.tf_graph import AbstractTfGraphNetwork
@@ -9,22 +9,24 @@ from delira.training.parameters import Parameters
 from delira.training.backends.tf_eager.experiment import TfEagerExperiment
 from delira.training.backends.tf_eager.utils import create_optims_default
 
-from delira.training.backends.tf_graph.trainer import TfGraphNetworkTrainer
+from delira.training.backends.tf_graph.trainer import TfGraphNetworkTrainer \
+    as Trainer
+from delira.training.base_trainer import BaseNetworkTrainer
 from delira.training.backends.tf_graph.utils import initialize_uninitialized
 
 
 class TfGraphExperiment(TfEagerExperiment):
     def __init__(self,
-                 params: typing.Union[str, Parameters],
+                 params: Union[str, Parameters],
                  model_cls: AbstractTfGraphNetwork,
-                 n_epochs=None,
-                 name=None,
-                 save_path=None,
-                 key_mapping=None,
-                 val_score_key=None,
-                 optim_builder=create_optims_default,
-                 checkpoint_freq=1,
-                 trainer_cls=TfGraphNetworkTrainer,
+                 n_epochs: Optional[int] = None,
+                 name: Optional[str] = None,
+                 save_path: Optional[str] = None,
+                 key_mapping: Optional[dict] = None,
+                 val_score_key: Optional[str] = None,
+                 optim_builder: Callable = create_optims_default,
+                 checkpoint_freq: int = 1,
+                 trainer_cls: ClassVar[BaseNetworkTrainer] = Trainer,
                  **kwargs):
         """
 
@@ -84,10 +86,11 @@ class TfGraphExperiment(TfEagerExperiment):
             trainer_cls=trainer_cls,
             **kwargs)
 
-    def test(self, network, test_data: BaseDataManager,
-             metrics: dict, metric_keys=None,
-             verbose=False, prepare_batch=lambda x: x,
-             convert_fn=None, **kwargs):
+    def test(self, network: AbstractTfGraphNetwork,
+             test_data: BaseDataManager, metrics: dict,
+             metric_keys: Optional[dict] = None, verbose: bool = False,
+             prepare_batch: Callable = lambda x: x,
+             convert_fn: Optional[Callable] = None, **kwargs):
         """
         Setup and run testing on a given network
 

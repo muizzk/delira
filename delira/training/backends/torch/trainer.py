@@ -2,6 +2,8 @@ import logging
 import os
 from functools import partial
 import warnings
+from typing import Optional, Union, Iterable, ClassVar, Callable
+from delira.training.callbacks import AbstractCallback
 
 import torch
 from batchgenerators.dataloading import MultiThreadedAugmenter
@@ -29,39 +31,32 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
 
     """
 
-    def __init__(self,
-                 network: AbstractPyTorchNetwork,
-                 save_path: str,
-                 key_mapping,
-                 losses=None,
-                 optimizer_cls=None,
-                 optimizer_params=None,
-                 train_metrics=None,
-                 val_metrics=None,
-                 lr_scheduler_cls=None,
-                 lr_scheduler_params=None,
-                 gpu_ids=None,
-                 save_freq=1,
-                 optim_fn=create_optims_default,
-                 logging_type="tensorboardx",
-                 logging_kwargs=None,
-                 fold=0,
-                 callbacks=None,
-                 start_epoch=1,
-                 metric_keys=None,
-                 convert_batch_to_npy_fn=convert_to_numpy,
-                 mixed_precision=False,
-
-                 mixed_precision_kwargs={"opt_level": "O1",
-                                         "cast_model_type": None,
-                                         "patch_torch_functions": None,
-                                         "master_weights": None,
-                                         "loss_scale": None,
-                                         "cast_model_outputs": None,
-                                         "num_losses": 1,
-                                         "verbosity": 1},
-                 val_freq=1,
-                 ** kwargs):
+    def __init__(
+            self,
+            network: AbstractPyTorchNetwork,
+            save_path: str,
+            key_mapping : dict,
+            losses: dict,
+            optimizer_cls: ClassVar[torch.optim.Optimizer],
+            optimizer_params: Optional[dict] = None,
+            train_metrics: Optional[dict] = None,
+            val_metrics: Optional[dict] = None,
+            lr_scheduler_cls: Optional[ClassVar[AbstractCallback]] = None,
+            lr_scheduler_params: Optional[dict] = None,
+            gpu_ids: Optional[Union[list, tuple, Iterable]] = None,
+            save_freq: int = 1,
+            optim_fn: Callable = create_optims_default,
+            logging_type: str = "tensorboardx",
+            logging_kwargs: Optional[dict] = None,
+            fold: int = 0,
+            callbacks: Optional[Union[list, tuple, Iterable]] = None,
+            start_epoch: int = 1,
+            metric_keys: Optional[dict] = None,
+            convert_batch_to_npy_fn: Callable = convert_to_numpy,
+            mixed_precision: bool = False,
+            mixed_precision_kwargs: Optional[dict] = None,
+            val_freq: int = 1,
+            ** kwargs):
         """
 
         Parameters
@@ -192,6 +187,17 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
             train_metrics = {}
         if optimizer_params is None:
             optimizer_params = {}
+        if mixed_precision_kwargs is None:
+            mixed_precision_kwargs = {
+                "opt_level": "O1",
+                "cast_model_type": None,
+                "patch_torch_functions": None,
+                "master_weights": None,
+                "loss_scale": None,
+                "cast_model_outputs": None,
+                "num_losses": 1,
+                "verbosity": 1
+            }
 
         super().__init__(
             network, save_path, losses, optimizer_cls, optimizer_params,
@@ -208,10 +214,15 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
         for key, val in kwargs.items():
             setattr(self, key, val)
 
-    def _setup(self, network, optim_fn, optimizer_cls, optimizer_params,
-               lr_scheduler_cls, lr_scheduler_params, gpu_ids,
-               key_mapping, convert_batch_to_npy_fn, mixed_precision,
-               mixed_precision_kwargs):
+    def _setup(self, network: AbstractPyTorchNetwork, optim_fn: Callable,
+               optimizer_cls: ClassVar[torch.optim.Optimizer],
+               optimizer_params: dict,
+               lr_scheduler_cls: ClassVar[AbstractCallback],
+               lr_scheduler_params: dict,
+               gpu_ids: Union[list, Iterable, tuple],
+               key_mapping: dict,
+               convert_batch_to_npy_fn: Callable, mixed_precision: bool,
+               mixed_precision_kwargs: dict):
         """
         Defines the Trainers Setup
 
@@ -360,8 +371,8 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
 
         return self.module
 
-    def _at_epoch_end(self, metrics_val, val_score_key, epoch, is_best,
-                      **kwargs):
+    def _at_epoch_end(self, metrics_val: dict, val_score_key: str,
+                      epoch: int, is_best: bool, **kwargs):
         """
         Defines behaviour at beginning of each epoch:
         Executes all callbacks's `at_epoch_end` method and saves current
@@ -402,8 +413,8 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
                                          "checkpoint_best.pt"),
                             epoch)
 
-    def _train_single_epoch(self, batchgen: MultiThreadedAugmenter, epoch,
-                            verbose=False):
+    def _train_single_epoch(self, batchgen: MultiThreadedAugmenter,
+                            epoch: int, verbose: bool = False):
         """
         Trains the network a single epoch
 
@@ -421,8 +432,10 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
         return super()._train_single_epoch(batchgen, epoch,
                                            verbose=verbose)
 
-    def predict_data_mgr(self, datamgr, batchsize=None, metrics=None,
-                         metric_keys=None, verbose=False, **kwargs):
+    def predict_data_mgr(self, datamgr: BaseDataManager, batchsize: int = None,
+                         metrics: Optional[dict] = None,
+                         metric_keys: Optional[dict] = None, verbose: bool = False,
+                         **kwargs):
         """
         Defines a routine to predict data obtained from a batchgenerator
 
@@ -459,7 +472,7 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
         return super().predict_data_mgr(datamgr, batchsize, metrics,
                                         metric_keys, verbose, **kwargs)
 
-    def save_state(self, file_name, epoch, **kwargs):
+    def save_state(self, file_name: str, epoch: int, **kwargs):
         """
         saves the current state via :func:`delira.io.torch.save_checkpoint`
 
@@ -479,7 +492,7 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
                               **kwargs)
 
     @staticmethod
-    def load_state(file_name, **kwargs):
+    def load_state(file_name: str, **kwargs):
         """
         Loads the new state from file via
         :func:`delira.io.torch.load_checkpoint`
@@ -502,7 +515,7 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
 
         return load_checkpoint_torch(file_name, **kwargs)
 
-    def update_state(self, file_name, *args, **kwargs):
+    def update_state(self, file_name: str, *args, **kwargs):
         """
         Update internal state from a loaded state
 
@@ -523,7 +536,7 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
         """
         self._update_state(self.load_state(file_name, *args, **kwargs))
 
-    def _update_state(self, new_state):
+    def _update_state(self, new_state: dict):
         """
         Update the state from a given new state
 
@@ -554,7 +567,9 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
         return super()._update_state(new_state)
 
     @staticmethod
-    def _search_for_prev_state(path, extensions=None):
+    def _search_for_prev_state(
+            path: str,
+            extensions: Optional[Union[list, tuple, Iterable]] = None):
         """
         Helper function to search in a given path for previous epoch states
         (indicated by extensions)

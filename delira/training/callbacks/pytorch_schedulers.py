@@ -1,7 +1,10 @@
 from delira import get_backends
 from delira.training.callbacks.abstract_callback import AbstractCallback
+from delira.training.base_trainer import BaseNetworkTrainer
+from typing import Union, Iterable, Callable
 
 if 'TORCH' in get_backends():
+    from torch.optim import Optimizer
     from torch.optim.lr_scheduler import ReduceLROnPlateau, \
         CosineAnnealingLR, ExponentialLR, LambdaLR, MultiStepLR, StepLR
 
@@ -27,7 +30,7 @@ if 'TORCH' in get_backends():
 
             self.scheduler = None
 
-        def at_epoch_end(self, trainer, **kwargs):
+        def at_epoch_end(self, trainer: BaseNetworkTrainer, **kwargs):
             """
             Executes a single scheduling step
 
@@ -53,9 +56,13 @@ if 'TORCH' in get_backends():
 
         """
 
-        def __init__(self, optimizer, mode='min', factor=0.1, patience=10,
-                     verbose=False, threshold=1e-4, threshold_mode='rel',
-                     cooldown=0, min_lr=0, eps=1e-8):
+        def __init__(self, optimizer: Optimizer,
+                     mode: str = 'min', factor: float = 0.1,
+                     patience: int = 10, verbose: bool = False,
+                     threshold: float = 1e-4, threshold_mode: str = 'rel',
+                     cooldown: int = 0,
+                     min_lr: Union[float, list, Iterable] = 0,
+                     eps: float = 1e-8):
             """
 
             Parameters
@@ -115,7 +122,7 @@ if 'TORCH' in get_backends():
                 min_lr,
                 eps)
 
-        def at_epoch_end(self, trainer,
+        def at_epoch_end(self, trainer: BaseNetworkTrainer,
                          **kwargs):
             """
             Executes a single scheduling step
@@ -149,7 +156,8 @@ if 'TORCH' in get_backends():
 
         """
 
-        def __init__(self, optimizer, T_max, eta_min=0, last_epoch=-1):
+        def __init__(self, optimizer: Optimizer, T_max: int,
+                     eta_min: float = 0, last_epoch: int = -1):
             """
 
             Parameters
@@ -175,7 +183,8 @@ if 'TORCH' in get_backends():
 
         """
 
-        def __init__(self, optimizer, gamma, last_epoch=-1):
+        def __init__(self, optimizer: Optimizer, gamma: float,
+                     last_epoch: int = -1):
             """
 
             Parameters
@@ -198,7 +207,9 @@ if 'TORCH' in get_backends():
 
         """
 
-        def __init__(self, optimizer, lr_lambda, last_epoch=-1):
+        def __init__(self, optimizer: Optimizer,
+                     lr_lambda: Union[Callable, list, tuple, Iterable],
+                     last_epoch: int = -1):
             """
 
             Parameters
@@ -223,7 +234,9 @@ if 'TORCH' in get_backends():
 
         """
 
-        def __init__(self, optimizer, milestones, gamma=0.1, last_epoch=-1):
+        def __init__(self, optimizer: Optimizer,
+                     milestones: Union[list, tuple, Iterable],
+                     gamma: float = 0.1, last_epoch: int = -1):
             """
 
             Parameters
@@ -250,7 +263,8 @@ if 'TORCH' in get_backends():
 
         """
 
-        def __init__(self, optimizer, step_size, gamma=0.1, last_epoch=-1):
+        def __init__(self, optimizer: Optimizer, step_size: int,
+                     gamma: float = 0.1, last_epoch: int = -1):
             """
 
             Parameters

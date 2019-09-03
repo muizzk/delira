@@ -1,8 +1,11 @@
 import collections
 import numpy as np
 
+from typing import Any, Type, Callable
 
-def recursively_convert_elements(element, check_type, conversion_fn):
+
+def recursively_convert_elements(element: Any, check_type: Type,
+                                 conversion_fn: Callable):
     """
     Function to recursively convert all elements
 
@@ -55,7 +58,7 @@ def recursively_convert_elements(element, check_type, conversion_fn):
     return element
 
 
-def _correct_zero_shape(arg):
+def _correct_zero_shape(arg: Any):
     """
     Corrects the shape of numpy array to be at least 1d and returns the
     argument as is otherwise

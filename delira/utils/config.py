@@ -1,5 +1,6 @@
 from nested_lookup import nested_lookup
 from trixi.util import Config
+from typing import Any
 
 
 class LookupConfig(Config):
@@ -8,7 +9,7 @@ class LookupConfig(Config):
 
     """
 
-    def nested_get(self, key, *args, **kwargs):
+    def nested_get(self, key: str, *args, **kwargs):
         """
         Returns all occurances of ``key`` in ``self`` and subdicts
 
@@ -51,7 +52,7 @@ class LookupConfig(Config):
         else:
             return results[0]
 
-    def __setattr__(self, key, value):
+    def __setattr__(self, key: str, value: Any):
         """
         Modified to automatically convert `dict` to LookupConfig.
 

@@ -1,13 +1,7 @@
 import logging
 import os
 import pickle
-import typing
-
-from delira.data_loading.data_manager import Augmenter
-
-from delira.training.predictor import Predictor
-from delira.training.callbacks import AbstractCallback
-from delira.models import AbstractNetwork
+from typing import Callable, ClassVar, Iterable, Union, Optional, Any
 
 import numpy as np
 from tqdm import tqdm
@@ -41,24 +35,24 @@ class BaseNetworkTrainer(Predictor):
                  network: AbstractNetwork,
                  save_path: str,
                  losses: dict,
-                 optimizer_cls: type,
+                 optimizer_cls: ClassVar[Any],
                  optimizer_params: dict,
                  train_metrics: dict,
                  val_metrics: dict,
-                 lr_scheduler_cls: type,
+                 lr_scheduler_cls: ClassVar[AbstractCallback],
                  lr_scheduler_params: dict,
-                 gpu_ids: typing.List[int],
+                 gpu_ids: Union[list, tuple, Iterable],
                  save_freq: int,
-                 optim_fn,
+                 optim_fn: Callable,
                  key_mapping: dict,
                  logging_type: str,
                  logging_kwargs: dict,
                  fold: int,
-                 callbacks: typing.List[AbstractCallback],
-                 start_epoch=1,
-                 metric_keys=None,
-                 convert_batch_to_npy_fn=lambda x: x,
-                 val_freq=1,
+                 callbacks: Union[list, tuple, Iterable],
+                 start_epoch: int = 1,
+                 metric_keys: Optional[dict] = None,
+                 convert_batch_to_npy_fn: Callable = lambda x: x,
+                 val_freq: int = 1,
                  **kwargs
                  ):
         """
@@ -166,8 +160,13 @@ class BaseNetworkTrainer(Predictor):
         self._tqdm_desc = "Validate"
         self.val_freq = val_freq
 
-    def _setup(self, network, lr_scheduler_cls, lr_scheduler_params, gpu_ids,
-               key_mapping, convert_batch_to_npy_fn, prepare_batch_fn):
+    def _setup(self, network: AbstractNetwork,
+               lr_scheduler_cls: AbstractCallback,
+               lr_scheduler_params: dict,
+               gpu_ids: Union[list, tuple, Iterable],
+               key_mapping: dict,
+               convert_batch_to_npy_fn: Callable,
+               prepare_batch_fn: Callable):
 
         super()._setup(network, key_mapping, convert_batch_to_npy_fn,
                        prepare_batch_fn)
@@ -221,8 +220,8 @@ class BaseNetworkTrainer(Predictor):
         """
         return self.module
 
-    def _at_epoch_begin(self, metrics_val, val_score_key, epoch, num_epochs,
-                        **kwargs):
+    def _at_epoch_begin(self, metrics_val: dict, val_score_key: str,
+                        epoch: int, num_epochs: int, **kwargs):
         """
         Defines behaviour at beginning of each epoch: Executes all callbacks's
         `at_epoch_begin` method
@@ -248,8 +247,8 @@ class BaseNetworkTrainer(Predictor):
                                                  val_score_key=val_score_key,
                                                  curr_epoch=epoch))
 
-    def _at_epoch_end(self, metrics_val, val_score_key, epoch, is_best,
-                      **kwargs):
+    def _at_epoch_end(self, metrics_val: dict, val_score_key: str,
+                      epoch: int, is_best: bool, **kwargs):
         """
         Defines behaviour at beginning of each epoch: Executes all callbacks's
         `at_epoch_end` method and saves current state if necessary
@@ -282,8 +281,8 @@ class BaseNetworkTrainer(Predictor):
             self.save_state(os.path.join(self.save_path,
                                          "checkpoint_best"))
 
-    def _train_single_epoch(self, batchgen: Augmenter, epoch,
-                            verbose=False):
+    def _train_single_epoch(self, batchgen: Augmenter, epoch: int,
+                            verbose: bool = False):
         """
         Trains the network a single epoch
 
@@ -342,9 +341,11 @@ class BaseNetworkTrainer(Predictor):
 
         return total_metrics, total_losses
 
-    def train(self, num_epochs, datamgr_train, datamgr_valid=None,
-              val_score_key=None, val_score_mode='highest', reduce_mode='mean',
-              verbose=True):
+    def train(self, num_epochs: int, datamgr_train: BaseDataManager,
+              datamgr_valid: Optional[BaseDataManager] = None,
+              val_score_key: Optional[str] = None,
+              val_score_mode: str = 'highest', reduce_mode: str = 'mean',
+              verbose: bool = True):
         """
         Defines a routine to train a specified number of epochs
 
@@ -560,7 +561,7 @@ class BaseNetworkTrainer(Predictor):
 
         self._callbacks.append(callback)
 
-    def save_state(self, file_name, *args, **kwargs):
+    def save_state(self, file_name: str, *args, **kwargs):
         """
         saves the current state
 
@@ -578,7 +579,7 @@ class BaseNetworkTrainer(Predictor):
             pickle.dump(vars(self), f, *args, **kwargs)
 
     @staticmethod
-    def load_state(file_name, *args, **kwargs):
+    def load_state(file_name: str, *args, **kwargs):
         """
         Loads the new state from file
 
@@ -601,7 +602,7 @@ class BaseNetworkTrainer(Predictor):
 
         return new_state
 
-    def _update_state(self, new_state):
+    def _update_state(self, new_state: dict):
         """
         Update the state from a given new state
 
@@ -629,7 +630,7 @@ class BaseNetworkTrainer(Predictor):
 
         return self
 
-    def update_state(self, file_name, *args, **kwargs):
+    def update_state(self, file_name: str, *args, **kwargs):
         """
         Update internal state from a loaded state
 
@@ -651,8 +652,9 @@ class BaseNetworkTrainer(Predictor):
         self._update_state(self.load_state(file_name, *args, **kwargs))
 
     @staticmethod
-    def _is_better_val_scores(old_val_score, new_val_score,
-                              mode='highest'):
+    def _is_better_val_scores(old_val_score: Union[float, int, np.ndarray],
+                              new_val_score: Union[float, int, np.ndarray],
+                              mode: str = 'highest'):
         """
         Check whether the new val score is better than the old one
         with respect to the optimization goal
@@ -685,7 +687,7 @@ class BaseNetworkTrainer(Predictor):
         return os.path.basename(os.path.dirname(os.path.dirname(
             os.path.dirname(self.save_path))))
 
-    def _reinitialize_logging(self, logging_type, logging_kwargs: dict):
+    def _reinitialize_logging(self, logging_type: str, logging_kwargs: dict):
         from delira.logging import TensorboardBackend, VisdomBackend, \
             BaseBackend, make_logger, register_logger, unregister_logger, \
             get_available_loggers
@@ -747,7 +749,9 @@ class BaseNetworkTrainer(Predictor):
         self._logger_name = logger_name
 
     @staticmethod
-    def _search_for_prev_state(path, extensions=None):
+    def _search_for_prev_state(
+            path: str,
+            extensions: Optional[Union[list, tuple, Iterable]] = None):
         """
         Helper function to search in a given path for previous epoch states
         (indicated by extensions)

@@ -5,8 +5,9 @@ import numpy as np
 
 from delira import get_backends
 
+from typing import ClassVar, Any, Union, Callable
 
-def dtype_func(class_object):
+def dtype_func(class_object: ClassVar[Any]):
     """
     Decorator to Check whether the first argument of the decorated function is
     of a certain type
@@ -26,9 +27,9 @@ def dtype_func(class_object):
         First argument of decorated function is not of given type
 
     """
-    def instance_checker(func):
+    def instance_checker(func: Callable):
         @wraps(func)
-        def func_wrapper(checked_object, *args, **kwargs):
+        def func_wrapper(checked_object: Any, *args, **kwargs):
             assertion_str = "Argument 1 is not of type %s but of type %s" % \
                             (class_object.__name__,
                              checked_object.__class__.__name__)
@@ -39,7 +40,7 @@ def dtype_func(class_object):
     return instance_checker
 
 
-def classtype_func(class_object):
+def classtype_func(class_object: Any):
     """
     Decorator to Check whether the first argument of the decorated function is
     a subclass of a certain type
@@ -59,9 +60,9 @@ def classtype_func(class_object):
         First argument of decorated function is not a subclass of given type
 
     """
-    def subclass_checker(func):
+    def subclass_checker(func: Callable):
         @wraps(func)
-        def func_wrapper(checked_object, *args, **kwargs):
+        def func_wrapper(checked_object: Any, *args, **kwargs):
             assertion_str = "Argument 1 is not subclass of %s but of type %s" \
                             % (class_object.__name__, checked_object.__name__)
 
@@ -71,7 +72,7 @@ def classtype_func(class_object):
     return subclass_checker
 
 
-def make_deprecated(new_func):
+def make_deprecated(new_func: Union[str, Callable]):
     """
     Decorator which raises a DeprecationWarning for the decorated object
 
@@ -89,7 +90,7 @@ def make_deprecated(new_func):
     Deprecation Warning
 
     """
-    def deprecation(func):
+    def deprecation(func: Callable):
         @wraps(func)
         def func_wrapper(*args, **kwargs):
             if not isinstance(new_func, str):

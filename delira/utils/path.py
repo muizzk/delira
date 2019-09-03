@@ -1,7 +1,7 @@
 import os
 
 
-def subdirs(d):
+def subdirs(d: str):
     """For a given directory, return a list of all subdirectories (full paths)
 
     Parameters

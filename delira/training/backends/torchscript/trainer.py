@@ -1,5 +1,8 @@
 import logging
 
+from typing import Union, Optional, Callable, ClassVar, Iterable
+import torch
+
 from delira.io.torch import load_checkpoint_torchscript, \
     save_checkpoint_torchscript
 from delira.models.backends.torchscript import AbstractTorchScriptNetwork
@@ -9,36 +12,38 @@ from delira.training.backends.torch.trainer import PyTorchNetworkTrainer
 
 from delira.training.backends.torch.utils import convert_to_numpy
 from delira.training.backends.torch.utils import create_optims_default
+from delira.training.callbacks import AbstractCallback
 
 
 logger = logging.getLogger(__name__)
 
 
 class TorchScriptNetworkTrainer(PyTorchNetworkTrainer):
-    def __init__(self,
-                 network: AbstractTorchScriptNetwork,
-                 save_path: str,
-                 key_mapping,
-                 losses=None,
-                 optimizer_cls=None,
-                 optimizer_params=None,
-                 train_metrics=None,
-                 val_metrics=None,
-                 lr_scheduler_cls=None,
-                 lr_scheduler_params=None,
-                 gpu_ids=None,
-                 save_freq=1,
-                 optim_fn=create_optims_default,
-                 logging_type="tensorboardx",
-                 logging_kwargs=None,
-                 fold=0,
-                 callbacks=None,
-                 start_epoch=1,
-                 metric_keys=None,
-                 convert_batch_to_npy_fn=convert_to_numpy,
-                 criterions=None,
-                 val_freq=1,
-                 **kwargs):
+    def __init__(
+            self,
+            network: AbstractTorchScriptNetwork,
+            save_path: str,
+            key_mapping: dict,
+            losses: dict,
+            optimizer_cls: ClassVar[torch.optim.Optimizer],
+            optimizer_params: Optional[dict] = None,
+            train_metrics: Optional[dict] = None,
+            val_metrics: Optional[dict] = None,
+            lr_scheduler_cls: Optional[ClassVar[AbstractCallback]] = None,
+            lr_scheduler_params: Optional[dict] = None,
+            gpu_ids: Optional[Union[list, tuple, Iterable]] = None,
+            save_freq: int = 1,
+            optim_fn: Callable = create_optims_default,
+            logging_type: str = "tensorboardx",
+            logging_kwargs: Optional[dict] = None,
+            fold: int = 0,
+            callbacks: Optional[Union[list, tuple, Iterable]] = None,
+            start_epoch: int = 1,
+            metric_keys: Optional[dict] = None,
+            convert_batch_to_npy_fn: Callable = convert_to_numpy,
+            criterions: Optional[dict] = None,
+            val_freq: int = 1,
+            **kwargs):
         """
 
         Parameters
@@ -157,7 +162,7 @@ class TorchScriptNetworkTrainer(PyTorchNetworkTrainer):
                          criterions=criterions, val_freq=val_freq, **kwargs
                          )
 
-    def save_state(self, file_name, epoch, **kwargs):
+    def save_state(self, file_name: str, epoch: int, **kwargs):
         """
         saves the current state via
         :func:`delira.io.torch.save_checkpoint_jit`
@@ -179,7 +184,7 @@ class TorchScriptNetworkTrainer(PyTorchNetworkTrainer):
                                     self.optimizers, **kwargs)
 
     @staticmethod
-    def load_state(file_name, **kwargs):
+    def load_state(file_name: str, **kwargs):
         """
         Loads the new state from file via
         :func:`delira.io.torch.load_checkpoint:jit`
@@ -198,7 +203,7 @@ class TorchScriptNetworkTrainer(PyTorchNetworkTrainer):
         """
         return load_checkpoint_torchscript(file_name, **kwargs)
 
-    def _update_state(self, new_state):
+    def _update_state(self, new_state: dict):
         """
         Update the state from a given new state
 
@@ -219,7 +224,9 @@ class TorchScriptNetworkTrainer(PyTorchNetworkTrainer):
         return super()._update_state(new_state)
 
     @staticmethod
-    def _search_for_prev_state(path, extensions=None):
+    def _search_for_prev_state(
+            path: str,
+            extensions: Optional[Union[list, tuple, Iterable]] = None):
         """
         Helper function to search in a given path for previous epoch states
         (indicated by extensions)

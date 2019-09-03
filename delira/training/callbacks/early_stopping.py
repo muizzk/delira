@@ -1,4 +1,8 @@
 from delira.training.callbacks.abstract_callback import AbstractCallback
+from delira.training.base_trainer import BaseNetworkTrainer
+from typing import Union
+import numpy as np
+
 
 
 class EarlyStopping(AbstractCallback):
@@ -11,10 +15,10 @@ class EarlyStopping(AbstractCallback):
 
     """
 
-    def __init__(self, monitor_key,
-                 min_delta=0,
-                 patience=0,
-                 mode='min'):
+    def __init__(self, monitor_key: str,
+                 min_delta: Union[float, int] = 0,
+                 patience: int = 0,
+                 mode: str = 'min'):
         """
 
         Parameters
@@ -48,7 +52,7 @@ class EarlyStopping(AbstractCallback):
                              "of ['min', 'max']" % mode)
         self.epochs_waited = 0
 
-    def _is_better(self, metric):
+    def _is_better(self, metric: Union[float, int, np.ndarray]):
         """
         Helper function to decide whether the current metric is better than
         the best metric so far
@@ -69,7 +73,7 @@ class EarlyStopping(AbstractCallback):
         else:
             return metric > (self.best_metric + self.min_delta)
 
-    def at_epoch_end(self, trainer, **kwargs):
+    def at_epoch_end(self, trainer: BaseNetworkTrainer, **kwargs):
         """
         Actual early stopping: Checks at end of each epoch if monitored metric
         is new best and if it hasn't improved over `self.patience` epochs, the

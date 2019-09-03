@@ -3,6 +3,8 @@ import contextlib
 from delira import get_backends
 from delira.utils.decorators import make_deprecated
 
+from typing import Any, Optional, Callable
+
 if "TORCH" in get_backends():
     import torch
 
@@ -32,7 +34,7 @@ if "TORCH" in get_backends():
             self._optimizer = optimizer
 
         @contextlib.contextmanager
-        def scale_loss(self, loss):
+        def scale_loss(self, loss: torch.Tensor):
             """
             Function which scales the loss in ``apex`` and yields the unscaled
             loss here to mirror the API
@@ -47,7 +49,7 @@ if "TORCH" in get_backends():
             yield loss
             return
 
-        def step(self, closure=None):
+        def step(self, closure: Optional[Callable] = None):
             """
             Wraps the step method of the optimizer and calls the original step
             method
@@ -63,7 +65,7 @@ if "TORCH" in get_backends():
             return self._optimizer.step(closure=closure)
 
         # Forward any attribute lookups
-        def __getattr__(self, attr):
+        def __getattr__(self, attr: Any):
             return getattr(self._optimizer, attr)
 
         # Forward all torch.optim.Optimizer methods
@@ -79,13 +81,13 @@ if "TORCH" in get_backends():
         def state_dict(self):
             return self._optimizer.state_dict()
 
-        def load_state_dict(self, state_dict):
+        def load_state_dict(self, state_dict: dict):
             return self._optimizer.load_state_dict(state_dict)
 
         def zero_grad(self):
             return self._optimizer.zero_grad()
 
-        def add_param_group(self, param_group):
+        def add_param_group(self, param_group: dict):
             return self._optimizer.add_param_group(param_group)
 
     from delira import get_current_debug_mode, set_debug_mode
@@ -97,7 +99,7 @@ if "TORCH" in get_backends():
 
         """
 
-        def __init__(self, mode):
+        def __init__(self, mode: bool):
             """
 
             Parameters

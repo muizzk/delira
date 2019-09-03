@@ -1,4 +1,4 @@
-import typing
+from typing import Union, Optional, Callable, ClassVar
 
 from delira.models.backends.torchscript import AbstractTorchScriptNetwork
 
@@ -7,21 +7,22 @@ from delira.training.backends.torch.experiment import PyTorchExperiment
 from delira.training.backends.torch.utils import create_optims_default
 
 from delira.training.backends.torchscript.trainer import \
-    TorchScriptNetworkTrainer
+    TorchScriptNetworkTrainer as Trainer
+from delira.training.base_trainer import BaseNetworkTrainer
 
 
 class TorchScriptExperiment(PyTorchExperiment):
     def __init__(self,
-                 params: typing.Union[str, Parameters],
-                 model_cls: AbstractTorchScriptNetwork,
-                 n_epochs=None,
-                 name=None,
-                 save_path=None,
-                 key_mapping=None,
-                 val_score_key=None,
-                 optim_builder=create_optims_default,
-                 checkpoint_freq=1,
-                 trainer_cls=TorchScriptNetworkTrainer,
+                 params: Union[str, Parameters],
+                 model_cls: ClassVar[AbstractTorchScriptNetwork],
+                 n_epochs: Optional[int] = None,
+                 name: Optional[str] = None,
+                 save_path: Optional[str] = None,
+                 key_mapping: Optional[dict] = None,
+                 val_score_key: Optional[str] = None,
+                 optim_builder: Callable = create_optims_default,
+                 checkpoint_freq: int = 1,
+                 trainer_cls: ClassVar[BaseNetworkTrainer] = Trainer,
                  **kwargs):
         """
 

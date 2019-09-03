@@ -1,4 +1,5 @@
 from delira import get_backends
+from typing import Optional
 
 if "TORCH" in get_backends():
     import torch
@@ -10,7 +11,8 @@ if "TORCH" in get_backends():
 
         """
 
-        def __init__(self, alpha=None, gamma=2, reduction='elementwise_mean'):
+        def __init__(self, alpha: Optional[float] = None, gamma: float = 2.,
+                     reduction: str = 'elementwise_mean'):
             """
             Implements Focal Loss for binary class case
 
@@ -42,7 +44,7 @@ if "TORCH" in get_backends():
             self.gamma = gamma
             self.reduction = reduction
 
-        def forward(self, p, t):
+        def forward(self, p: torch.Tensor, t: torch.Tensor):
             bce_loss = F.binary_cross_entropy(p, t, reduction='none')
 
             if self.alpha is not None:
@@ -76,7 +78,8 @@ if "TORCH" in get_backends():
 
         """
 
-        def __init__(self, alpha=None, gamma=2, reduction='elementwise_mean'):
+        def __init__(self, alpha: Optional[float] = None, gamma: float = 2.,
+                     reduction: str = 'elementwise_mean'):
             """
             Implements Focal Loss for binary class case
 
@@ -107,7 +110,7 @@ if "TORCH" in get_backends():
             self.gamma = gamma
             self.reduction = reduction
 
-        def forward(self, p, t):
+        def forward(self, p: torch.Tensor, t: torch.Tensor):
             bce_loss = F.binary_cross_entropy_with_logits(
                 p, t, reduction='none')
 

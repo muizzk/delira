@@ -88,7 +88,7 @@ def get_backends():
     return __BACKENDS
 
 
-def seed_all(seed):
+def seed_all(seed: int):
     """
     Helper Function to seed all available backends
 

@@ -55,7 +55,7 @@ LONG_VERSION_PY = {}
 HANDLERS = {}
 
 
-def register_vcs_handler(vcs, method):  # decorator
+def register_vcs_handler(vcs: str, method: str):  # decorator
     """Decorator to mark a method as the handler for a particular VCS."""
     def decorate(f):
         """Store f in HANDLERS[vcs][method]."""
@@ -66,8 +66,11 @@ def register_vcs_handler(vcs, method):  # decorator
     return decorate
 
 
-def run_command(commands, args, cwd=None, verbose=False, hide_stderr=False,
-                env=None):
+def run_command(
+        commands: list, args, cwd: Optional[str] = None,
+        verbose: bool = False, hide_stderr: bool = False,
+        env: Optional[Union[Mapping[bytes, Union[bytes, Text]],
+                            Mapping[Text, Union[bytes, Text]]]] = None):
     """Call the given command(s)."""
     assert isinstance(commands, list)
     p = None
@@ -103,7 +106,7 @@ def run_command(commands, args, cwd=None, verbose=False, hide_stderr=False,
     return stdout, p.returncode
 
 
-def versions_from_parentdir(parentdir_prefix, root, verbose):
+def versions_from_parentdir(parentdir_prefix: str, root: str, verbose: bool):
     """Try to determine the version from the parent directory name.
 
     Source tarballs conventionally unpack into a directory that includes both
@@ -129,7 +132,7 @@ def versions_from_parentdir(parentdir_prefix, root, verbose):
 
 
 @register_vcs_handler("git", "get_keywords")
-def git_get_keywords(versionfile_abs):
+def git_get_keywords(versionfile_abs: str):
     """Extract version information from the given file."""
     # the code embedded in _version.py can just fetch the value of these
     # keywords. When used from setup.py, we don't want to import _version.py,
@@ -158,7 +161,8 @@ def git_get_keywords(versionfile_abs):
 
 
 @register_vcs_handler("git", "keywords")
-def git_versions_from_keywords(keywords, tag_prefix, verbose):
+def git_versions_from_keywords(keywords: dict, tag_prefix: str,
+                               verbose: bool):
     """Get version information from git keywords."""
     if not keywords:
         raise NotThisMethod("no keywords at all, weird")
@@ -213,7 +217,8 @@ def git_versions_from_keywords(keywords, tag_prefix, verbose):
 
 
 @register_vcs_handler("git", "pieces_from_vcs")
-def git_pieces_from_vcs(tag_prefix, root, verbose, run_command=run_command):
+def git_pieces_from_vcs(tag_prefix: str, root: str, verbose: bool,
+                        run_command: Callable = run_command):
     """Get version from 'git describe' in the root of the source tree.
 
     This only gets called if the git-archive 'subst' keywords were *not*
@@ -304,14 +309,14 @@ def git_pieces_from_vcs(tag_prefix, root, verbose, run_command=run_command):
     return pieces
 
 
-def plus_or_dot(pieces):
+def plus_or_dot(pieces: dict):
     """Return a + if we don't already have one, else return a ."""
     if "+" in pieces.get("closest-tag", ""):
         return "."
     return "+"
 
 
-def render_pep440(pieces):
+def render_pep440(pieces: dict):
     """Build up version string, with post-release "local version identifier".
 
     Our goal: TAG[+DISTANCE.gHEX[.dirty]] . Note that if you
@@ -336,7 +341,7 @@ def render_pep440(pieces):
     return rendered
 
 
-def render_pep440_pre(pieces):
+def render_pep440_pre(pieces: dict):
     """TAG[.post.devDISTANCE] -- No -dirty.
 
     Exceptions:
@@ -352,7 +357,7 @@ def render_pep440_pre(pieces):
     return rendered
 
 
-def render_pep440_post(pieces):
+def render_pep440_post(pieces: dict):
     """TAG[.postDISTANCE[.dev0]+gHEX] .
 
     The ".dev0" means dirty. Note that .dev0 sorts backwards
@@ -379,7 +384,7 @@ def render_pep440_post(pieces):
     return rendered
 
 
-def render_pep440_old(pieces):
+def render_pep440_old(pieces: dict):
     """TAG[.postDISTANCE[.dev0]] .
 
     The ".dev0" means dirty.
@@ -401,7 +406,7 @@ def render_pep440_old(pieces):
     return rendered
 
 
-def render_git_describe(pieces):
+def render_git_describe(pieces: dict):
     """TAG[-DISTANCE-gHEX][-dirty].
 
     Like 'git describe --tags --dirty --always'.
@@ -421,7 +426,7 @@ def render_git_describe(pieces):
     return rendered
 
 
-def render_git_describe_long(pieces):
+def render_git_describe_long(pieces: dict):
     """TAG-DISTANCE-gHEX[-dirty].
 
     Like 'git describe --tags --dirty --always -long'.
@@ -441,7 +446,7 @@ def render_git_describe_long(pieces):
     return rendered
 
 
-def render(pieces, style):
+def render(pieces: dict, style: str):
     """Render the given version pieces into the requested style."""
     if pieces["error"]:
         return {"version": "unknown",

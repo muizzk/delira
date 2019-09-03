@@ -4,6 +4,7 @@ from copy import deepcopy, copy
 import yaml
 
 from delira.utils import LookupConfig
+from typing import Optional, Union, Mapping, Iterable
 
 
 class Parameters(LookupConfig):
@@ -17,8 +18,8 @@ class Parameters(LookupConfig):
 
     """
 
-    def __init__(self, fixed_params=None,
-                 variable_params=None):
+    def __init__(self, fixed_params: Optional[dict] = None,
+                 variable_params: Optional[dict] = None):
         """
 
         Parameters
@@ -224,8 +225,9 @@ class Parameters(LookupConfig):
                       "wb") as f:
                 pickle.dump(self, f)
 
-    def update(self, dict_like, deep=False, ignore=None,
-               allow_dict_overwrite=True):
+    def update(self, dict_like: Union[dict, Mapping], deep: bool = False,
+               ignore: Union[tuple, list, Iterable] = None,
+               allow_dict_overwrite: bool = True):
         """Update entries in the Parameters
 
         Parameters

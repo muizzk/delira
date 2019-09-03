@@ -1,8 +1,9 @@
 import logging
 import warnings
 from abc import ABC, abstractmethod
+from typing import Optional
 
-from delira.training import BaseExperiment
+from delira.training import BaseExperiment, BaseNetworkTrainer
 from delira.training.callbacks import AbstractCallback
 
 
@@ -12,7 +13,8 @@ class BaseMessenger(ABC):
     notification service.
     """
 
-    def __init__(self, experiment: BaseExperiment, notify_epochs: int = None):
+    def __init__(self, experiment: BaseExperiment,
+                 notify_epochs: Optional[int] = None):
         """
 
         Parameters
@@ -238,7 +240,7 @@ class MessengerEpochCallback(AbstractCallback):
         self._n_epochs = n_epochs
         self._messenger = messenger
 
-    def at_epoch_end(self, trainer, **kwargs) -> dict:
+    def at_epoch_end(self, trainer: BaseNetworkTrainer, **kwargs) -> dict:
         """
         Call at end of epoch
 
@@ -282,7 +284,8 @@ class MessengerFoldCallback(AbstractCallback):
         super().__init__()
         self._messenger = messenger
 
-    def at_training_start(self, trainer, **kwargs) -> dict:
+    def at_training_start(self, trainer: BaseNetworkTrainer,
+                          **kwargs) -> dict:
         """
         End of training callback
 
@@ -302,7 +305,8 @@ class MessengerFoldCallback(AbstractCallback):
         self._messenger.emit_message(msg)
         return {}
 
-    def at_training_end(self, trainer, **kwargs) -> dict:
+    def at_training_end(self, trainer: BaseNetworkTrainer,
+                        **kwargs) -> dict:
         """
         End of training callback
 
@@ -339,7 +343,7 @@ class SlackMessenger(BaseMessenger):
     """
 
     def __init__(self, experiment: BaseExperiment, token: str,
-                 channel: str, notify_epochs: int = None, **kwargs):
+                 channel: str, notify_epochs: Optional[int] = None, **kwargs):
         """
 
         Parameters
@@ -398,7 +402,7 @@ class SlackMessenger(BaseMessenger):
             # new api
             self._ts = resp.data['ts'] if hasattr(resp, 'data') else None
 
-    def emit_message(self, msg, **kwargs):
+    def emit_message(self, msg: str, **kwargs):
         """
         Emit message (is possible the current thread is used)
 
@@ -431,7 +435,7 @@ class SlackMessenger(BaseMessenger):
             raise ValueError("Unknown version detected!")
         return resp
 
-    def _emit_message_v1(self, msg, **kwargs) -> dict:
+    def _emit_message_v1(self, msg: str, **kwargs) -> dict:
         """
         Emit message with old slack api
 
@@ -459,7 +463,7 @@ class SlackMessenger(BaseMessenger):
                           " \n {}".format(msg))
         return resp
 
-    def _emit_message_v2(self, msg, **kwargs):
+    def _emit_message_v2(self, msg: str, **kwargs):
         """
         Emit message with new slack api
 

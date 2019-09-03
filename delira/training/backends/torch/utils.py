@@ -3,10 +3,13 @@ import torch
 from delira.utils.decorators import dtype_func
 from delira.training.utils import convert_to_numpy_identity
 from delira.training.utils import recursively_convert_elements
+from typing import ClassVar
 
 
 @dtype_func(torch.nn.Module)
-def create_optims_default(model, optim_cls, **optim_params):
+def create_optims_default(model: torch.nn.Module,
+                          optim_cls: ClassVar[torch.optim.Optimizer],
+                          **optim_params):
     """
     Function to create a optimizer dictionary
     (in this case only one optimizer for the whole network)
@@ -28,7 +31,7 @@ def create_optims_default(model, optim_cls, **optim_params):
     return {"default": optim_cls(model.parameters(), **optim_params)}
 
 
-def _single_element_tensor_conversion(element):
+def _single_element_tensor_conversion(element: torch.Tensor):
     return element.cpu().detach().numpy()
 
 

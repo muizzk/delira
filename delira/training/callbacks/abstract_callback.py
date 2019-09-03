@@ -1,3 +1,6 @@
+from delira.training.base_trainer import BaseNetworkTrainer
+
+
 class AbstractCallback(object):
     """
     Implements abstract callback interface.
@@ -22,7 +25,7 @@ class AbstractCallback(object):
         """
         pass
 
-    def at_epoch_begin(self, trainer, **kwargs):
+    def at_epoch_begin(self, trainer: BaseNetworkTrainer, **kwargs):
         """
         Function which will be executed at begin of each epoch
 
@@ -41,7 +44,7 @@ class AbstractCallback(object):
         """
         return {}
 
-    def at_epoch_end(self, trainer, **kwargs):
+    def at_epoch_end(self, trainer: BaseNetworkTrainer, **kwargs):
         """
         Function which will be executed at end of each epoch
 

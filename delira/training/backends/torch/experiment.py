@@ -1,5 +1,5 @@
 from functools import partial
-import typing
+from typing import Union, Optional, Callable, ClassVar
 
 import torch
 
@@ -12,20 +12,21 @@ from delira.training.parameters import Parameters
 from delira.training.backends.torch.trainer import PyTorchNetworkTrainer
 from delira.training.backends.torch.utils import create_optims_default
 from delira.training.backends.torch.utils import convert_to_numpy
+from delira.training.base_trainer import BaseNetworkTrainer as BaseTrainer
 
 
 class PyTorchExperiment(BaseExperiment):
     def __init__(self,
-                 params: typing.Union[str, Parameters],
-                 model_cls: AbstractPyTorchNetwork,
-                 n_epochs=None,
-                 name=None,
-                 save_path=None,
-                 key_mapping=None,
-                 val_score_key=None,
-                 optim_builder=create_optims_default,
-                 checkpoint_freq=1,
-                 trainer_cls=PyTorchNetworkTrainer,
+                 params: Union[str, Parameters],
+                 model_cls: ClassVar[AbstractPyTorchNetwork],
+                 n_epochs: Optional[int] = None,
+                 name: Optional[str] = None,
+                 save_path: Optional[str] = None,
+                 key_mapping: Optional[dict] = None,
+                 val_score_key: Optional[str] = None,
+                 optim_builder: Callable = create_optims_default,
+                 checkpoint_freq: int = 1,
+                 trainer_cls: ClassVar[BaseTrainer] = PyTorchNetworkTrainer,
                  **kwargs):
         """
 
@@ -79,11 +80,15 @@ class PyTorchExperiment(BaseExperiment):
                          trainer_cls=trainer_cls,
                          **kwargs)
 
-    def kfold(self, data: BaseDataManager, metrics: dict, num_epochs=None,
-              num_splits=None, shuffle=False, random_seed=None,
-              split_type="random", val_split=0.2, label_key="label",
-              train_kwargs: dict = None, test_kwargs: dict = None,
-              metric_keys: dict = None, params=None, verbose=False,
+    def kfold(self, data: BaseDataManager, metrics: dict,
+              num_epochs: Optional[int] = None,
+              num_splits: Optional[int] = None, shuffle: bool = False,
+              random_seed: Optional[int] = None,
+              split_type: str = "random", val_split: float = 0.2,
+              label_key: str = "label", train_kwargs: Optional[dict] = None,
+              test_kwargs: Optional[dict] = None,
+              metric_keys: Optional[dict] = None,
+              params: Optional[Parameters] = None, verbose: bool = False,
               **kwargs):
         """
         Performs a k-Fold cross-validation
@@ -199,10 +204,10 @@ class PyTorchExperiment(BaseExperiment):
             verbose=verbose,
             **kwargs)
 
-    def test(self, network, test_data: BaseDataManager,
-             metrics: dict, metric_keys=None,
-             verbose=False, prepare_batch=None,
-             convert_fn=None, **kwargs):
+    def test(self, network: AbstractPyTorchNetwork, test_data: BaseDataManager,
+             metrics: dict, metric_keys: Optional[dict] = None,
+             verbose: bool = False, prepare_batch: Optional[Callable] = None,
+             convert_fn: Optional[Callable] = None, **kwargs):
         """
         Setup and run testing on a given network
 
