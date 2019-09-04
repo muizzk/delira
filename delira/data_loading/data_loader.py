@@ -5,6 +5,7 @@ import numpy as np
 from batchgenerators.dataloading.data_loader import SlimDataLoaderBase
 from queue import Empty
 import logging
+from typing import Dict, List
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ class BaseDataLoader(SlimDataLoaderBase):
     """
 
     def __init__(self, dataset: AbstractDataset,
-                 sampler_queues: list,
+                 sampler_queues: List[int],
                  batch_size: int = 1, num_batches: int = None, seed: int = 1):
         """
 
@@ -59,7 +60,7 @@ class BaseDataLoader(SlimDataLoaderBase):
         self._seed = seed
         np.random.seed(seed)
 
-    def generate_train_batch(self):
+    def generate_train_batch(self) -> Dict[str, np.ndarray]:
         """
         Generate Indices which behavior based on self.sampling gets data based
         on indices
@@ -101,7 +102,7 @@ class BaseDataLoader(SlimDataLoaderBase):
             except Empty:
                 pass
 
-    def _get_sample(self, index: int):
+    def _get_sample(self, index: int) -> Dict[str, np.ndarray]:
         """
         Helper functions which returns an element of the dataset
 

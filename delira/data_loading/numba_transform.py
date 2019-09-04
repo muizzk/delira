@@ -3,7 +3,8 @@ from batchgenerators.transforms import AbstractTransform, Compose
 import logging
 from delira import get_current_debug_mode
 import numba
-from typing import ClassVar, List, Iterable, Union
+import numpy as np
+from typing import Type, List, Iterable, Union, Dict
 
 logger = logging.getLogger(__name__)
 
@@ -24,12 +25,12 @@ class NumbaTransformWrapper(AbstractTransform):
                                        parallel=parallel, **options)
         self._transform = transform
 
-    def __call__(self, **kwargs):
+    def __call__(self, **kwargs) -> Dict[str, np.ndarray]:
         return self._transform(**kwargs)
 
 
 class NumbaTransform(NumbaTransformWrapper):
-    def __init__(self, transform_cls: ClassVar[AbstractTransform],
+    def __init__(self, transform_cls: Type[AbstractTransform],
                  nopython: bool = True, target: str = "cpu",
                  parallel: bool = False, **kwargs):
         trafo = transform_cls(**kwargs)

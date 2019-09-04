@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
 from delira.data_loading.dataset import AbstractDataset
-from typing import Union, List, Iterable
+from typing import Union, List, Iterable, Optional
 
 
 class AbstractSampler(object):
@@ -10,7 +10,9 @@ class AbstractSampler(object):
 
     """
 
-    def __init__(self, indices: Union[List, Iterable] = None):
+    def __init__(
+            self,
+            indices: Optional[Union[List[int], Iterable[int]]] = None) -> None:
         self._num_samples = len(indices)
         self._global_index = 0
 
@@ -33,7 +35,7 @@ class AbstractSampler(object):
         indices = list(range(len(dataset)))
         return cls(indices, **kwargs)
 
-    def _check_batchsize(self, n_indices: int):
+    def _check_batchsize(self, n_indices: int) -> int:
         """
         Checks if the batchsize is valid (and truncates batches if necessary).
         Will also raise StopIteration if enough batches sampled
@@ -68,7 +70,7 @@ class AbstractSampler(object):
         return n_indices
 
     @abstractmethod
-    def _get_indices(self, n_indices: int):
+    def _get_indices(self, n_indices: int) -> List[int]:
         """
         Function to return a specific number of indices.
         Implements the actual sampling strategy.
@@ -86,7 +88,7 @@ class AbstractSampler(object):
         """
         raise NotImplementedError
 
-    def __call__(self, n_indices: int):
+    def __call__(self, n_indices: int) -> List[int]:
         """
         Function to call the `get_indices` method of the sampler
 
@@ -104,5 +106,5 @@ class AbstractSampler(object):
         return self._get_indices(n_indices)
 
     @abstractmethod
-    def __len__(self):
+    def __len__(self) -> int:
         raise NotImplementedError

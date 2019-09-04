@@ -12,8 +12,10 @@ class WeightedRandomSampler(AbstractSampler):
 
     """
 
-    def __init__(self, indices: Union[List, Iterable],
-                 weights: Union[List, Iterable, np.ndarray] = None):
+    def __init__(
+            self, indices: Union[List[int], Iterable[int]],
+            weights: Union[List[float], Iterable[float], np.ndarray] = None
+    ) -> None:
         """
 
         Parameters
@@ -53,7 +55,7 @@ class WeightedRandomSampler(AbstractSampler):
         labels = [d['label'] for d in dataset]
         return cls(labels, **kwargs)
 
-    def _get_indices(self, n_indices: int):
+    def _get_indices(self, n_indices: int) -> List[int]:
         """
         Actual Sampling
 
@@ -86,7 +88,7 @@ class WeightedRandomSampler(AbstractSampler):
 
 
 class WeightedPrevalenceRandomSampler(WeightedRandomSampler):
-    def __init__(self, indices: Union[List, Iterable]):
+    def __init__(self, indices: Union[List[int], Iterable[int]]) -> None:
         """
         Implements random Per-Class Sampling and ensures uniform sampling
         of all classes

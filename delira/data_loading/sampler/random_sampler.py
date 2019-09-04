@@ -14,7 +14,7 @@ class RandomSampler(AbstractSampler):
     Implements Random Sampling With Replacement from whole Dataset
     """
 
-    def __init__(self, indices: Union[List, Iterable]):
+    def __init__(self, indices: Union[List[int], Iterable[int]]) -> None:
         """
 
         Parameters
@@ -30,7 +30,7 @@ class RandomSampler(AbstractSampler):
 
         self._replace = True
 
-    def _get_indices(self, n_indices: int):
+    def _get_indices(self, n_indices: int) -> List[int]:
         """
         Actual Sampling
 
@@ -58,7 +58,7 @@ class RandomSampler(AbstractSampler):
 
         return indices
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._indices)
 
 
@@ -67,7 +67,7 @@ class RandomSamplerNoReplacement(RandomSampler):
     Implements Random Sampling Without Replacement from whole Dataset
     """
 
-    def __init__(self, indices: Union[List, Iterable]):
+    def __init__(self, indices: Union[List[int], Iterable[int]]) -> None:
         """
 
         Parameters
@@ -89,8 +89,8 @@ class PrevalenceRandomSampler(AbstractSampler):
 
     """
 
-    def __init__(self, indices: Union[List, Iterable],
-                 shuffle_batch: bool = True):
+    def __init__(self, indices: Union[List[int], Iterable[int]],
+                 shuffle_batch: bool = True) -> None:
         """
 
         Parameters
@@ -153,7 +153,7 @@ class PrevalenceRandomSampler(AbstractSampler):
         labels = [dataset[idx]['label'] for idx in indices]
         return cls(labels, **kwargs)
 
-    def _get_indices(self, n_indices: int):
+    def _get_indices(self, n_indices: int) -> List[int]:
         """
         Actual Sampling
 
@@ -196,7 +196,7 @@ class PrevalenceRandomSampler(AbstractSampler):
 
         return _samples
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self._num_samples
 
 
@@ -208,8 +208,8 @@ class StoppingPrevalenceRandomSampler(AbstractSampler):
 
     """
 
-    def __init__(self, indices: Union[List, Iterable],
-                 shuffle_batch: bool = True):
+    def __init__(self, indices: Union[List[int], Iterable[int]],
+                 shuffle_batch: bool = True) -> None:
         """
 
         Parameters
@@ -274,7 +274,7 @@ class StoppingPrevalenceRandomSampler(AbstractSampler):
         labels = [dataset[idx]['label'] for idx in indices]
         return cls(labels, **kwargs)
 
-    def _check_batchsize(self, n_indices: int):
+    def _check_batchsize(self, n_indices: int) -> int:
         """
         Checks if batchsize is valid for all classes
 
@@ -326,7 +326,7 @@ class StoppingPrevalenceRandomSampler(AbstractSampler):
         finally:
             return samples
 
-    def _get_indices(self, n_indices: int):
+    def _get_indices(self, n_indices: int) -> List[int]:
         """
         Actual Sampling
 
@@ -357,5 +357,5 @@ class StoppingPrevalenceRandomSampler(AbstractSampler):
 
         return samples
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self._num_samples

@@ -1,4 +1,3 @@
-import collections
 import os
 
 import numpy as np
@@ -6,10 +5,10 @@ from skimage.io import imread
 from skimage.transform import resize
 
 from delira.utils.decorators import make_deprecated
-from typing import Union, List, Callable, Iterable
+from typing import Union, List, Callable, Iterable, Dict, Any, Optional, Tuple
 
 
-def norm_range(mode: str):
+def norm_range(mode: str) -> Callable:
     """
     Closure function for range normalization
 
@@ -24,7 +23,7 @@ def norm_range(mode: str):
     callable
         normalization function
     """
-    def norm_fn(data: np.ndarray):
+    def norm_fn(data: np.ndarray) -> np.ndarray:
         """
         Returns the input data normalized to the range
 
@@ -51,7 +50,7 @@ def norm_range(mode: str):
     return norm_fn
 
 
-def norm_zero_mean_unit_std(data: np.ndarray):
+def norm_zero_mean_unit_std(data: np.ndarray) -> np.ndarray:
     """
     Return normalized data with mean 0, standard deviation 1
 
@@ -68,8 +67,9 @@ def norm_zero_mean_unit_std(data: np.ndarray):
 
 
 @make_deprecated("LoadSample")
-def is_valid_image_file(fname: str, img_extensions: Union[List, Iterable],
-                        gt_extensions: Union[List, Iterable]):
+def is_valid_image_file(fname: str,
+                        img_extensions: Union[List[str], Iterable[str]],
+                        gt_extensions: Union[List[str], Iterable[str]]):
     """
     Helper Function to check whether file is image file and has at least
     one label file
@@ -105,7 +105,7 @@ def is_valid_image_file(fname: str, img_extensions: Union[List, Iterable],
 
 @make_deprecated("LoadSample")
 def default_load_fn_2d(img_file: str, *label_files: str,
-                       img_shape: Union[list, tuple, Iterable],
+                       img_shape: Union[List[str], Tuple[str], Iterable[str]],
                        n_channels: int = 1):
     """
     loading single 2d sample with arbitrary number of samples
@@ -154,10 +154,10 @@ class LoadSample:
     """
 
     def __init__(self,
-                 sample_ext: dict,
-                 sample_fn: collections.abc.Callable,
-                 dtype: dict = None, normalize: tuple = (),
-                 norm_fn=norm_range('-1,1'),
+                 sample_ext: Dict[str, Iterable[str]],
+                 sample_fn: Callable,
+                 dtype: Optional[Dict[str, Any]] = None, normalize: tuple = (),
+                 norm_fn: Callable = norm_range('-1,1'),
                  **kwargs):
         """
 
@@ -203,7 +203,7 @@ class LoadSample:
         self._norm_fn = norm_fn
         self._kwargs = kwargs
 
-    def __call__(self, path) -> dict:
+    def __call__(self, path: str) -> Dict[str, np.ndarray]:
         """
         Load sample from multiple files
 
@@ -242,13 +242,13 @@ class LoadSample:
 
 class LoadSampleLabel(LoadSample):
     def __init__(self,
-                 sample_ext: dict,
+                 sample_ext: Dict[str, Iterable[str]],
                  sample_fn: Callable,
                  label_ext: str,
                  label_fn: Callable,
-                 dtype: dict = None, normalize: tuple = (),
+                 dtype: Optional[Dict[str, Any]] = None, normalize: tuple = (),
                  norm_fn: Callable = norm_range('-1,1'),
-                 sample_kwargs=None, **kwargs):
+                 sample_kwargs: Optional[dict] = None, **kwargs):
         """
         Load sample and label from folder
 
@@ -293,7 +293,7 @@ class LoadSampleLabel(LoadSample):
         self._label_fn = label_fn
         self._label_kwargs = kwargs
 
-    def __call__(self, path: str) -> dict:
+    def __call__(self, path: str) -> Dict[str, np.ndarray]:
         """
         Loads a sample and a label
 

@@ -11,7 +11,7 @@ class SequentialSampler(AbstractSampler):
     Implements Sequential Sampling from whole Dataset
     """
 
-    def __init__(self, indices: Union[List, Iterable]):
+    def __init__(self, indices: Union[List[int], Iterable[int]]) -> None:
         """
 
         Parameters
@@ -25,7 +25,7 @@ class SequentialSampler(AbstractSampler):
 
         self._indices = list(range(len(indices)))
 
-    def _get_indices(self, n_indices: int):
+    def _get_indices(self, n_indices: int) -> List[int]:
         """
         Actual Sampling
 
@@ -45,9 +45,9 @@ class SequentialSampler(AbstractSampler):
         """
         n_indices = self._check_batchsize(n_indices)
 
-        return range(self._global_index - n_indices, self._global_index)
+        return list(range(self._global_index - n_indices, self._global_index))
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self._num_samples
 
 
@@ -59,8 +59,8 @@ class PrevalenceSequentialSampler(AbstractSampler):
 
     """
 
-    def __init__(self, indices: Union[List, Iterable],
-                 shuffle_batch: bool = True):
+    def __init__(self, indices: Union[List[int], Iterable[int]],
+                 shuffle_batch: bool = True) -> None:
         """
 
         Parameters
@@ -111,7 +111,7 @@ class PrevalenceSequentialSampler(AbstractSampler):
         labels = [dataset[idx]['label'] for idx in indices]
         return cls(labels, **kwargs)
 
-    def _get_indices(self, n_indices: int):
+    def _get_indices(self, n_indices: int) -> List[int]:
         """
         Actual Sampling
 
@@ -164,7 +164,7 @@ class PrevalenceSequentialSampler(AbstractSampler):
 
         return _samples
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self._num_samples
 
 
@@ -176,8 +176,8 @@ class StoppingPrevalenceSequentialSampler(AbstractSampler):
 
     """
 
-    def __init__(self, indices: Union[List, Iterable],
-                 shuffle_batch: bool = True):
+    def __init__(self, indices: Union[List[int], Iterable[int]],
+                 shuffle_batch: bool = True) -> None:
         """
 
         Parameters
@@ -228,7 +228,7 @@ class StoppingPrevalenceSequentialSampler(AbstractSampler):
         labels = [dataset[idx]['label'] for idx in indices]
         return cls(labels)
 
-    def _check_batchsize(self, n_indices: int):
+    def _check_batchsize(self, n_indices: int) -> int:
         """
         Checks if batchsize is valid for all classes
 
@@ -280,7 +280,7 @@ class StoppingPrevalenceSequentialSampler(AbstractSampler):
         finally:
             return samples
 
-    def _get_indices(self, n_indices: int):
+    def _get_indices(self, n_indices: int) -> List[int]:
         """
         Actual Sampling
 
@@ -313,5 +313,5 @@ class StoppingPrevalenceSequentialSampler(AbstractSampler):
 
         return samples
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self._length

@@ -9,8 +9,8 @@ class LambdaSampler(AbstractSampler):
 
     """
 
-    def __init__(self, indices: Union[List, Iterable],
-                 sampling_fn: Callable):
+    def __init__(self, indices: Union[List[int], Iterable[int]],
+                 sampling_fn: Callable) -> None:
         """
 
         Parameters
@@ -29,7 +29,7 @@ class LambdaSampler(AbstractSampler):
 
         self._sampling_fn = sampling_fn
 
-    def _get_indices(self, n_indices: int):
+    def _get_indices(self, n_indices: int) -> List[int]:
         """
         Actual Sampling
 
@@ -50,5 +50,5 @@ class LambdaSampler(AbstractSampler):
         samples = self._sampling_fn(self._indices, n_indices)
         return samples
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._indices)

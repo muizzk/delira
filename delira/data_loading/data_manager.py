@@ -1,4 +1,5 @@
 import logging
+import numpy as np
 
 import inspect
 from batchgenerators.dataloading import MultiThreadedAugmenter, \
@@ -14,7 +15,8 @@ from delira.utils.decorators import make_deprecated
 from delira import get_current_debug_mode
 from multiprocessing import Queue
 from queue import Full
-from typing import Callable, ClassVar, Union, List, Iterable, Optional
+from typing import Callable, Type, Union, List, Iterable, Optional, \
+    Iterator, Dict, Any
 
 
 logger = logging.getLogger(__name__)
@@ -31,9 +33,9 @@ class Augmenter(object):
     def __init__(self, data_loader: BaseDataLoader,
                  transforms: Optional[Callable],
                  n_process_augmentation: int,
-                 sampler: ClassVar[AbstractSampler], sampler_queues: list,
+                 sampler: Type[AbstractSampler], sampler_queues: List[int],
                  num_cached_per_queue: int = 2,
-                 seeds: Union[List, Iterable, int] = None, **kwargs):
+                 seeds: Union[List[int], Iterable[int], int] = None, **kwargs):
         """
 
         Parameters
@@ -93,7 +95,7 @@ class Augmenter(object):
         self._sampler_queues = sampler_queues
         self._queue_id = 0
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator:
         """
         Function returning an iterator
 
@@ -104,12 +106,12 @@ class Augmenter(object):
         """
         return self
 
-    def _next_queue(self):
+    def _next_queue(self) -> Queue:
         idx = self._queue_id
         self._queue_id = (self._queue_id + 1) % len(self._sampler_queues)
         return self._sampler_queues[idx]
 
-    def __next__(self):
+    def __next__(self) -> Dict[str, np.ndarray]:
         """
         Function to sample and load the next batch
 
@@ -132,7 +134,7 @@ class Augmenter(object):
 
         return next(self._augmenter)
 
-    def next(self):
+    def next(self) -> Dict[str, np.ndarray]:
         """
         Function to sample and load
 
@@ -144,7 +146,7 @@ class Augmenter(object):
         return next(self)
 
     @staticmethod
-    def __identity_fn(*args, **kwargs):
+    def __identity_fn(*args, **kwargs) -> None:
         """
         Helper function accepting arbitrary args and kwargs and returning
         without doing anything
@@ -159,7 +161,7 @@ class Augmenter(object):
         """
         return
 
-    def _fn_checker(self, function_name: str):
+    def _fn_checker(self, function_name: str) -> Any:
         """
         Checks if the internal augmenter has a given attribute and returns it.
         Otherwise it returns ``__identity_fn``
@@ -189,7 +191,7 @@ class Augmenter(object):
             return self.__identity_fn
 
     @property
-    def _start(self):
+    def _start(self) -> Callable:
         """
         Property to provide uniform API of ``_start``
 
@@ -201,7 +203,7 @@ class Augmenter(object):
         """
         return self._fn_checker("_start")
 
-    def restart(self):
+    def restart(self) -> Callable:
         """
         Property to provide uniform API of ``restart``
 
@@ -211,9 +213,9 @@ class Augmenter(object):
             either the augmenter's ``restart`` method (if available) or
             ``__identity_fn`` (if not available)
         """
-        return self._fn_checker("restart")
+        return self._fn_checker("restart")()
 
-    def _finish(self):
+    def _finish(self) -> Any:
         """
         Property to provide uniform API of ``_finish``
 
@@ -231,7 +233,7 @@ class Augmenter(object):
         return ret_val
 
     @property
-    def num_batches(self):
+    def num_batches(self) -> int:
         """
         Property returning the number of batches
 
@@ -246,7 +248,7 @@ class Augmenter(object):
         return self._augmenter.data_loader.num_batches
 
     @property
-    def num_processes(self):
+    def num_processes(self) -> int:
         """
         Property returning the number of processes to use for loading and
         augmentation
@@ -279,13 +281,13 @@ class BaseDataManager(object):
 
     """
 
-    def __init__(self, data: Union[str, ClassVar[AbstractDataset]],
+    def __init__(self, data: Union[str, AbstractDataset],
                  batch_size: int, n_process_augmentation: int,
                  transforms: Optional[Callable],
-                 sampler_cls: ClassVar[AbstractSampler] = SequentialSampler,
+                 sampler_cls: Type[AbstractSampler] = SequentialSampler,
                  sampler_kwargs: Optional[dict] = None,
-                 data_loader_cls: Optional[ClassVar[BaseDataLoader]] = None,
-                 dataset_cls: Optional[ClassVar[AbstractDataset]] = None,
+                 data_loader_cls: Optional[Type[BaseDataLoader]] = None,
+                 dataset_cls: Optional[Type[AbstractDataset]] = None,
                  load_fn: Callable = default_load_fn_2d,
                  from_disc: bool = True, **kwargs):
         """
@@ -381,7 +383,7 @@ class BaseDataManager(object):
                                                            AbstractSampler)
         self.sampler = sampler_cls.from_dataset(self.dataset, **sampler_kwargs)
 
-    def get_batchgen(self, seed: int = 1):
+    def get_batchgen(self, seed: int = 1) -> Augmenter:
         """
         Create DataLoader and Batchgenerator
 
@@ -423,7 +425,7 @@ class BaseDataManager(object):
                          num_cached_per_queue=2,
                          seeds=self.n_process_augmentation * [seed])
 
-    def get_subset(self, indices: Union[List, Iterable]):
+    def get_subset(self, indices: Union[List, Iterable]) -> Any:
         """
         Returns a Subset of the current datamanager based on given indices
 
@@ -454,7 +456,7 @@ class BaseDataManager(object):
             self.dataset.get_subset(indices),
             **subset_kwargs)
 
-    def update_state_from_dict(self, new_state: dict):
+    def update_state_from_dict(self, new_state: dict) -> None:
         """
         Updates internal state and therfore the behavior from dict.
         If a key is not specified, the old attribute value will be used
@@ -503,7 +505,7 @@ class BaseDataManager(object):
                            % (','.join(map(str, new_state.keys()))))
 
     @make_deprecated("BaseDataManager.get_subset")
-    def train_test_split(self, *args, **kwargs):
+    def train_test_split(self, *args, **kwargs) -> (Any, Any):
         """
         Calls :method:`AbstractDataset.train_test_split` and returns
         a manager for each subset with same configuration as current manager
@@ -541,7 +543,7 @@ class BaseDataManager(object):
         return train_mgr, val_mgr
 
     @property
-    def batch_size(self):
+    def batch_size(self) -> int:
         """
         Property to access the batchsize
 
@@ -554,7 +556,7 @@ class BaseDataManager(object):
         return self._batch_size
 
     @batch_size.setter
-    def batch_size(self, new_batch_size: int):
+    def batch_size(self, new_batch_size: int) -> None:
         """
         Setter for current batchsize, casts to int before setting the attribute
 
@@ -569,7 +571,7 @@ class BaseDataManager(object):
         self._batch_size = int(new_batch_size)
 
     @property
-    def n_process_augmentation(self):
+    def n_process_augmentation(self) -> int:
         """
         Property to access the number of augmentation processes
 
@@ -584,7 +586,7 @@ class BaseDataManager(object):
         return self._n_process_augmentation
 
     @n_process_augmentation.setter
-    def n_process_augmentation(self, new_process_number: int):
+    def n_process_augmentation(self, new_process_number: int) -> None:
         """
         Setter for number of augmentation processes, casts to int before
         setting the attribute
@@ -601,7 +603,7 @@ class BaseDataManager(object):
         self._n_process_augmentation = int(new_process_number)
 
     @property
-    def transforms(self):
+    def transforms(self) -> Callable:
         """
         Property to access the current data transforms
 
@@ -615,7 +617,7 @@ class BaseDataManager(object):
         return self._transforms
 
     @transforms.setter
-    def transforms(self, new_transforms: Optional[Callable]):
+    def transforms(self, new_transforms: Optional[Callable]) -> None:
         """
         Setter for data transforms, assert if transforms are of valid type
         (either None or instance of ``AbstractTransform``)
@@ -633,7 +635,7 @@ class BaseDataManager(object):
         self._transforms = new_transforms
 
     @property
-    def data_loader_cls(self):
+    def data_loader_cls(self) -> Type[BaseDataLoader]:
         """
         Property to access the current data loader class
 
@@ -646,7 +648,8 @@ class BaseDataManager(object):
         return self._data_loader_cls
 
     @data_loader_cls.setter
-    def data_loader_cls(self, new_loader_cls: ClassVar[SlimDataLoaderBase]):
+    def data_loader_cls(self,
+                        new_loader_cls: Type[SlimDataLoaderBase]) -> None:
         """
         Setter for current data loader class, asserts if class is of valid type
         (must be a class and a subclass of ``SlimDataLoaderBase``)
@@ -664,7 +667,7 @@ class BaseDataManager(object):
         self._data_loader_cls = new_loader_cls
 
     @property
-    def dataset(self):
+    def dataset(self) -> AbstractDataset:
         """
         Property to access the current dataset
 
@@ -678,7 +681,7 @@ class BaseDataManager(object):
         return self._dataset
 
     @dataset.setter
-    def dataset(self, new_dataset: AbstractDataset):
+    def dataset(self, new_dataset: AbstractDataset) -> None:
         """
         Setter for new dataset
 
@@ -692,7 +695,7 @@ class BaseDataManager(object):
         self._dataset = new_dataset
 
     @property
-    def sampler(self):
+    def sampler(self) -> AbstractSampler:
         """
         Property to access the current sampler
 
@@ -707,7 +710,7 @@ class BaseDataManager(object):
 
     @sampler.setter
     def sampler(self, new_sampler: Union[AbstractSampler,
-                                         ClassVar[AbstractSampler]]):
+                                         Type[AbstractSampler]]) -> None:
         """
         Setter for current sampler.
         If a valid class instance is passed, the sampler is simply assigned, if
@@ -737,7 +740,7 @@ class BaseDataManager(object):
                             AbstractSampler, nor an instance of a sampler ")
 
     @property
-    def n_samples(self):
+    def n_samples(self) -> int:
         """
         Number of Samples
 
@@ -750,7 +753,7 @@ class BaseDataManager(object):
         return len(self.sampler)
 
     @property
-    def n_batches(self):
+    def n_batches(self) -> int:
         """
         Returns Number of Batches based on batchsize and number of samples
 

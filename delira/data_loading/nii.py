@@ -5,14 +5,14 @@ from abc import abstractmethod
 
 import SimpleITK as sitk
 import numpy as np
-from typing import ClassVar
+from typing import Type, Dict, Any
 
 from delira.utils.decorators import make_deprecated
 
 logger = logging.getLogger(__name__)
 
 
-def load_nii(path: str):
+def load_nii(path: str) -> np.ndarray:
     """
     Loads a single nii file
     Parameters
@@ -29,7 +29,8 @@ def load_nii(path: str):
 
 
 @make_deprecated('LoadSample')
-def load_sample_nii(files: dict, label_load_cls: ClassVar):
+def load_sample_nii(files: dict,
+                    label_load_cls: Type) -> Dict[str, np.ndarray]:
     """
     Load sample from multiple ITK files
 
@@ -98,7 +99,7 @@ class BaseLabelGenerator(object):
         self.fpath = fpath
         self.data = self._load()
 
-    def _load(self):
+    def _load(self) -> Any:
         """
         Private Helper function to load the file
 

@@ -10,7 +10,7 @@ from tqdm import tqdm
 from delira import get_backends
 from delira.utils import subdirs
 from delira.utils.decorators import make_deprecated
-from typing import Callable
+from typing import Callable, Union, List, Dict, Iterator, Any, Tuple, Iterable
 
 
 class AbstractDataset:
@@ -34,7 +34,8 @@ class AbstractDataset:
         self.data = []
 
     @abc.abstractmethod
-    def _make_dataset(self, path: str):
+    def _make_dataset(self,
+                      path: str) -> List[Union[str, Dict[str, np.ndarray]]]:
         """
         Create dataset
 
@@ -52,7 +53,7 @@ class AbstractDataset:
         pass
 
     @abc.abstractmethod
-    def __getitem__(self, index: int):
+    def __getitem__(self, index: int) -> Dict[str, np.ndarray]:
         """
         return data with given index (and loads it before if lazy)
 
@@ -69,7 +70,7 @@ class AbstractDataset:
         """
         pass
 
-    def __len__(self):
+    def __len__(self) -> int:
         """
         Return number of samples
 
@@ -80,7 +81,7 @@ class AbstractDataset:
         """
         return len(self.data)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator:
         """
         Return an iterator for the dataset
 
@@ -91,7 +92,7 @@ class AbstractDataset:
         """
         return _DatasetIter(self)
 
-    def get_sample_from_index(self, index):
+    def get_sample_from_index(self, index) -> Dict[str, np.ndarray]:
         """
         Returns the data sample for a given index
         (without any loading if it would be necessary)
@@ -119,7 +120,8 @@ class AbstractDataset:
 
         return self.data[index]
 
-    def get_subset(self, indices: typing.Union[typing.List, typing.Iterable]):
+    def get_subset(self,
+                   indices: typing.Union[typing.List, typing.Iterable]) -> Any:
         """
         Returns a Subset of the current dataset based on given indices
 
@@ -151,7 +153,7 @@ class AbstractDataset:
         return BlankDataset(subset_data, **kwargs)
 
     @make_deprecated("Dataset.get_subset")
-    def train_test_split(self, *args, **kwargs):
+    def train_test_split(self, *args, **kwargs) -> (Any, Any):
         """
         split dataset into train and test data
 
@@ -200,10 +202,10 @@ class _DatasetIter(object):
         self._dset = dset
         self._curr_index = 0
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator:
         return self
 
-    def __next__(self):
+    def __next__(self) -> Dict[str, np.ndarray]:
         if self._curr_index >= len(self._dset):
             raise StopIteration
 
@@ -241,7 +243,7 @@ class BlankDataset(AbstractDataset):
         for key, val in kwargs.items():
             setattr(self, key, val)
 
-    def __getitem__(self, index: int):
+    def __getitem__(self, index: int) -> Dict[str, np.ndarray]:
         """
         returns single sample corresponding to ``index`` via the ``_sample_fn``
 
@@ -258,7 +260,7 @@ class BlankDataset(AbstractDataset):
         """
         return self._old_getitem(self, index)
 
-    def __len__(self):
+    def __len__(self) -> int:
         """
         returns the length of the dataset
 
@@ -303,7 +305,8 @@ class BaseCacheDataset(AbstractDataset):
         self._load_kwargs = load_kwargs
         self.data = self._make_dataset(data_path)
 
-    def _make_dataset(self, path: typing.Union[str, list]):
+    def _make_dataset(self, path: typing.Union[str, list]
+                      ) -> List[Dict[str, np.ndarray]]:
         """
         Helper Function to make a dataset containing all samples in a certain
         directory
@@ -341,7 +344,7 @@ class BaseCacheDataset(AbstractDataset):
                                           **self._load_kwargs))
         return data
 
-    def __getitem__(self, index: int):
+    def __getitem__(self, index: int) -> Dict[str, np.ndarray]:
         """
         return data sample specified by index
 
@@ -366,7 +369,7 @@ class BaseLazyDataset(AbstractDataset):
 
     """
 
-    def __init__(self, data_path: typing.Union[str, list],
+    def __init__(self, data_path: typing.Union[str, List[str]],
                  load_fn: typing.Callable, **load_kwargs):
         """
 
@@ -388,7 +391,7 @@ class BaseLazyDataset(AbstractDataset):
         self._load_kwargs = load_kwargs
         self.data = self._make_dataset(self.data_path)
 
-    def _make_dataset(self, path: typing.Union[str, list]):
+    def _make_dataset(self, path: typing.Union[str, List[str]]) -> List[str]:
         """
         Helper Function to make a dataset containing paths to all images in a
         certain directory
@@ -418,7 +421,7 @@ class BaseLazyDataset(AbstractDataset):
             data = [os.path.join(path, p) for p in os.listdir(path)]
         return data
 
-    def __getitem__(self, index: int):
+    def __getitem__(self, index: int) -> Dict[str, np.ndarray]:
         """
         load data sample specified by index
 
@@ -448,7 +451,7 @@ class BaseExtendCacheDataset(BaseCacheDataset):
 
     """
 
-    def __init__(self, data_path: typing.Union[str, list],
+    def __init__(self, data_path: typing.Union[str, List[str]],
                  load_fn: typing.Callable, **load_kwargs):
         """
 
@@ -473,7 +476,8 @@ class BaseExtendCacheDataset(BaseCacheDataset):
         """
         super().__init__(data_path, load_fn, **load_kwargs)
 
-    def _make_dataset(self, path: typing.Union[str, list]):
+    def _make_dataset(self, path: typing.Union[str, List[str]]
+                      ) -> List[Dict[str, np.ndarray]]:
         """
         Helper Function to make a dataset containing all samples in a certain
         directory
@@ -532,7 +536,7 @@ class ConcatDataset(AbstractDataset):
 
         self.data = datasets
 
-    def get_sample_from_index(self, index: int):
+    def get_sample_from_index(self, index: int) -> Dict[str, np.ndarray]:
         """
         Returns the data sample for a given index
         (without any loading if it would be necessary)
@@ -572,10 +576,10 @@ class ConcatDataset(AbstractDataset):
         raise IndexError("Index %d is out of range for %d items in datasets" %
                          (index, len(self)))
 
-    def __getitem__(self, index: int):
+    def __getitem__(self, index: int) -> Dict[str, np.ndarray]:
         return self.get_sample_from_index(index)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return sum([len(dset) for dset in self.data])
 
 
@@ -589,7 +593,7 @@ class Nii3DLazyDataset(BaseLazyDataset):
             self,
             data_path: str,
             load_fn: Callable,
-            img_files: typing.Union[list, typing.Iterable],
+            img_files: typing.Union[List[str], Iterable[str]],
             label_file: str,
             **load_kwargs):
         """
@@ -647,7 +651,7 @@ class Nii3DCacheDatset(BaseCacheDataset):
 
     @make_deprecated('LoadSample')
     def __init__(self, data_path: str, load_fn: Callable,
-                 img_files: typing.Union[list, typing.Iterable],
+                 img_files: Union[List[str], Iterable[str]],
                  label_file: str, **load_kwargs):
         """
          Parameters
@@ -672,7 +676,8 @@ class Nii3DCacheDatset(BaseCacheDataset):
         self.label_file = label_file
         super().__init__(data_path, load_fn, **load_kwargs)
 
-    def _make_dataset(self, path: str):
+    def _make_dataset(self,
+                      path: str) -> List[Union[str, Dict[str, np.ndarray]]]:
         """
         Helper Function to make a dataset containing all samples in a certain
         directory
@@ -707,6 +712,7 @@ if "TORCH" in get_backends():
     from torchvision.datasets import CIFAR10, CIFAR100, EMNIST, MNIST, \
         FashionMNIST
     import torch
+    from torch.utils.data import Dataset as TorchDataset
 
     class TorchvisionClassificationDataset(AbstractDataset):
         """
@@ -717,8 +723,8 @@ if "TORCH" in get_backends():
 
         def __init__(self, dataset: str, root: str = "/tmp/",
                      train: bool = True, download: bool = True,
-                     img_shape: typing.Union[tuple, list,
-                                             typing.Iterable] = (28, 28),
+                     img_shape: typing.Union[Tuple[int], List[int],
+                                             Iterable[int]] = (28, 28),
                      one_hot: bool = False, **kwargs):
             """
 
@@ -755,7 +761,7 @@ if "TORCH" in get_backends():
             self.one_hot = one_hot
             self.data = self._make_dataset(dataset, **kwargs)
 
-        def _make_dataset(self, dataset: str, **kwargs):
+        def _make_dataset(self, dataset: str, **kwargs) -> TorchDataset:
             """
             Create the actual dataset
 
@@ -801,7 +807,7 @@ if "TORCH" in get_backends():
             return _dataset_cls(root=self.root, train=self.train,
                                 download=self.download, **kwargs)
 
-        def __getitem__(self, index: int):
+        def __getitem__(self, index: int) -> Dict[str, np.ndarray]:
             """
             return data sample specified by index
 
@@ -883,7 +889,7 @@ if "TORCH" in get_backends():
             data_dict["data"] = img.astype(np.float32)
             return data_dict
 
-        def __len__(self):
+        def __len__(self) -> int:
             """
             Return Number of samples
 
