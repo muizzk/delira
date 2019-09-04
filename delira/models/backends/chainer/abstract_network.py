@@ -1,7 +1,7 @@
 import abc
 import chainer
 import numpy as np
-from typing import Union, Optional
+from typing import Union, Dict, Any
 from delira.models.abstract_network import AbstractNetwork
 
 Device = Union[chainer.backend.Device, str]
@@ -20,7 +20,7 @@ class AbstractChainerNetwork(chainer.Chain, ChainerMixin):
     Abstract Class for Chainer Networks
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         """
 
         Parameters
@@ -34,7 +34,7 @@ class AbstractChainerNetwork(chainer.Chain, ChainerMixin):
         AbstractNetwork.__init__(self, **kwargs)
 
     @abc.abstractmethod
-    def forward(self, *args, **kwargs) -> dict:
+    def forward(self, *args, **kwargs) -> Dict[str, Any]:
         """
         Feeds Arguments through the network
 
@@ -53,7 +53,7 @@ class AbstractChainerNetwork(chainer.Chain, ChainerMixin):
         """
         raise NotImplementedError
 
-    def __call__(self, *args, **kwargs) -> dict:
+    def __call__(self, *args, **kwargs) -> Dict[str, Any]:
         """
         Makes instances of this class callable.
         Calls the ``forward`` method.
@@ -76,7 +76,7 @@ class AbstractChainerNetwork(chainer.Chain, ChainerMixin):
 
     @staticmethod
     def prepare_batch(batch: dict, input_device: Device,
-                      output_device: Device):
+                      output_device: Device) -> Dict[str, chainer.Variable]:
         """
         Helper Function to prepare Network Inputs and Labels (convert them
         to correct type and shape and push them to correct devices)
@@ -113,7 +113,10 @@ class AbstractChainerNetwork(chainer.Chain, ChainerMixin):
 
     @staticmethod
     def closure(model: AbstractNetwork, data_dict: dict, optimizers: dict,
-                losses, metrics=None, fold: int = 0, **kwargs):
+                losses, metrics=None, fold: int = 0, **kwargs
+                ) -> (Dict[str, chainer.Variable],
+                      Dict[str, chainer.Variable],
+                      Dict[str, chainer.variable]):
         """
         default closure method to do a single training step;
         Could be overwritten for more advanced models

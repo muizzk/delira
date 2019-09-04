@@ -3,7 +3,7 @@ import typing
 import tensorflow as tf
 import numpy as np
 from delira.models.abstract_network import AbstractNetwork
-from typing import Union, Iterable, Optional
+from typing import Union, Optional, Dict, Any
 
 Device = str
 
@@ -17,7 +17,8 @@ class AbstractTfEagerNetwork(AbstractNetwork, tf.keras.layers.Layer):
 
     def __init__(self, data_format: str = "channels_first",
                  trainable: bool = True, name: Optional[str] = None,
-                 dtype: Optional[Union[str, np.dtype]] = None, **kwargs):
+                 dtype: Optional[Union[str, np.dtype]] = None, **kwargs
+                 ) -> None:
         """
 
         Parameters
@@ -43,7 +44,7 @@ class AbstractTfEagerNetwork(AbstractNetwork, tf.keras.layers.Layer):
         self.device = "/cpu:0"
 
     @abc.abstractmethod
-    def call(self, *args, **kwargs):
+    def call(self, *args, **kwargs) -> Any:
         """
         Defines the model's forward pass
 
@@ -62,7 +63,7 @@ class AbstractTfEagerNetwork(AbstractNetwork, tf.keras.layers.Layer):
         """
         raise NotImplementedError
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> Dict[str, Any]:
         """
         Executes the modules forward pass
 
@@ -79,7 +80,8 @@ class AbstractTfEagerNetwork(AbstractNetwork, tf.keras.layers.Layer):
 
     @staticmethod
     def prepare_batch(batch: dict, input_device: Device,
-                      output_device: Device):
+                      output_device: Device
+                      ) -> Dict[str, Union[np.ndarray, tf.Tensor]]:
         """
         Helper Function to prepare Network Inputs and Labels (convert them to
         correct type and shape and push them to correct devices)
@@ -116,7 +118,10 @@ class AbstractTfEagerNetwork(AbstractNetwork, tf.keras.layers.Layer):
     @staticmethod
     def closure(model: AbstractNetwork, data_dict: dict,
                 optimizers: typing.Dict[str, tf.train.Optimizer], losses: dict,
-                metrics: Optional[dict] = None, fold: int = 0, **kwargs):
+                metrics: Optional[dict] = None, fold: int = 0, **kwargs
+                ) -> (Dict[str, Union[np.ndarray, tf.Tensor]],
+                      Dict[str, Union[np.ndarray, tf.Tensor]],
+                      Dict[str, Union[np.ndarray, tf.Tensor]]):
 
         if metrics is None:
             metrics = {}

@@ -1,7 +1,7 @@
 import tensorflow as tf
 from delira.models.backends.tf_eager.abstract_network import \
     AbstractTfEagerNetwork
-from typing import Union, Iterable
+from typing import Union, Iterable, Any, Callable
 
 
 class DataParallelTfEagerNetwork(AbstractTfEagerNetwork):
@@ -14,7 +14,7 @@ class DataParallelTfEagerNetwork(AbstractTfEagerNetwork):
     """
 
     def __init__(self, module: AbstractTfEagerNetwork,
-                 devices: Union[list, tuple, Iterable]):
+                 devices: Union[list, tuple, Iterable]) -> None:
         """
 
         Parameters
@@ -31,7 +31,7 @@ class DataParallelTfEagerNetwork(AbstractTfEagerNetwork):
 
         self.module = tf.keras.utils.multi_gpu_model(module, devices, True)
 
-    def call(self, *args, **kwargs):
+    def call(self, *args, **kwargs) -> Any:
         """
         Defines the forward pass of the module
 
@@ -46,9 +46,9 @@ class DataParallelTfEagerNetwork(AbstractTfEagerNetwork):
         return self.module.call(*args, **kwargs)
 
     @property
-    def closure(self):
+    def closure(self) -> Callable:
         return self._closure
 
     @property
-    def prepare_batch(self):
+    def prepare_batch(self) -> Callable:
         return self._prepare_batch

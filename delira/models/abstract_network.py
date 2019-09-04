@@ -1,6 +1,6 @@
 import abc
 import logging
-from typing import Optional, Any
+from typing import Optional, Any, Dict
 
 file_logger = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ class AbstractNetwork(object):
     _init_kwargs = {}
 
     @abc.abstractmethod
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         """
         Init function to register init kwargs (should be called from all
         subclasses)
@@ -32,7 +32,7 @@ class AbstractNetwork(object):
             self._init_kwargs[key] = val
 
     @abc.abstractmethod
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> Dict[str, Any]:
         """
         AbstractMethod to specify that each model should be able to be called
         for predictions
@@ -55,7 +55,8 @@ class AbstractNetwork(object):
     @staticmethod
     @abc.abstractmethod
     def closure(model, data_dict: dict, optimizers: dict, losses: dict,
-                metrics: Optional[dict] = None, fold: int = 0, **kwargs):
+                metrics: Optional[dict] = None, fold: int = 0, **kwargs
+                ) -> (Dict[str, Any], Dict[str, Any], Dict[str, Any]):
         """
         Function which handles prediction from batch, logging, loss calculation
         and optimizer step
@@ -98,7 +99,7 @@ class AbstractNetwork(object):
 
     @staticmethod
     def prepare_batch(batch: dict, input_device: Device,
-                      output_device: Device):
+                      output_device: Device) -> Dict[str, Any]:
         """
         Converts a numpy batch of data and labels to suitable datatype and
         pushes them to correct devices
@@ -128,7 +129,7 @@ class AbstractNetwork(object):
         raise NotImplementedError()
 
     @property
-    def init_kwargs(self):
+    def init_kwargs(self) -> Dict[str, Any]:
         """
         Returns all arguments registered as init kwargs
 

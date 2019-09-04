@@ -3,7 +3,7 @@ import torch
 from delira.models.backends.torch.abstract_network import \
     AbstractPyTorchNetwork, Device
 
-from typing import Optional, Iterable, Union, List, Tuple
+from typing import Optional, Iterable, Union, List, Tuple, Dict, Callable
 
 
 class DataParallelPyTorchNetwork(AbstractPyTorchNetwork,
@@ -18,7 +18,7 @@ class DataParallelPyTorchNetwork(AbstractPyTorchNetwork,
             device_ids: Optional[Union[List[Device],
                                        Iterable[Device],
                                        Tuple[Device]]] = None,
-            output_device: Optional[Device] = None, dim: int = 0):
+            output_device: Optional[Device] = None, dim: int = 0) -> None:
         """
 
         Parameters
@@ -44,7 +44,7 @@ class DataParallelPyTorchNetwork(AbstractPyTorchNetwork,
         torch.nn.DataParallel.__init__(self, module, device_ids, output_device,
                                        dim)
 
-    def forward(self, *args, **kwargs):
+    def forward(self, *args, **kwargs) -> Dict[str, torch.Tensor]:
         """
         Scatters the inputs (both positional and keyword arguments) across
         all devices, feeds them through model replicas and re-builds
@@ -66,9 +66,9 @@ class DataParallelPyTorchNetwork(AbstractPyTorchNetwork,
         return torch.nn.DataParallel.forward(*args, **kwargs)
 
     @property
-    def closure(self):
+    def closure(self) -> Callable:
         return self.module.closure
 
     @property
-    def prepare_batch(self):
+    def prepare_batch(self) -> Callable:
         return self.module.prepare_batch

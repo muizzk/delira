@@ -1,6 +1,7 @@
 from inspect import signature as get_signature
 from sklearn.base import BaseEstimator
-from typing import Optional
+from typing import Optional, Dict
+import numpy as np
 
 from delira.models.abstract_network import AbstractNetwork
 
@@ -13,7 +14,7 @@ class SklearnEstimator(AbstractNetwork):
     compatibility
     """
 
-    def __init__(self, module: BaseEstimator):
+    def __init__(self, module: BaseEstimator) -> None:
         """
 
         Parameters
@@ -40,7 +41,7 @@ class SklearnEstimator(AbstractNetwork):
                 self.partial_fit).parameters):
             self.classes = None
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> Dict[str, np.ndarray]:
         """
         Calls ``self.predict`` with args and kwargs
 
@@ -60,7 +61,7 @@ class SklearnEstimator(AbstractNetwork):
         return {"pred": self.predict(*args, **kwargs)}
 
     @property
-    def iterative_training(self):
+    def iterative_training(self) -> bool:
         """
         Property indicating, whether a the current module can be
         trained iteratively (batchwise)
@@ -76,7 +77,7 @@ class SklearnEstimator(AbstractNetwork):
 
     @staticmethod
     def prepare_batch(batch: dict, input_device: Device,
-                      output_device: Device):
+                      output_device: Device) -> Dict[str, np.ndarray]:
         """
         Helper Function to prepare Network Inputs and Labels (convert them to
         correct type and shape and push them to correct devices)
@@ -108,7 +109,8 @@ class SklearnEstimator(AbstractNetwork):
 
     @staticmethod
     def closure(model, data_dict: dict, optimizers: dict, losses: dict,
-                metrics: Optional[dict] = None, fold: int = 0, **kwargs):
+                metrics: Optional[dict] = None, fold: int = 0, **kwargs
+                ) -> (Dict[str, np.ndarray], dict, Dict[str, np.ndarray]):
         """
         default closure method to do a single training step;
         Could be overwritten for more advanced models

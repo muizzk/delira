@@ -1,11 +1,12 @@
 from delira.models.backends.chainer.abstract_network import \
     AbstractChainerNetwork, Device
 import chainer
-from typing import Union, Iterable, Mapping, Optional, ClassVar
+from typing import Union, Iterable, Mapping, Optional, Type, Any, List, \
+    Generator, Callable
 
 
 def _apply_scatter(inputs: chainer.Variable, target_devices: list,
-                   dim: int = 0):
+                   dim: int = 0) -> List[chainer.Variable]:
     """
     Scatters inputs to target devices; Slicing will be done against a given
     dimension
@@ -27,7 +28,8 @@ def _apply_scatter(inputs: chainer.Variable, target_devices: list,
     """
 
     def _slice_inputs(input_var: chainer.Variable, dim: int, num_dims: int,
-                      start: int, end: int, target_device: Device):
+                      start: int, end: int, target_device: Device
+                      ) -> chainer.Variable:
         """
         Slices the input variable along a given dimension from start to end
         and pushes it to correct device
@@ -90,7 +92,8 @@ def _apply_scatter(inputs: chainer.Variable, target_devices: list,
     return scattered_inputs
 
 
-def _apply_gather(target_device: Device, dim: int, *outputs):
+def _apply_gather(target_device: Device, dim: int, *outputs
+                  ) -> chainer.Variable:
     for _output in outputs:
         _output.to_device(target_device)
 
@@ -99,7 +102,7 @@ def _apply_gather(target_device: Device, dim: int, *outputs):
 
 def _scatter(inputs: Union[Union[chainer.Variable, tuple, list, Iterable],
                            Union[dict, Mapping]],
-             target_devices: list, dim: int):
+             target_devices: list, dim: int) -> List[chainer.Variable]:
     """
     Scatters all inputs across given target_devices
 
@@ -120,7 +123,9 @@ def _scatter(inputs: Union[Union[chainer.Variable, tuple, list, Iterable],
 
     def _scatter_map(
             inputs: Union[Union[chainer.Variable, tuple, list, Iterable],
-                          Union[dict, Mapping]],):
+                          Union[dict, Mapping]]
+    ) -> Union[Iterable[chainer.Variable], Mapping[chainer.Variable],
+               chainer.Variable]:
         """
         Scatters all inputs across given target_devices
 
@@ -175,8 +180,10 @@ def _scatter(inputs: Union[Union[chainer.Variable, tuple, list, Iterable],
 
 def _gather(outputs: Union[Union[chainer.Variable, tuple, list, Iterable],
                            Union[dict, Mapping]],
-            target_device: Device, dim: int = 0):
-    r"""
+            target_device: Device, dim: int = 0
+            ) -> Union[Iterable[chainer.Variable], Mapping[chainer.Variable],
+                       chainer.Variable]:
+    """
     Gathers tensors from different GPUs on a specified device
       (-1 means the CPU).
     """
@@ -213,7 +220,7 @@ class DataParallelChainerNetwork(AbstractChainerNetwork):
     def __init__(self, module: AbstractChainerNetwork,
                  devices: Union[list, Iterable],
                  output_device: Optional[Device] = None,
-                 batch_dim: int = 0):
+                 batch_dim: int = 0) -> None:
         """
 
         Parameters
@@ -254,7 +261,7 @@ class DataParallelChainerNetwork(AbstractChainerNetwork):
         self._output_device_idx = self.devices.index(self._output_device)
         self.dim = batch_dim
 
-    def forward(self, *args, **kwargs):
+    def forward(self, *args, **kwargs) -> Any:
         """
         Scatters the inputs (both positional and keyword arguments) across
         all devices, feeds them through model replicas and re-builds
@@ -289,7 +296,7 @@ class DataParallelChainerNetwork(AbstractChainerNetwork):
 
         return predictions
 
-    def params(self, include_uninit: bool = True):
+    def params(self, include_uninit: bool = True) -> Generator:
         """
         Only the parameters of the module on the first device will actually
         be updated, all the other parameters will be replicated by the
@@ -307,7 +314,8 @@ class DataParallelChainerNetwork(AbstractChainerNetwork):
 
     @staticmethod
     def _scatter(inputs: Union[list, tuple, Iterable], kwargs: dict,
-                 target_devices: Union[list, tuple, Iterable], dim: int = 0):
+                 target_devices: Union[list, tuple, Iterable], dim: int = 0
+                 ) -> (tuple, tuple):
         """
         Scatters all inputs (args and kwargs) to target devices and splits
         along given dimension
@@ -350,7 +358,7 @@ class DataParallelChainerNetwork(AbstractChainerNetwork):
 
     @staticmethod
     def _gather(predictions: Union[list, tuple, Iterable],
-                dim: int, target_device: Device):
+                dim: int, target_device: Device) -> Any:
         """
         Re-Builds batches on the target device
 
@@ -371,20 +379,20 @@ class DataParallelChainerNetwork(AbstractChainerNetwork):
         """
         return _gather(predictions, target_device, dim)
 
-    def cleargrads(self):
+    def cleargrads(self) -> None:
         for module in self.modules:
             module.cleargrads()
 
-    def zerograds(self):
+    def zerograds(self) -> None:
         for module in self.modules:
             module.zerograds()
 
     @property
-    def closure(self):
+    def closure(self) -> Callable:
         return self.modules[0].closure
 
     @property
-    def prepare_batch(self):
+    def prepare_batch(self) -> Callable:
         return self.modules[0].prepare_batch
 
 
@@ -398,7 +406,7 @@ class ParallelOptimizerCumulateGradientsHook(object):
     call_for_each_param = False
     timing = 'pre'
 
-    def __call__(self, optimizer: chainer.Optimizer):
+    def __call__(self, optimizer: chainer.Optimizer) -> None:
         """
         Summing up all parameters if the target is an instance of
         ``DataParallel``
@@ -425,7 +433,7 @@ class ParallelOptimizerUpdateModelParameters(object):
     call_for_each_param = False
     timing = "post"
 
-    def __call__(self, optimizer: chainer.Optimizer):
+    def __call__(self, optimizer: chainer.Optimizer) -> None:
         if isinstance(optimizer.target, DataParallelChainerNetwork):
             for module in optimizer.target.modules[1:]:
                 module.copyparams(optimizer.target.modules[0])
@@ -441,7 +449,7 @@ class DataParallelChainerOptimizer(chainer.Optimizer):
 
     """
 
-    def __init__(self, optimizer: chainer.Optimizer):
+    def __init__(self, optimizer: chainer.Optimizer) -> None:
         """
 
         Parameters
@@ -459,7 +467,7 @@ class DataParallelChainerOptimizer(chainer.Optimizer):
                                % optimizer.__class__.__name__)
 
     @classmethod
-    def from_optimizer_class(cls, optim_cls: ClassVar[chainer.Optimizer],
+    def from_optimizer_class(cls, optim_cls: Type[chainer.Optimizer],
                              *args, **kwargs):
         """
 
@@ -484,7 +492,7 @@ class DataParallelChainerOptimizer(chainer.Optimizer):
                                % optim_cls.__name__)
         return cls(_optim)
 
-    def setup(self, link: DataParallelChainerNetwork):
+    def setup(self, link: DataParallelChainerNetwork) -> None:
         """
         Calls the setup method of the internal optimizer and registers the
         necessary grads for data-parallel behavior
@@ -501,55 +509,55 @@ class DataParallelChainerOptimizer(chainer.Optimizer):
         self._optimizer.add_hook(ParallelOptimizerUpdateModelParameters())
 
     @property
-    def target(self):
+    def target(self) -> chainer.link.Link:
         return self._optimizer.target
 
     @property
-    def epoch(self):
+    def epoch(self) -> int:
         return self._optimizer.epoch
 
     @property
-    def _pre_update_hooks(self):
+    def _pre_update_hooks(self) -> Iterable:
         return self._optimizer._pre_update_hooks
 
     @property
-    def _loss_scale(self):
+    def _loss_scale(self) -> Union[None, float]:
         return self._optimizer._loss_scale
 
     @property
-    def _loss_scale_max(self):
+    def _loss_scale_max(self) -> float:
         return self._optimizer._loss_scale_max
 
     @property
-    def _loss_scaling_is_dynamic(self):
+    def _loss_scaling_is_dynamic(self) -> bool:
         return self._optimizer._loss_scaling_is_dynamic
 
     @property
-    def use_auto_new_epoch(self):
+    def use_auto_new_epoch(self) -> bool:
         return self._optimizer.use_auto_new_epoch
 
     @property
-    def update(self):
+    def update(self) -> Callable:
         return self._optimizer.update
 
     @property
-    def new_epoch(self):
+    def new_epoch(self) -> Callable:
         return self._optimizer.new_epoch
 
     @property
-    def add_hook(self):
+    def add_hook(self) -> Callable:
         return self._optimizer.add_hook
 
     @property
-    def remove_hook(self):
+    def remove_hook(self) -> Callable:
         return self._optimizer.remove_hook
 
     @property
-    def call_hooks(self):
+    def call_hooks(self) -> Callable:
         return self._optimizer.call_hooks
 
     @property
-    def serialize(self):
+    def serialize(self) -> Callable:
         return self._optimizer.serialize
 
     @property
@@ -557,17 +565,17 @@ class DataParallelChainerOptimizer(chainer.Optimizer):
         return self._optimizer.loss_scaling
 
     @property
-    def set_loss_scale(self):
+    def set_loss_scale(self) -> Callable:
         return self._optimizer.set_loss_scale
 
     @property
-    def check_nan_in_grads(self):
+    def check_nan_in_grads(self) -> Callable:
         return self._optimizer.check_nan_in_grads
 
     @property
-    def is_safe_to_update(self):
+    def is_safe_to_update(self) -> Callable:
         return self._optimizer.is_safe_to_update
 
     @property
-    def update_loss_scale(self):
+    def update_loss_scale(self) -> Callable:
         return self._optimizer.update_loss_scale

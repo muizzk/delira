@@ -1,6 +1,6 @@
 import contextlib
 import torch
-from typing import Union, List, Iterable, Optional
+from typing import Union, List, Iterable, Optional, Generator
 
 try:
     # use apex loss scaling if possible
@@ -18,7 +18,7 @@ def scale_loss(loss: torch.Tensor,
                loss_id: int = 0,
                model: Optional[torch.nn.Module] = None,
                delay_unscale: bool = False,
-               **kwargs):
+               **kwargs) -> Generator:
     """
     Context Manager which automatically switches between loss scaling via
     apex.amp (if apex is available) and no loss scaling

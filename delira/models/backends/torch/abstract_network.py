@@ -3,7 +3,7 @@ import torch
 from delira.models.abstract_network import AbstractNetwork
 
 from delira.models.backends.torch.utils import scale_loss
-from typing import Union, Optional
+from typing import Union, Optional, Dict
 
 Device = Union[torch.device, str]
 
@@ -19,7 +19,7 @@ class AbstractPyTorchNetwork(AbstractNetwork, torch.nn.Module):
 
     """
     @abc.abstractmethod
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         """
 
         Parameters
@@ -33,7 +33,7 @@ class AbstractPyTorchNetwork(AbstractNetwork, torch.nn.Module):
         AbstractNetwork.__init__(self, **kwargs)
 
     @abc.abstractmethod
-    def forward(self, *inputs):
+    def forward(self, *args, **kwargs) -> Dict[str, Any]:
         """
         Forward inputs through module (defines module behavior)
         Parameters
@@ -49,7 +49,7 @@ class AbstractPyTorchNetwork(AbstractNetwork, torch.nn.Module):
         """
         raise NotImplementedError()
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> Dict[str, Any]:
         """
         Calls Forward method
 
@@ -70,7 +70,7 @@ class AbstractPyTorchNetwork(AbstractNetwork, torch.nn.Module):
 
     @staticmethod
     def prepare_batch(batch: dict, input_device: Device,
-                      output_device: Device):
+                      output_device: Device) -> Dict[str, torch.Tensor]:
         """
         Helper Function to prepare Network Inputs and Labels (convert them
         to correct type and shape and push them to correct devices)
@@ -105,7 +105,9 @@ class AbstractPyTorchNetwork(AbstractNetwork, torch.nn.Module):
     @staticmethod
     def closure(model: AbstractNetwork, data_dict: dict, optimizers: dict,
                 losses: dict, metrics: Optional[dict] = None, fold: int = 0,
-                **kwargs):
+                **kwargs) -> (Dict[str, torch.Tensor],
+                              Dict[str, torch.Tensor],
+                              Dict[str, torch.Tensor]):
         """
         closure method to do a single backpropagation step
 

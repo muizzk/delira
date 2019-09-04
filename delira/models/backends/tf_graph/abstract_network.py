@@ -4,7 +4,7 @@ import tensorflow as tf
 import numpy as np
 
 from delira.models.abstract_network import AbstractNetwork
-from typing import ClassVar, Optional, Iterable, Union, Any
+from typing import Type, Optional, Any, Dict
 
 
 class AbstractTfGraphNetwork(AbstractNetwork, metaclass=abc.ABCMeta):
@@ -18,7 +18,7 @@ class AbstractTfGraphNetwork(AbstractNetwork, metaclass=abc.ABCMeta):
     """
 
     @abc.abstractmethod
-    def __init__(self, sess: ClassVar[tf.Session] = tf.Session, **kwargs):
+    def __init__(self, sess: Type[tf.Session] = tf.Session, **kwargs) -> None:
         """
 
         Parameters
@@ -37,7 +37,7 @@ class AbstractTfGraphNetwork(AbstractNetwork, metaclass=abc.ABCMeta):
         self._optims = None
         self.training = True
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> Dict[str, Any]:
         """
         Wrapper for calling self.run in eval setting
 
@@ -57,7 +57,7 @@ class AbstractTfGraphNetwork(AbstractNetwork, metaclass=abc.ABCMeta):
         self.training = False
         return self.run(*args, **kwargs)
 
-    def run(self, *args, **kwargs):
+    def run(self, *args, **kwargs) -> Dict[str, Any]:
         """
         Evaluates `self.outputs_train` or `self.outputs_eval` based on
         `self.training`
@@ -89,7 +89,7 @@ class AbstractTfGraphNetwork(AbstractNetwork, metaclass=abc.ABCMeta):
 
         return self._sess.run(self.outputs_eval, feed_dict=_feed_dict)
 
-    def _add_losses(self, losses: dict):
+    def _add_losses(self, losses: dict) -> None:
         """
         Adds losses to model that are to be used by optimizers or
         during evaluation. Can be overwritten for more advanced loss behavior
@@ -119,7 +119,7 @@ class AbstractTfGraphNetwork(AbstractNetwork, metaclass=abc.ABCMeta):
             self.outputs_train["losses"] = self._losses
             self.outputs_eval["losses"] = self._losses
 
-    def _add_optims(self, optims: dict):
+    def _add_optims(self, optims: dict) -> None:
         """
         Adds optims to model that are to be used by optimizers or during
         training. Can be overwritten for more advanced optimizers
@@ -143,7 +143,8 @@ class AbstractTfGraphNetwork(AbstractNetwork, metaclass=abc.ABCMeta):
 
     @staticmethod
     def prepare_batch(batch: dict, input_device: Optional[Any] = None,
-                      output_device: Optional[Any] = None):
+                      output_device: Optional[Any] = None
+                      ) -> Dict[str, np.ndarray]:
         """
         Helper Function to prepare Network Inputs and Labels (convert them to
         correct type and shape and push them to correct devices)
@@ -170,7 +171,10 @@ class AbstractTfGraphNetwork(AbstractNetwork, metaclass=abc.ABCMeta):
 
     @staticmethod
     def closure(model, data_dict: dict, optimizers: dict, losses: dict,
-                metrics: Optional[dict] = None, fold: int = 0, **kwargs):
+                metrics: Optional[dict] = None, fold: int = 0, **kwargs
+                ) -> (Dict[str, np.ndarray],
+                      Dict[str, np.ndarray],
+                      Dict[str, np.ndarray]):
         """
         default closure method to do a single training step;
         Could be overwritten for more advanced models

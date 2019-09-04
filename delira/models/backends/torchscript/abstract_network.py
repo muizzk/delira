@@ -1,7 +1,7 @@
 import abc
 import torch
 from delira.models.abstract_network import AbstractNetwork
-from typing import Union, Optional, Iterable
+from typing import Union, Optional, Dict
 
 Device = Union[torch.device, str]
 
@@ -19,7 +19,7 @@ class AbstractTorchScriptNetwork(AbstractNetwork, torch.jit.ScriptModule):
     """
 
     @abc.abstractmethod
-    def __init__(self, optimize: bool = True, **kwargs):
+    def __init__(self, optimize: bool = True, **kwargs) -> None:
         """
 
         Parameters
@@ -33,7 +33,7 @@ class AbstractTorchScriptNetwork(AbstractNetwork, torch.jit.ScriptModule):
         torch.jit.ScriptModule.__init__(self, optimize=optimize)
         AbstractNetwork.__init__(self, **kwargs)
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> Dict[str, torch.Tensor]:
         """
         Calls Forward method
 
@@ -54,7 +54,7 @@ class AbstractTorchScriptNetwork(AbstractNetwork, torch.jit.ScriptModule):
 
     @staticmethod
     def prepare_batch(batch: dict, input_device: Device,
-                      output_device: Device):
+                      output_device: Device) -> Dict[str, torch.Tensor]:
         """
         Helper Function to prepare Network Inputs and Labels (convert them
         to correct type and shape and push them to correct devices)
@@ -88,7 +88,10 @@ class AbstractTorchScriptNetwork(AbstractNetwork, torch.jit.ScriptModule):
 
     @staticmethod
     def closure(model, data_dict: dict, optimizers: dict, losses: dict,
-                metrics: Optional[dict] = None, fold: int = 0, **kwargs):
+                metrics: Optional[dict] = None, fold: int = 0, **kwargs
+                ) -> (Dict[str, torch.Tensor],
+                      Dict[str, torch.Tensor],
+                      Dict[str, torch.Tensor]):
         """
         closure method to do a single backpropagation step
 
