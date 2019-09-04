@@ -1,7 +1,7 @@
 import SimpleITK as sitk
 import numpy as np
 from scipy.ndimage import zoom
-from typing import Union, Iterable, Any, Optional
+from typing import Union, Iterable, Any, Optional, Tuple
 
 from delira.utils.decorators import dtype_func
 
@@ -11,7 +11,7 @@ SizeSpacing = Union[Iterable, tuple, list]
 
 
 def calculate_origin_offset(new_spacing: SizeSpacing,
-                            old_spacing: SizeSpacing):
+                            old_spacing: SizeSpacing) -> np.ndarray:
     """
     Calculates the origin offset of two spacings
 
@@ -34,7 +34,7 @@ def calculate_origin_offset(new_spacing: SizeSpacing,
 def sitk_resample_to_spacing(image: sitk.Image,
                              new_spacing: SizeSpacing = (1.0, 1.0, 1.0),
                              interpolator: Any = sitk.sitkLinear,
-                             default_value: float = 0.):
+                             default_value: float = 0.) -> sitk.Image:
     """
     Resamples SITK Image to a given spacing
 
@@ -74,7 +74,8 @@ def sitk_resample_to_image(image: sitk.Image, reference_image: sitk.Image,
                            default_value: float = 0.,
                            interpolator: Any = sitk.sitkLinear,
                            transform: Optional[Any] = None,
-                           output_pixel_type: Optional[Any] = None):
+                           output_pixel_type: Optional[Any] = None
+                           ) -> sitk.Image:
     """
     Resamples Image to reference image
 
@@ -115,7 +116,7 @@ def sitk_resample_to_image(image: sitk.Image, reference_image: sitk.Image,
 
 def sitk_new_blank_image(size: SizeSpacing, spacing: SizeSpacing,
                          direction: Any, origin: SizeSpacing,
-                         default_value: float = 0.):
+                         default_value: float = 0.) -> sitk.Image:
     """
     Create a new blank image with given properties
 
@@ -148,7 +149,7 @@ def sitk_new_blank_image(size: SizeSpacing, spacing: SizeSpacing,
 
 @sitk_img_func
 def sitk_resample_to_shape(img: sitk.Image, x: int, y: int, z: int,
-                           order: int = 1):
+                           order: int = 1) -> sitk.Image:
     """
     Resamples Image to given shape
 
@@ -180,7 +181,7 @@ def sitk_resample_to_shape(img: sitk.Image, x: int, y: int, z: int,
 
 
 @sitk_img_func
-def max_energy_slice(img: sitk.Image):
+def max_energy_slice(img: sitk.Image) -> int:
     """Determine the axial slice in which the image energy is max
 
     Parameters
@@ -197,8 +198,9 @@ def max_energy_slice(img: sitk.Image):
     return int(np.argmax(np.sum(sitk.GetArrayFromImage(img), axis=(1, 2))))
 
 
-def sitk_copy_metadata(img_source: sitk.Image, img_target: sitk.Image):
-    """ Copy metadata (=DICOM Tags) from one image to another
+def sitk_copy_metadata(img_source: sitk.Image, img_target: sitk.Image
+                       ) -> sitk.Image:
+    """ Copy metadata (= DICOM Tags) from one image to another
 
     Parameters
     ----------
@@ -218,7 +220,8 @@ def sitk_copy_metadata(img_source: sitk.Image, img_target: sitk.Image):
 
 
 @sitk_img_func
-def bounding_box(mask: sitk.Image, margin: Optional[int] = None):
+def bounding_box(mask: sitk.Image, margin: Optional[int] = None
+                 ) -> Tuple[Union[float, int]]:
     """Calculate bounding box coordinates of binary mask
 
     Parameters

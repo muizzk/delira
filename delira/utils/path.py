@@ -1,7 +1,8 @@
 import os
+from typing import Union, List, Tuple, Iterable
 
 
-def subdirs(d: str):
+def subdirs(d: str) -> Union[List[str], Tuple[str], Iterable[str]]:
     """For a given directory, return a list of all subdirectories (full paths)
 
     Parameters

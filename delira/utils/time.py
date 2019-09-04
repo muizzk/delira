@@ -1,7 +1,7 @@
 import datetime
 
 
-def now():
+def now() -> str:
     """Return current time as YYYY-MM-DD_HH-MM-SS
 
     Returns

@@ -5,10 +5,10 @@ import numpy as np
 
 from delira import get_backends
 
-from typing import ClassVar, Any, Union, Callable
+from typing import Type, Any, Union, Callable
 
 
-def dtype_func(class_object: ClassVar[Any]):
+def dtype_func(class_object: Type[Any]) -> Callable:
     """
     Decorator to Check whether the first argument of the decorated function is
     of a certain type
@@ -28,9 +28,9 @@ def dtype_func(class_object: ClassVar[Any]):
         First argument of decorated function is not of given type
 
     """
-    def instance_checker(func: Callable):
+    def instance_checker(func: Callable) -> Callable:
         @wraps(func)
-        def func_wrapper(checked_object: Any, *args, **kwargs):
+        def func_wrapper(checked_object: Any, *args, **kwargs) -> Any:
             assertion_str = "Argument 1 is not of type %s but of type %s" % \
                             (class_object.__name__,
                              checked_object.__class__.__name__)
@@ -41,7 +41,7 @@ def dtype_func(class_object: ClassVar[Any]):
     return instance_checker
 
 
-def classtype_func(class_object: Any):
+def classtype_func(class_object: Any) -> Callable:
     """
     Decorator to Check whether the first argument of the decorated function is
     a subclass of a certain type
@@ -61,9 +61,9 @@ def classtype_func(class_object: Any):
         First argument of decorated function is not a subclass of given type
 
     """
-    def subclass_checker(func: Callable):
+    def subclass_checker(func: Callable) -> Callable:
         @wraps(func)
-        def func_wrapper(checked_object: Any, *args, **kwargs):
+        def func_wrapper(checked_object: Any, *args, **kwargs) -> Any:
             assertion_str = "Argument 1 is not subclass of %s but of type %s" \
                             % (class_object.__name__, checked_object.__name__)
 
@@ -73,7 +73,7 @@ def classtype_func(class_object: Any):
     return subclass_checker
 
 
-def make_deprecated(new_func: Union[str, Callable]):
+def make_deprecated(new_func: Union[str, Callable]) -> Callable:
     """
     Decorator which raises a DeprecationWarning for the decorated object
 
@@ -91,9 +91,9 @@ def make_deprecated(new_func: Union[str, Callable]):
     Deprecation Warning
 
     """
-    def deprecation(func: Callable):
+    def deprecation(func: Callable) -> Callable:
         @wraps(func)
-        def func_wrapper(*args, **kwargs):
+        def func_wrapper(*args, **kwargs) -> Any:
             if not isinstance(new_func, str):
                 new_func_name = new_func.__name__
             else:

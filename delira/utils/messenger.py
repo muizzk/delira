@@ -1,7 +1,7 @@
 import logging
 import warnings
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Any
 
 from delira.training import BaseExperiment, BaseNetworkTrainer
 from delira.training.callbacks import AbstractCallback
@@ -14,7 +14,7 @@ class BaseMessenger(ABC):
     """
 
     def __init__(self, experiment: BaseExperiment,
-                 notify_epochs: Optional[int] = None):
+                 notify_epochs: Optional[int] = None) -> None:
         """
 
         Parameters
@@ -48,7 +48,7 @@ class BaseMessenger(ABC):
         """
         raise NotImplementedError
 
-    def __getattr__(self, attr):
+    def __getattr__(self, attr) -> Any:
         """
         If wrapper does not implement attribute, return attribute of wrapped
         object
@@ -69,7 +69,7 @@ class BaseMessenger(ABC):
             return getattr(self, attr)
         return getattr(self._experiment, attr)
 
-    def run(self, *args, **kwargs):
+    def run(self, *args, **kwargs) -> Any:
         """
         Wrapper for run function. Notifies experiment start, fail, complete.
 
@@ -106,7 +106,7 @@ class BaseMessenger(ABC):
         self.emit_message(msg)
         return out
 
-    def resume(self, *args, **kwargs):
+    def resume(self, *args, **kwargs) -> Any:
         """
         Wrapper for resume function. Notifies experiment start, fail, complete.
 
@@ -142,7 +142,7 @@ class BaseMessenger(ABC):
         self.emit_message(msg)
         return out
 
-    def test(self, *args, **kwargs):
+    def test(self, *args, **kwargs) -> Any:
         """
         Wrapper for test function. Notifies experiment start, fail, complete.
 
@@ -172,7 +172,7 @@ class BaseMessenger(ABC):
         self.emit_message(msg)
         return out
 
-    def kfold(self, *args, **kwargs):
+    def kfold(self, *args, **kwargs) -> Any:
         """
         Wrapper for kfold function. Notifies experiment start, fail, complete,
         end of fold.
@@ -226,7 +226,7 @@ class MessengerEpochCallback(AbstractCallback):
     :class:`BaseMessenger`
     """
 
-    def __init__(self, n_epochs: int, messenger: BaseMessenger):
+    def __init__(self, n_epochs: int, messenger: BaseMessenger) -> None:
         """
 
         Parameters
@@ -273,7 +273,7 @@ class MessengerFoldCallback(AbstractCallback):
     :class:`BaseMessenger`
     """
 
-    def __init__(self, messenger: BaseMessenger):
+    def __init__(self, messenger: BaseMessenger) -> None:
         """
 
         Parameters
@@ -343,7 +343,8 @@ class SlackMessenger(BaseMessenger):
     """
 
     def __init__(self, experiment: BaseExperiment, token: str,
-                 channel: str, notify_epochs: Optional[int] = None, **kwargs):
+                 channel: str, notify_epochs: Optional[int] = None, **kwargs
+                 ) -> None:
         """
 
         Parameters
@@ -402,7 +403,7 @@ class SlackMessenger(BaseMessenger):
             # new api
             self._ts = resp.data['ts'] if hasattr(resp, 'data') else None
 
-    def emit_message(self, msg: str, **kwargs):
+    def emit_message(self, msg: str, **kwargs) -> dict:
         """
         Emit message (is possible the current thread is used)
 

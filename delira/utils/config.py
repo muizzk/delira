@@ -9,7 +9,7 @@ class LookupConfig(Config):
 
     """
 
-    def nested_get(self, key: str, *args, **kwargs):
+    def nested_get(self, key: str, *args, **kwargs) -> Any:
         """
         Returns all occurances of ``key`` in ``self`` and subdicts
 
@@ -52,7 +52,7 @@ class LookupConfig(Config):
         else:
             return results[0]
 
-    def __setattr__(self, key: str, value: Any):
+    def __setattr__(self, key: str, value: Any) -> None:
         """
         Modified to automatically convert `dict` to LookupConfig.
 

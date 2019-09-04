@@ -3,7 +3,7 @@ import contextlib
 from delira import get_backends
 from delira.utils.decorators import make_deprecated
 
-from typing import Any, Optional, Callable
+from typing import Any, Optional, Callable, Dict, Union, Generator
 
 if "TORCH" in get_backends():
     import torch
@@ -17,7 +17,8 @@ if "TORCH" in get_backends():
         @make_deprecated(
             "'delira.models.model_utils.scale_loss' combined with "
             "new apex.amp API (https://github.com/NVIDIA/apex)")
-        def __init__(self, optimizer: torch.optim.Optimizer, *args, **kwargs):
+        def __init__(self, optimizer: torch.optim.Optimizer, *args, **kwargs
+                     ) -> None:
             """
 
             Parameters
@@ -34,7 +35,7 @@ if "TORCH" in get_backends():
             self._optimizer = optimizer
 
         @contextlib.contextmanager
-        def scale_loss(self, loss: torch.Tensor):
+        def scale_loss(self, loss: torch.Tensor) -> Generator:
             """
             Function which scales the loss in ``apex`` and yields the unscaled
             loss here to mirror the API
@@ -49,7 +50,7 @@ if "TORCH" in get_backends():
             yield loss
             return
 
-        def step(self, closure: Optional[Callable] = None):
+        def step(self, closure: Optional[Callable] = None) -> None:
             """
             Wraps the step method of the optimizer and calls the original step
             method
@@ -65,29 +66,29 @@ if "TORCH" in get_backends():
             return self._optimizer.step(closure=closure)
 
         # Forward any attribute lookups
-        def __getattr__(self, attr: Any):
+        def __getattr__(self, attr: Any) -> Any:
             return getattr(self._optimizer, attr)
 
         # Forward all torch.optim.Optimizer methods
-        def __getstate__(self):
+        def __getstate__(self) -> Any:
             return self._optimizer.__getstate__()
 
-        def __setstate__(self, *args, **kwargs):
+        def __setstate__(self, *args, **kwargs) -> None:
             return self._optimizer.__setstate__(*args, **kwargs)
 
-        def __repr__(self):
+        def __repr__(self) -> Any:
             return self._optimizer.__repr__()
 
-        def state_dict(self):
+        def state_dict(self) -> Dict[str, Union[torch.Tensor, dict]]:
             return self._optimizer.state_dict()
 
-        def load_state_dict(self, state_dict: dict):
+        def load_state_dict(self, state_dict: dict) -> None:
             return self._optimizer.load_state_dict(state_dict)
 
-        def zero_grad(self):
+        def zero_grad(self) -> None:
             return self._optimizer.zero_grad()
 
-        def add_param_group(self, param_group: dict):
+        def add_param_group(self, param_group: dict) -> None:
             return self._optimizer.add_param_group(param_group)
 
     from delira import get_current_debug_mode, set_debug_mode
@@ -99,7 +100,7 @@ if "TORCH" in get_backends():
 
         """
 
-        def __init__(self, mode: bool):
+        def __init__(self, mode: bool) -> None:
             """
 
             Parameters
@@ -109,7 +110,7 @@ if "TORCH" in get_backends():
             """
             self._mode = mode
 
-        def _switch_to_new_mode(self):
+        def _switch_to_new_mode(self) -> None:
             """
             helper function to switch to the new debug mode
             (and saving the previous one in ``self._mode``)
@@ -119,13 +120,13 @@ if "TORCH" in get_backends():
             set_debug_mode(self._mode)
             self._mode = prev_mode
 
-        def __enter__(self):
+        def __enter__(self) -> None:
             """
             Sets the specified debug mode on entering the context
             """
             self._switch_to_new_mode()
 
-        def __exit__(self, *args, **kwargs):
+        def __exit__(self, *args, **kwargs) -> None:
             """
             Resets the previous debug mode on exiting the context
 
@@ -149,7 +150,7 @@ if "TORCH" in get_backends():
 
         """
 
-        def __init__(self):
+        def __init__(self) -> None:
             super().__init__(True)
 
     class DebugDisabled(DebugMode):
@@ -157,5 +158,5 @@ if "TORCH" in get_backends():
         Context Manager to disable the debug mode for the wrapped context
         """
 
-        def __init__(self):
+        def __init__(self) -> None:
             super().__init__(False)
