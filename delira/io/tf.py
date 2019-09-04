@@ -1,6 +1,5 @@
 from delira.models.backends.tf_eager import AbstractTfEagerNetwork
-import typing
-from typing import Optional, Dict
+from typing import Optional, Dict, List, Any
 import logging
 
 import tensorflow as tf
@@ -9,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 def save_checkpoint(file: str,
-                    model: Optional[AbstractTfEagerNetwork] = None):
+                    model: Optional[AbstractTfEagerNetwork] = None) -> None:
     """
     Save model's parameters contained in it's graph
 
@@ -24,7 +23,7 @@ def save_checkpoint(file: str,
 
 
 def load_checkpoint(file: str,
-                    model: Optional[AbstractTfEagerNetwork] = None):
+                    model: Optional[AbstractTfEagerNetwork] = None) -> dict:
     """
     Loads a saved model
 
@@ -43,7 +42,8 @@ def load_checkpoint(file: str,
 
 
 def _create_varlist(model: Optional[AbstractTfEagerNetwork] = None,
-                    optimizer: Optional[Dict[str, tf.train.Optimizer]] = None):
+                    optimizer: Optional[Dict[str, tf.train.Optimizer]] = None
+                    ) -> List[tf.Variable]:
     variable_list = []
 
     if model is not None:
@@ -60,7 +60,7 @@ def save_checkpoint_eager(
         file: str,
         model: Optional[AbstractTfEagerNetwork] = None,
         optimizer: Optional[Dict[str, tf.train.Optimizer]] = None,
-        epoch: Optional[int] = None):
+        epoch: Optional[int] = None) -> None:
     variable_list = _create_varlist(model, optimizer)
 
     # can only save if variables exist, this is not the case if there was no
@@ -77,7 +77,8 @@ def save_checkpoint_eager(
 def load_checkpoint_eager(
         file: str,
         model: Optional[AbstractTfEagerNetwork] = None,
-        optimizer: Optional[Dict[str, tf.train.Optimizer]] = None):
+        optimizer: Optional[Dict[str, tf.train.Optimizer]] = None
+) -> Dict[str, Any]:
 
     variable_list = _create_varlist(model, optimizer)
 

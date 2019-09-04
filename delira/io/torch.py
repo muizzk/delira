@@ -4,7 +4,7 @@ import torch
 import logging
 import os
 from collections import OrderedDict
-from typing import Optional
+from typing import Optional, Dict, Any
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 def save_checkpoint_torch(file: str,
                           model: Optional[AbstractPyTorchNetwork] = None,
                           optimizers: Optional[dict] = None,
-                          epoch: Optional[int] = None, **kwargs):
+                          epoch: Optional[int] = None, **kwargs) -> None:
     """
     Save checkpoint
 
@@ -61,7 +61,7 @@ def save_checkpoint_torch(file: str,
     torch.save(state, file, **kwargs)
 
 
-def load_checkpoint_torch(file: str, **kwargs):
+def load_checkpoint_torch(file: str, **kwargs) -> Dict[str, Any]:
     """
     Loads a saved model
 
@@ -92,7 +92,7 @@ def save_checkpoint_torchscript(
         file: str,
         model: Optional[AbstractTorchScriptNetwork] = None,
         optimizers: Optional[dict] = None,
-        epoch: Optional[int] = None, **kwargs):
+        epoch: Optional[int] = None, **kwargs) -> None:
     """
     Save current checkpoint to two different files:
         1.) ``file + "_model.ptj"``: Will include the state of the model
@@ -135,7 +135,7 @@ def save_checkpoint_torchscript(
                               optimizers=optimizers, epoch=epoch, **kwargs)
 
 
-def load_checkpoint_torchscript(file: str, **kwargs):
+def load_checkpoint_torchscript(file: str, **kwargs) -> Dict[str, Any]:
     """
     Loads a saved checkpoint consisting of 2 files
     (see :func:`save_checkpoint_jit` for details)
