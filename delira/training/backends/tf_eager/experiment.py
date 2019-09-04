@@ -270,7 +270,8 @@ class TfEagerExperiment(BaseExperiment):
                             verbose=verbose, prepare_batch=prepare_batch,
                             convert_fn=convert_fn, **kwargs)
 
-    def setup(self, params: Parameters, training: bool = True, **kwargs) -> Union[Predictor, TfEagerNetworkTrainer]:
+    def setup(self, params: Parameters, training: bool = True, **
+              kwargs) -> Union[Predictor, TfEagerNetworkTrainer]:
         """
         Defines the setup behavior (model, trainer etc.) for training and
         testing case
