@@ -8,8 +8,11 @@ from delira.data_loading import BaseDataManager
 from delira.training.callbacks import AbstractCallback
 import os
 import logging
-from typing import Union, Optional, Callable, ClassVar, Iterable
+import numpy as np
+from typing import Union, Optional, Callable, Type, Iterable, Dict, Any, \
+    Generator
 
+import tensorflow as tf
 from tensorflow import executing_eagerly
 
 from batchgenerators.dataloading import MultiThreadedAugmenter
@@ -33,11 +36,11 @@ class TfGraphNetworkTrainer(BaseNetworkTrainer):
                  save_path: str,
                  key_mapping: dict,
                  losses: dict,
-                 optimizer_cls: ClassVar[tf.train.Optimizer],
+                 optimizer_cls: Type[tf.train.Optimizer],
                  optimizer_params: Optional[dict] = None,
                  train_metrics: Optional[dict] = None,
                  val_metrics: Optional[dict] = None,
-                 lr_scheduler_cls: Optional[ClassVar[AbstractCallback]] = None,
+                 lr_scheduler_cls: Optional[Type[AbstractCallback]] = None,
                  lr_scheduler_params: Optional[dict] = None,
                  gpu_ids: Optional[Union[list, tuple, Iterable]] = None,
                  save_freq: int = 1,
@@ -51,7 +54,7 @@ class TfGraphNetworkTrainer(BaseNetworkTrainer):
                  convert_batch_to_npy_fn: Callable = convert_to_numpy,
                  val_freq: int = 1,
                  **kwargs
-                 ):
+                 ) -> None:
         """
 
         Parameters
@@ -149,12 +152,12 @@ class TfGraphNetworkTrainer(BaseNetworkTrainer):
             setattr(self, key, val)
 
     def _setup(self, network: AbstractTfGraphNetwork, optim_fn: Callable,
-               optimizer_cls: ClassVar[tf.train.Optimizer],
+               optimizer_cls: Type[tf.train.Optimizer],
                optimizer_params: dict,
-               lr_scheduler_cls: ClassVar[AbstractCallback],
+               lr_scheduler_cls: Type[AbstractCallback],
                lr_scheduler_params: dict, key_mapping: dict,
                convert_batch_to_npy_fn: Callable,
-               gpu_ids: Union[list, tuple, Iterable]):
+               gpu_ids: Union[list, tuple, Iterable]) -> None:
         """
         Defines the Trainers Setup
 
@@ -238,7 +241,7 @@ class TfGraphNetworkTrainer(BaseNetworkTrainer):
                 self.update_state(latest_state_path)
                 self.start_epoch = latest_epoch
 
-    def _at_training_end(self):
+    def _at_training_end(self) -> AbstractTfGraphNetwork:
         """
         Defines Behaviour at end of training: Loads best model if available
 
@@ -261,7 +264,9 @@ class TfGraphNetworkTrainer(BaseNetworkTrainer):
         return self.module
 
     def _train_single_epoch(self, batchgen: MultiThreadedAugmenter,
-                            epoch: int, verbose: bool = False):
+                            epoch: int, verbose: bool = False
+                            ) -> (Dict[str, np.ndarray],
+                                  Dict[str, np.ndarray]):
         """
         Trains the network a single epoch
 
@@ -281,7 +286,7 @@ class TfGraphNetworkTrainer(BaseNetworkTrainer):
                          batch_size: Optional[int] = None,
                          metrics: Optional[dict] = None,
                          metric_keys: Optional[dict] = None,
-                         verbose: bool = False, **kwargs):
+                         verbose: bool = False, **kwargs) -> Generator:
         """
         Defines a routine to predict data obtained from a batchgenerator
 
@@ -311,7 +316,7 @@ class TfGraphNetworkTrainer(BaseNetworkTrainer):
         return super().predict_data_mgr(datamgr, batch_size, metrics,
                                         metric_keys, verbose=verbose)
 
-    def save_state(self, file_name: str, *args, **kwargs):
+    def save_state(self, file_name: str, *args, **kwargs) -> None:
         """
         saves the current state via :func:`delira.io.tf.save_checkpoint`
 
@@ -322,7 +327,7 @@ class TfGraphNetworkTrainer(BaseNetworkTrainer):
         """
         save_checkpoint(file_name, self.module)
 
-    def load_state(self, file_name: str, *args, **kwargs):
+    def load_state(self, file_name: str, *args, **kwargs) -> Dict[str, Any]:
         """
         Loads the new state from file via :func:`delira.io.tf.load_checkpoint`
 
@@ -339,7 +344,8 @@ class TfGraphNetworkTrainer(BaseNetworkTrainer):
     @staticmethod
     def _search_for_prev_state(
             path: str,
-            extensions: Optional[Union[list, Iterable]] = None):
+            extensions: Optional[Union[list, Iterable]] = None
+    ) -> (Union[str, None], int):
         """
         Helper function to search in a given path for previous epoch states
         (indicated by extensions)

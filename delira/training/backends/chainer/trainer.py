@@ -10,9 +10,11 @@ from batchgenerators.dataloading import MultiThreadedAugmenter
 import os
 import logging
 from functools import partial
-from typing import Optional, ClassVar, Union, Iterable, Callable
+from typing import Optional, Type, Union, Iterable, Callable, Any, Dict, \
+    Generator
 from delira.training.callbacks import AbstractCallback
 from delira.data_loading import BaseDataManager
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -32,11 +34,11 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
                  save_path: str,
                  key_mapping: dict,
                  losses: dict,
-                 optimizer_cls: Optional[ClassVar[chainer.Optimizer]] = None,
+                 optimizer_cls: Optional[Type[chainer.Optimizer]] = None,
                  optimizer_params: Optional[dict] = None,
                  train_metrics: Optional[dict] = None,
                  val_metrics: Optional[dict] = None,
-                 lr_scheduler_cls: Optional[ClassVar[AbstractCallback]] = None,
+                 lr_scheduler_cls: Optional[Type[AbstractCallback]] = None,
                  lr_scheduler_params: Optional[dict] = None,
                  gpu_ids: Optional[Union[list, Iterable, tuple]] = None,
                  save_freq: int = 1,
@@ -50,7 +52,7 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
                  convert_batch_to_npy_fn: Callable = convert_to_numpy,
                  mixed_precision: bool = False,
                  val_freq: int = 1,
-                 ** kwargs):
+                 ** kwargs) -> None:
         """
 
         Parameters
@@ -153,13 +155,13 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
             setattr(self, key, val)
 
     def _setup(self, network: AbstractChainerNetwork, optim_fn: Callable,
-               optimizer_cls: ClassVar[chainer.Optimizer],
+               optimizer_cls: Type[chainer.Optimizer],
                optimizer_params: dict,
-               lr_scheduler_cls: ClassVar[AbstractCallback],
+               lr_scheduler_cls: Type[AbstractCallback],
                lr_scheduler_params: dict,
                gpu_ids: Union[list, tuple, Iterable],
                key_mapping: dict, convert_batch_to_npy_fn: Callable,
-               mixed_precision: bool):
+               mixed_precision: bool) -> None:
         """
         Defines the Trainers Setup
 
@@ -291,7 +293,7 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
             self._prepare_batch, input_device=self.input_device,
             output_device=self.output_device)
 
-    def _at_training_begin(self, *args, **kwargs):
+    def _at_training_begin(self, *args, **kwargs) -> None:
         """
         Defines behaviour at beginning of training
 
@@ -307,7 +309,7 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
             self.save_path, "checkpoint_epoch_%d" % self.start_epoch),
             self.start_epoch)
 
-    def _at_training_end(self):
+    def _at_training_end(self) -> AbstractChainerNetwork:
         """
         Defines Behaviour at end of training: Loads best model if
         available
@@ -328,7 +330,7 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
         return self.module
 
     def _at_epoch_end(self, metrics_val: dict, val_score_key: str, epoch: int,
-                      is_best: bool, **kwargs):
+                      is_best: bool, **kwargs) -> None:
         """
         Defines behaviour at beginning of each epoch: Executes all
         callbacks's `at_epoch_end` method and saves current state if
@@ -372,7 +374,8 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
                             epoch)
 
     def _train_single_epoch(self, batchgen: MultiThreadedAugmenter, epoch: int,
-                            verbose: bool = False):
+                            verbose: bool = False) -> (Dict[str, np.ndarray],
+                                                       Dict[str, np.ndarray]):
         """
         Trains the network a single epoch
 
@@ -394,7 +397,7 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
                          batchsize: Optional[int] = None,
                          metrics: Optional[dict] = None,
                          metric_keys: Optional[dict] = None,
-                         verbose: bool = False, **kwargs):
+                         verbose: bool = False, **kwargs) -> Generator:
         """
         Defines a routine to predict data obtained from a batchgenerator
 
@@ -432,7 +435,7 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
         return super().predict_data_mgr(datamgr, batchsize, metrics,
                                         metric_keys, verbose, **kwargs)
 
-    def save_state(self, file_name: str, epoch: int, **kwargs):
+    def save_state(self, file_name: str, epoch: int, **kwargs) -> None:
         """
         saves the current state via
         :func:`delira.io.chainer.save_checkpoint`
@@ -455,7 +458,7 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
                         **kwargs)
 
     @staticmethod
-    def load_state(file_name: str, **kwargs):
+    def load_state(file_name: str, **kwargs) -> Dict[str, Any]:
         """
         Loads the new state from file via
         :func:`delira.io.chainer.load_checkpoint`
@@ -478,7 +481,7 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
 
         return load_checkpoint(file_name, **kwargs)
 
-    def update_state(self, file_name: str, *args, **kwargs):
+    def update_state(self, file_name: str, *args, **kwargs) -> None:
         """
         Update internal state from a loaded state
 
@@ -503,7 +506,7 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
                                                "optimizers": self.optimizers},
                                            **kwargs))
 
-    def _update_state(self, new_state: dict):
+    def _update_state(self, new_state: dict) -> Any:
         """
         Update the state from a given new state
 
@@ -533,7 +536,8 @@ class ChainerNetworkTrainer(BaseNetworkTrainer):
     @staticmethod
     def _search_for_prev_state(
             path: str,
-            extensions: Optional[Union[list, Iterable]] = None):
+            extensions: Optional[Union[list, Iterable]] = None
+    ) -> (Union[str, None], int):
         """
         Helper function to search in a given path for previous epoch states
         (indicated by extensions)

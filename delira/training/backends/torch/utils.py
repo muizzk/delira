@@ -3,13 +3,15 @@ import torch
 from delira.utils.decorators import dtype_func
 from delira.training.utils import convert_to_numpy_identity
 from delira.training.utils import recursively_convert_elements
-from typing import ClassVar
+from typing import Type, Dict
+
+import numpy as np
 
 
 @dtype_func(torch.nn.Module)
 def create_optims_default(model: torch.nn.Module,
-                          optim_cls: ClassVar[torch.optim.Optimizer],
-                          **optim_params):
+                          optim_cls: Type[torch.optim.Optimizer],
+                          **optim_params) -> Dict[str, torch.optim.Optimizer]:
     """
     Function to create a optimizer dictionary
     (in this case only one optimizer for the whole network)
@@ -31,11 +33,11 @@ def create_optims_default(model: torch.nn.Module,
     return {"default": optim_cls(model.parameters(), **optim_params)}
 
 
-def _single_element_tensor_conversion(element: torch.Tensor):
+def _single_element_tensor_conversion(element: torch.Tensor) -> np.ndarray:
     return element.cpu().detach().numpy()
 
 
-def convert_to_numpy(*args, **kwargs):
+def convert_to_numpy(*args, **kwargs) -> (tuple, dict):
     """
     Converts all :class:`torch.Tensor` in args and kwargs to numpy array
 

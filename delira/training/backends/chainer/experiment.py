@@ -1,4 +1,4 @@
-from typing import Optional, Union, Iterable, ClassVar, Callable
+from typing import Optional, Union, Dict, Any, Type, Callable
 from functools import partial
 
 from delira.models.backends.chainer import AbstractChainerNetwork
@@ -24,8 +24,8 @@ class ChainerExperiment(BaseExperiment):
             val_score_key: Optional[str] = None,
             optim_builder: Callable = create_optims_default,
             checkpoint_freq: int = 1,
-            trainer_cls: ClassVar[BaseNetworkTrainer] = ChainerNetworkTrainer,
-            **kwargs):
+            trainer_cls: Type[BaseNetworkTrainer] = ChainerNetworkTrainer,
+            **kwargs) -> None:
         """
 
         Parameters
@@ -82,7 +82,8 @@ class ChainerExperiment(BaseExperiment):
              test_data: BaseDataManager,
              metrics: dict, metric_keys: Optional[dict] = None,
              verbose: bool = False, prepare_batch: Optional[Callable] = None,
-             convert_fn: Callable = convert_to_numpy, **kwargs):
+             convert_fn: Callable = convert_to_numpy, **kwargs
+             ) -> (Dict[str, Any], Dict[str, Any]):
         """
         Setup and run testing on a given network
 

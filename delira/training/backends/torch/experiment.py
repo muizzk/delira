@@ -1,7 +1,8 @@
 from functools import partial
-from typing import Union, Optional, Callable, ClassVar
+from typing import Union, Optional, Callable, Type, Dict
 
 import torch
+import numpy as np
 
 from delira.models.backends.torch import AbstractPyTorchNetwork
 from delira.data_loading import BaseDataManager
@@ -18,7 +19,7 @@ from delira.training.base_trainer import BaseNetworkTrainer as BaseTrainer
 class PyTorchExperiment(BaseExperiment):
     def __init__(self,
                  params: Union[str, Parameters],
-                 model_cls: ClassVar[AbstractPyTorchNetwork],
+                 model_cls: Type[AbstractPyTorchNetwork],
                  n_epochs: Optional[int] = None,
                  name: Optional[str] = None,
                  save_path: Optional[str] = None,
@@ -26,8 +27,8 @@ class PyTorchExperiment(BaseExperiment):
                  val_score_key: Optional[str] = None,
                  optim_builder: Callable = create_optims_default,
                  checkpoint_freq: int = 1,
-                 trainer_cls: ClassVar[BaseTrainer] = PyTorchNetworkTrainer,
-                 **kwargs):
+                 trainer_cls: Type[BaseTrainer] = PyTorchNetworkTrainer,
+                 **kwargs) -> None:
         """
 
         Parameters
@@ -89,7 +90,7 @@ class PyTorchExperiment(BaseExperiment):
               test_kwargs: Optional[dict] = None,
               metric_keys: Optional[dict] = None,
               params: Optional[Parameters] = None, verbose: bool = False,
-              **kwargs):
+              **kwargs) -> (Dict[str, np.ndarray], Dict[str, np.ndarray]):
         """
         Performs a k-Fold cross-validation
 
@@ -207,7 +208,8 @@ class PyTorchExperiment(BaseExperiment):
     def test(self, network: AbstractPyTorchNetwork, test_data: BaseDataManager,
              metrics: dict, metric_keys: Optional[dict] = None,
              verbose: bool = False, prepare_batch: Optional[Callable] = None,
-             convert_fn: Optional[Callable] = None, **kwargs):
+             convert_fn: Optional[Callable] = None, **kwargs
+             ) -> (Dict[str, np.ndarray], Dict[str, np.ndarray]):
         """
         Setup and run testing on a given network
 

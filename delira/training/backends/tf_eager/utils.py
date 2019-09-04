@@ -1,15 +1,16 @@
 import tensorflow as tf
-from typing import ClassVar
+from typing import Type, Dict
+import numpy as np
 
 from delira.training.utils import convert_to_numpy_identity, \
     recursively_convert_elements
 
 
-def _single_element_tensor_conversion(element: tf.Tensor):
+def _single_element_tensor_conversion(element: tf.Tensor) -> np.ndarray:
     return element.numpy()
 
 
-def convert_to_numpy(*args, **kwargs):
+def convert_to_numpy(*args, **kwargs) -> (tuple, dict):
     """
     Converts all tf tensors in args and kwargs to numpy array
 
@@ -36,8 +37,8 @@ def convert_to_numpy(*args, **kwargs):
     return convert_to_numpy_identity(*args, **kwargs)
 
 
-def create_optims_default(optim_cls: ClassVar[tf.train.Optimizer],
-                          **optim_params):
+def create_optims_default(optim_cls: Type[tf.train.Optimizer],
+                          **optim_params) -> Dict[str, tf.train.Optimizer]:
     """
     Function to create a optimizer dictionary
     (in this case only one optimizer)

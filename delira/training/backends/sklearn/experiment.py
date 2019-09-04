@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Union, Optional, ClassVar, Callable
+from typing import Union, Optional, Type, Callable
 import os
 
 from sklearn.base import BaseEstimator
@@ -10,6 +10,7 @@ from delira.models.abstract_network import AbstractNetwork
 from delira.training.base_experiment import BaseExperiment
 from delira.training.base_trainer import BaseNetworkTrainer
 from delira.training.parameters import Parameters
+from delira.training.predictor import Predictor
 
 from delira.training.backends.sklearn.trainer import SklearnEstimatorTrainer \
     as Trainer
@@ -26,9 +27,9 @@ class SklearnExperiment(BaseExperiment):
             key_mapping: Optional[dict] = None,
             val_score_key: Optional[str] = None,
             checkpoint_freq: int = 1,
-            trainer_cls: ClassVar[BaseNetworkTrainer] = Trainer,
-            model_wrapper_cls: ClassVar[AbstractNetwork] = SklearnEstimator,
-            **kwargs):
+            trainer_cls: Type[BaseNetworkTrainer] = Trainer,
+            model_wrapper_cls: Type[AbstractNetwork] = SklearnEstimator,
+            **kwargs) -> None:
         """
 
         Parameters
@@ -81,7 +82,8 @@ class SklearnExperiment(BaseExperiment):
                          **kwargs)
         self._model_wrapper_cls = model_wrapper_cls
 
-    def _setup_training(self, params: Parameters, **kwargs):
+    def _setup_training(self, params: Parameters, **kwargs
+                        ) -> BaseNetworkTrainer:
         """
             Handles the setup for training case
 
@@ -126,7 +128,7 @@ class SklearnExperiment(BaseExperiment):
 
     def _setup_test(self, params: Parameters, model: SklearnEstimator,
                     convert_batch_to_npy_fn: Callable,
-                    prepare_batch_fn: Callable, **kwargs):
+                    prepare_batch_fn: Callable, **kwargs) -> Predictor:
         """
 
         Parameters

@@ -3,16 +3,17 @@ from delira.models.backends.chainer import DataParallelChainerOptimizer, \
     AbstractChainerNetwork
 from delira.training.utils import convert_to_numpy_identity, \
     recursively_convert_elements
+import numpy as np
 
-from typing import ClassVar
+from typing import Type, Dict
 
 
-def _single_element_tensor_conversion(element: chainer.Variable):
+def _single_element_tensor_conversion(element: chainer.Variable) -> np.ndarray:
     element.to_cpu()
     return element.array
 
 
-def convert_to_numpy(*args, **kwargs):
+def convert_to_numpy(*args, **kwargs) -> (tuple, dict):
     """
     Converts all chainer variables in args and kwargs to numpy array
 
@@ -25,7 +26,7 @@ def convert_to_numpy(*args, **kwargs):
 
     Returns
     -------
-    list
+    tuple
         converted positional arguments
     dict
         converted keyboard arguments
@@ -40,8 +41,8 @@ def convert_to_numpy(*args, **kwargs):
 
 
 def create_optims_default(model: AbstractChainerNetwork,
-                          optim_cls: ClassVar[chainer.Optimizer],
-                          **optimizer_params):
+                          optim_cls: Type[chainer.Optimizer],
+                          **optimizer_params) -> Dict[str, chainer.Optimizer]:
     """
     Default function to create a single optimizer for chainer
     (also supports Data-Parallel)

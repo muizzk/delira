@@ -4,13 +4,14 @@ from delira.training.base_trainer import BaseNetworkTrainer
 from delira.io.tf import save_checkpoint_eager, load_checkpoint_eager
 from delira.models.backends.tf_eager import AbstractTfEagerNetwork, \
     DataParallelTfEagerNetwork
+from delira.data_loading import BaseDataManager
 from delira.training.callbacks import AbstractCallback
 import logging
 import os
 from functools import partial
 
 import tensorflow as tf
-from typing import Optional, Union, Callable, Iterable, ClassVar
+from typing import Optional, Union, Callable, Iterable, Type
 
 logger = logging.getLogger(__name__)
 
@@ -21,11 +22,11 @@ class TfEagerNetworkTrainer(BaseNetworkTrainer):
                  save_path: str,
                  key_mapping: dict,
                  losses: dict,
-                 optimizer_cls: ClassVar[tf.train.Optimizer],
+                 optimizer_cls: Type[tf.train.Optimizer],
                  optimizer_params: Optional[dict] = None,
                  train_metrics: Optional[dict] = None,
                  val_metrics: Optional[dict] = None,
-                 lr_scheduler_cls: Optional[ClassVar[AbstractCallback]] = None,
+                 lr_scheduler_cls: Optional[Type[AbstractCallback]] = None,
                  lr_scheduler_params: Optional[dict] = None,
                  gpu_ids: Optional[Union[list, Iterable, tuple]] = None,
                  save_freq: int = 1,
@@ -156,9 +157,9 @@ class TfEagerNetworkTrainer(BaseNetworkTrainer):
             setattr(self, key, val)
 
     def _setup(self, network: AbstractTfEagerNetwork, optim_fn: Callable,
-               optimizer_cls: ClassVar[tf.train.Optimizer],
+               optimizer_cls: Type[tf.train.Optimizer],
                optimizer_params: dict,
-               lr_scheduler_cls: ClassVar[AbstractCallback],
+               lr_scheduler_cls: Type[AbstractCallback],
                lr_scheduler_params: dict, key_mapping: dict,
                convert_batch_to_npy_fn: Callable,
                gpu_ids: Union[list, tuple, Iterable]):

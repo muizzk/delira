@@ -1,4 +1,4 @@
-def create_optims_default(*args, **kwargs):
+def create_optims_default(*args, **kwargs) -> dict:
     """
     Function returning an empty optimizer dict
 

@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 
-def initialize_uninitialized(sess: tf.Session):
+def initialize_uninitialized(sess: tf.Session) -> None:
     """
     Function to initialize only uninitialized variables in a session graph
 

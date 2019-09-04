@@ -1,5 +1,7 @@
 from functools import partial
-from typing import Union, Optional, Callable, ClassVar
+from typing import Union, Optional, Callable, Type, Dict
+
+import numpy as np
 import tensorflow as tf
 
 from delira.models.backends.tf_graph import AbstractTfGraphNetwork
@@ -26,8 +28,8 @@ class TfGraphExperiment(TfEagerExperiment):
                  val_score_key: Optional[str] = None,
                  optim_builder: Callable = create_optims_default,
                  checkpoint_freq: int = 1,
-                 trainer_cls: ClassVar[BaseNetworkTrainer] = Trainer,
-                 **kwargs):
+                 trainer_cls: Type[BaseNetworkTrainer] = Trainer,
+                 **kwargs) -> None:
         """
 
         Parameters
@@ -90,7 +92,8 @@ class TfGraphExperiment(TfEagerExperiment):
              test_data: BaseDataManager, metrics: dict,
              metric_keys: Optional[dict] = None, verbose: bool = False,
              prepare_batch: Callable = lambda x: x,
-             convert_fn: Optional[Callable] = None, **kwargs):
+             convert_fn: Optional[Callable] = None, **kwargs
+             ) -> (Dict[str, np.ndarray], Dict[str, np.ndarray]):
         """
         Setup and run testing on a given network
 

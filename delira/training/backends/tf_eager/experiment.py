@@ -1,7 +1,8 @@
 from functools import partial
-from typing import Union, Iterable, Optional, Callable, ClassVar
+from typing import Union, Dict, Optional, Callable, Type
 
 import tensorflow as tf
+import numpy as np
 
 from delira.data_loading import BaseDataManager
 from delira.models.backends.tf_eager import AbstractTfEagerNetwork
@@ -13,6 +14,7 @@ from delira.training.parameters import Parameters
 from delira.training.backends.tf_eager.trainer import TfEagerNetworkTrainer
 from delira.training.backends.tf_eager.utils import create_optims_default
 from delira.training.backends.tf_eager.utils import convert_to_numpy
+from delira.training.predictor import Predictor
 
 
 class TfEagerExperiment(BaseExperiment):
@@ -26,8 +28,8 @@ class TfEagerExperiment(BaseExperiment):
                  val_score_key: Optional[str] = None,
                  optim_builder: Callable = create_optims_default,
                  checkpoint_freq: int = 1,
-                 trainer_cls: ClassVar[BaseTrainer] = TfEagerNetworkTrainer,
-                 **kwargs):
+                 trainer_cls: Type[BaseTrainer] = TfEagerNetworkTrainer,
+                 **kwargs) -> None:
         """
 
         Parameters
@@ -91,7 +93,7 @@ class TfEagerExperiment(BaseExperiment):
               test_kwargs: Optional[dict] = None,
               metric_keys: Optional[dict] = None,
               params: Optional[Parameters] = None, verbose: bool = False,
-              **kwargs):
+              **kwargs) -> (Dict[str, np.ndarray], Dict[str, np.ndarray]):
         """
         Performs a k-Fold cross-validation
 
@@ -209,7 +211,8 @@ class TfEagerExperiment(BaseExperiment):
     def test(self, network: AbstractTfEagerNetwork, test_data: BaseDataManager,
              metrics: dict, metric_keys: Optional[dict] = None,
              verbose: bool = False, prepare_batch: Callable = lambda x: x,
-             convert_fn: Optional[Callable] = None, **kwargs):
+             convert_fn: Optional[Callable] = None, **kwargs
+             ) -> (Dict[str, np.ndarray], Dict[str, np.ndarray]):
         """
         Setup and run testing on a given network
 
@@ -267,7 +270,7 @@ class TfEagerExperiment(BaseExperiment):
                             verbose=verbose, prepare_batch=prepare_batch,
                             convert_fn=convert_fn, **kwargs)
 
-    def setup(self, params: Parameters, training: bool = True, **kwargs):
+    def setup(self, params: Parameters, training: bool = True, **kwargs) -> Union[Predictor, TfEagerNetworkTrainer]:
         """
         Defines the setup behavior (model, trainer etc.) for training and
         testing case

@@ -1,4 +1,4 @@
-from typing import Union, Optional, Callable, ClassVar
+from typing import Union, Optional, Callable, Type
 
 from delira.models.backends.torchscript import AbstractTorchScriptNetwork
 
@@ -14,7 +14,7 @@ from delira.training.base_trainer import BaseNetworkTrainer
 class TorchScriptExperiment(PyTorchExperiment):
     def __init__(self,
                  params: Union[str, Parameters],
-                 model_cls: ClassVar[AbstractTorchScriptNetwork],
+                 model_cls: Type[AbstractTorchScriptNetwork],
                  n_epochs: Optional[int] = None,
                  name: Optional[str] = None,
                  save_path: Optional[str] = None,
@@ -22,8 +22,8 @@ class TorchScriptExperiment(PyTorchExperiment):
                  val_score_key: Optional[str] = None,
                  optim_builder: Callable = create_optims_default,
                  checkpoint_freq: int = 1,
-                 trainer_cls: ClassVar[BaseNetworkTrainer] = Trainer,
-                 **kwargs):
+                 trainer_cls: Type[BaseNetworkTrainer] = Trainer,
+                 **kwargs) -> None:
         """
 
         Parameters

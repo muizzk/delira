@@ -2,11 +2,15 @@ import logging
 import os
 from functools import partial
 import warnings
-from typing import Optional, Union, Iterable, ClassVar, Callable
+from typing import Optional, Iterable, Type, Callable, Union, Dict, \
+    Generator, Any
 from delira.training.callbacks import AbstractCallback
 
 import torch
+
 from batchgenerators.dataloading import MultiThreadedAugmenter
+
+from delira.data_loading import BaseDataManager
 
 from delira.io.torch import load_checkpoint_torch, save_checkpoint_torch
 from delira.models.backends.torch import AbstractPyTorchNetwork, \
@@ -37,11 +41,11 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
             save_path: str,
             key_mapping: dict,
             losses: dict,
-            optimizer_cls: ClassVar[torch.optim.Optimizer],
+            optimizer_cls: Type[torch.optim.Optimizer],
             optimizer_params: Optional[dict] = None,
             train_metrics: Optional[dict] = None,
             val_metrics: Optional[dict] = None,
-            lr_scheduler_cls: Optional[ClassVar[AbstractCallback]] = None,
+            lr_scheduler_cls: Optional[Type[AbstractCallback]] = None,
             lr_scheduler_params: Optional[dict] = None,
             gpu_ids: Optional[Union[list, tuple, Iterable]] = None,
             save_freq: int = 1,
@@ -56,7 +60,7 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
             mixed_precision: bool = False,
             mixed_precision_kwargs: Optional[dict] = None,
             val_freq: int = 1,
-            ** kwargs):
+            ** kwargs) -> None:
         """
 
         Parameters
@@ -215,14 +219,14 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
             setattr(self, key, val)
 
     def _setup(self, network: AbstractPyTorchNetwork, optim_fn: Callable,
-               optimizer_cls: ClassVar[torch.optim.Optimizer],
+               optimizer_cls: Type[torch.optim.Optimizer],
                optimizer_params: dict,
-               lr_scheduler_cls: ClassVar[AbstractCallback],
+               lr_scheduler_cls: Type[AbstractCallback],
                lr_scheduler_params: dict,
                gpu_ids: Union[list, Iterable, tuple],
                key_mapping: dict,
                convert_batch_to_npy_fn: Callable, mixed_precision: bool,
-               mixed_precision_kwargs: dict):
+               mixed_precision_kwargs: dict) -> None:
         """
         Defines the Trainers Setup
 
@@ -335,7 +339,7 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
                 "\n%s" %
                 str(e))
 
-    def _at_training_begin(self, *args, **kwargs):
+    def _at_training_begin(self, *args, **kwargs) -> None:
         """
         Defines behaviour at beginning of training
 
@@ -351,7 +355,7 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
             self.save_path, "checkpoint_epoch_%d" % self.start_epoch),
             self.start_epoch)
 
-    def _at_training_end(self):
+    def _at_training_end(self) -> AbstractPyTorchNetwork:
         """
         Defines Behaviour at end of training: Loads best model if
         available
@@ -372,7 +376,7 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
         return self.module
 
     def _at_epoch_end(self, metrics_val: dict, val_score_key: str,
-                      epoch: int, is_best: bool, **kwargs):
+                      epoch: int, is_best: bool, **kwargs) -> None:
         """
         Defines behaviour at beginning of each epoch:
         Executes all callbacks's `at_epoch_end` method and saves current
@@ -439,7 +443,7 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
             metrics: Optional[dict] = None,
             metric_keys: Optional[dict] = None,
             verbose: bool = False,
-            **kwargs):
+            **kwargs) -> Generator:
         """
         Defines a routine to predict data obtained from a batchgenerator
 
@@ -476,7 +480,7 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
         return super().predict_data_mgr(datamgr, batchsize, metrics,
                                         metric_keys, verbose, **kwargs)
 
-    def save_state(self, file_name: str, epoch: int, **kwargs):
+    def save_state(self, file_name: str, epoch: int, **kwargs) -> None:
         """
         saves the current state via :func:`delira.io.torch.save_checkpoint`
 
@@ -496,7 +500,7 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
                               **kwargs)
 
     @staticmethod
-    def load_state(file_name: str, **kwargs):
+    def load_state(file_name: str, **kwargs) -> Dict[str, Any]:
         """
         Loads the new state from file via
         :func:`delira.io.torch.load_checkpoint`
@@ -519,7 +523,7 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
 
         return load_checkpoint_torch(file_name, **kwargs)
 
-    def update_state(self, file_name: str, *args, **kwargs):
+    def update_state(self, file_name: str, *args, **kwargs) -> None:
         """
         Update internal state from a loaded state
 
@@ -540,7 +544,7 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
         """
         self._update_state(self.load_state(file_name, *args, **kwargs))
 
-    def _update_state(self, new_state: dict):
+    def _update_state(self, new_state: dict) -> Any:
         """
         Update the state from a given new state
 
@@ -573,7 +577,8 @@ class PyTorchNetworkTrainer(BaseNetworkTrainer):
     @staticmethod
     def _search_for_prev_state(
             path: str,
-            extensions: Optional[Union[list, tuple, Iterable]] = None):
+            extensions: Optional[Union[list, tuple, Iterable]] = None
+    ) -> (Union[None, str], int):
         """
         Helper function to search in a given path for previous epoch states
         (indicated by extensions)

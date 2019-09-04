@@ -12,7 +12,7 @@ import numpy as np
 from tqdm.auto import tqdm
 from functools import partial
 
-from typing import Union, Iterable, Optional, Callable, ClassVar
+from typing import Union, Iterable, Optional, Callable, Dict, Any
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class SklearnEstimatorTrainer(BaseNetworkTrainer):
                  metric_keys: Optional[dict] = None,
                  convert_batch_to_npy_fn: Callable = convert_to_numpy,
                  val_freq: int = 1,
-                 ** kwargs):
+                 ** kwargs) -> None:
         """
 
         Parameters
@@ -118,7 +118,7 @@ class SklearnEstimatorTrainer(BaseNetworkTrainer):
             setattr(self, key, val)
 
     def _setup(self, estimator: SklearnEstimator, key_mapping: dict,
-               convert_batch_to_npy_fn: Callable):
+               convert_batch_to_npy_fn: Callable) -> None:
         """
         Defines the Trainers Setup
 
@@ -164,7 +164,7 @@ class SklearnEstimatorTrainer(BaseNetworkTrainer):
             self._prepare_batch, input_device=self.input_device,
             output_device=self.output_device)
 
-    def _at_training_begin(self, *args, **kwargs):
+    def _at_training_begin(self, *args, **kwargs) -> None:
         """
         Defines behaviour at beginning of training
 
@@ -181,7 +181,7 @@ class SklearnEstimatorTrainer(BaseNetworkTrainer):
             self.start_epoch)
 
     def _get_classes_if_necessary(self, dmgr: BaseDataManager, verbose: bool,
-                                  label_key: Optional[str] = None):
+                                  label_key: Optional[str] = None) -> None:
         """
         Checks if available classes have to be collected before starting
         the training to dynamically build the estimator (not all batches
@@ -230,7 +230,7 @@ class SklearnEstimatorTrainer(BaseNetworkTrainer):
               val_score_key: Optional[str] = None,
               val_score_mode: str = 'highest',
               reduce_mode: str = 'mean', verbose: bool = True,
-              label_key: str = "label"):
+              label_key: str = "label") -> SklearnEstimator:
         """
         Defines a routine to train a specified number of epochs
 
@@ -297,7 +297,7 @@ class SklearnEstimatorTrainer(BaseNetworkTrainer):
                              val_score_key, val_score_mode, reduce_mode,
                              verbose)
 
-    def _at_training_end(self):
+    def _at_training_end(self) -> SklearnEstimator:
         """
         Defines Behaviour at end of training: Loads best model if
         available
@@ -318,7 +318,7 @@ class SklearnEstimatorTrainer(BaseNetworkTrainer):
         return self.module
 
     def _at_epoch_end(self, metrics_val: dict, val_score_key: str, epoch: int,
-                      is_best: bool, **kwargs):
+                      is_best: bool, **kwargs) -> None:
         """
         Defines behaviour at beginning of each epoch: Executes all callbacks's
         `at_epoch_end` method and saves current state if necessary
@@ -357,7 +357,7 @@ class SklearnEstimatorTrainer(BaseNetworkTrainer):
                                          "checkpoint_best.pkl"),
                             epoch)
 
-    def save_state(self, file_name: str, epoch: int, **kwargs):
+    def save_state(self, file_name: str, epoch: int, **kwargs) -> None:
         """
         saves the current state via
         :func:`delira.io.sklearn.save_checkpoint`
@@ -379,7 +379,7 @@ class SklearnEstimatorTrainer(BaseNetworkTrainer):
         save_checkpoint(file_name, self.module, epoch, **kwargs)
 
     @staticmethod
-    def load_state(file_name: str, *args, **kwargs):
+    def load_state(file_name: str, *args, **kwargs) -> Dict[str, Any]:
         """
         Loads the new state from file via
         :func:`delira.io.sklearn.load_checkpoint`
@@ -402,7 +402,7 @@ class SklearnEstimatorTrainer(BaseNetworkTrainer):
 
         return load_checkpoint(file_name, **kwargs)
 
-    def update_state(self, file_name: str, *args, **kwargs):
+    def update_state(self, file_name: str, *args, **kwargs) -> Any:
         """
         Update internal state from a loaded state
 
@@ -423,7 +423,7 @@ class SklearnEstimatorTrainer(BaseNetworkTrainer):
         """
         self._update_state(self.load_state(file_name, *args, **kwargs))
 
-    def _update_state(self, new_state: dict):
+    def _update_state(self, new_state: dict) -> Any:
         """
         Update the state from a given new state
 
@@ -450,7 +450,8 @@ class SklearnEstimatorTrainer(BaseNetworkTrainer):
     @staticmethod
     def _search_for_prev_state(
             path: str,
-            extensions: Optional[Union[list, Iterable]] = None):
+            extensions: Optional[Union[list, Iterable]] = None
+    ) -> (Union[str, None], int):
         """
         Helper function to search in a given path for previous epoch states
         (indicated by extensions)

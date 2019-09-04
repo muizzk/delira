@@ -1,6 +1,6 @@
 import logging
 
-from typing import Union, Optional, Callable, ClassVar, Iterable
+from typing import Union, Optional, Callable, Type, Iterable, Dict, Any
 import torch
 
 from delira.io.torch import load_checkpoint_torchscript, \
@@ -25,11 +25,11 @@ class TorchScriptNetworkTrainer(PyTorchNetworkTrainer):
             save_path: str,
             key_mapping: dict,
             losses: dict,
-            optimizer_cls: ClassVar[torch.optim.Optimizer],
+            optimizer_cls: Type[torch.optim.Optimizer],
             optimizer_params: Optional[dict] = None,
             train_metrics: Optional[dict] = None,
             val_metrics: Optional[dict] = None,
-            lr_scheduler_cls: Optional[ClassVar[AbstractCallback]] = None,
+            lr_scheduler_cls: Optional[Type[AbstractCallback]] = None,
             lr_scheduler_params: Optional[dict] = None,
             gpu_ids: Optional[Union[list, tuple, Iterable]] = None,
             save_freq: int = 1,
@@ -43,7 +43,7 @@ class TorchScriptNetworkTrainer(PyTorchNetworkTrainer):
             convert_batch_to_npy_fn: Callable = convert_to_numpy,
             criterions: Optional[dict] = None,
             val_freq: int = 1,
-            **kwargs):
+            **kwargs) -> None:
         """
 
         Parameters
@@ -162,7 +162,7 @@ class TorchScriptNetworkTrainer(PyTorchNetworkTrainer):
                          criterions=criterions, val_freq=val_freq, **kwargs
                          )
 
-    def save_state(self, file_name: str, epoch: int, **kwargs):
+    def save_state(self, file_name: str, epoch: int, **kwargs) -> None:
         """
         saves the current state via
         :func:`delira.io.torch.save_checkpoint_jit`
@@ -184,7 +184,7 @@ class TorchScriptNetworkTrainer(PyTorchNetworkTrainer):
                                     self.optimizers, **kwargs)
 
     @staticmethod
-    def load_state(file_name: str, **kwargs):
+    def load_state(file_name: str, **kwargs) -> Dict[str, Any]:
         """
         Loads the new state from file via
         :func:`delira.io.torch.load_checkpoint:jit`
@@ -203,7 +203,7 @@ class TorchScriptNetworkTrainer(PyTorchNetworkTrainer):
         """
         return load_checkpoint_torchscript(file_name, **kwargs)
 
-    def _update_state(self, new_state: dict):
+    def _update_state(self, new_state: dict) -> Any:
         """
         Update the state from a given new state
 
@@ -226,7 +226,8 @@ class TorchScriptNetworkTrainer(PyTorchNetworkTrainer):
     @staticmethod
     def _search_for_prev_state(
             path: str,
-            extensions: Optional[Union[list, tuple, Iterable]] = None):
+            extensions: Optional[Union[list, tuple, Iterable]] = None
+    ) -> (Union[str, None], int):
         """
         Helper function to search in a given path for previous epoch states
         (indicated by extensions)
