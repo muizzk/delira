@@ -1,6 +1,7 @@
 import os
 import json
 from delira._version import get_versions as _get_versions
+from typing import List
 
 # to register new possible backends, they have to be added to this list.
 # each backend should consist of a tuple of length 2 with the first entry
@@ -14,7 +15,7 @@ __POSSIBLE_BACKENDS = (("torch", "torch"),
 __BACKENDS = ()
 
 
-def _determine_backends():
+def _determine_backends() -> None:
     """
     Internal Helper Function to determine the currently valid backends by
     trying to import them. The valid backends are not returned, but appended
@@ -22,7 +23,7 @@ def _determine_backends():
 
     """
 
-    _config_file = __file__.replace("_backends.py", ".delira")
+    _config_file = __file__.replace("backends.py", ".delira")
     # look for config file to determine backend
     # if file exists: load config into environment variables
 
@@ -72,7 +73,7 @@ def _determine_backends():
     __BACKENDS = tuple(__BACKENDS)
 
 
-def get_backends():
+def get_backends() -> List[str]:
     """
     Return List of currently available backends
 
@@ -88,7 +89,7 @@ def get_backends():
     return __BACKENDS
 
 
-def seed_all(seed: int):
+def seed_all(seed: int) -> None:
     """
     Helper Function to seed all available backends
 
