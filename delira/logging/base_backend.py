@@ -4,7 +4,7 @@ from abc import abstractmethod, ABCMeta
 from threading import Event
 from queue import Queue
 import warnings
-from typing import Callable, Optional, Iterable, Mapping, Union
+from typing import Callable, Optional, Iterable, Mapping, Union, Any
 
 _FUNCTIONS_WITHOUT_STEP = ("graph_pytorch", "graph_tf", "graph_onnx",
                            "embedding")

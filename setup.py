@@ -89,5 +89,6 @@ setup(
     install_requires=requirement_dict.pop("base"),
     tests_require=["coverage"],
     python_requires=">=3.5",
+    package_data={"delira": ["py.typed"]},
     extras_require=requirement_dict
 )

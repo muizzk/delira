@@ -27,3 +27,14 @@ fi
 cd "$TRAVIS_BUILD_DIR";
 # List remaining errors, which have to be fixed manually
 find . -name \*.py -exec pycodestyle --ignore=E402 {} +;
+
+# generates stubs if no Style Errors were found
+if [[ $num_errors_after == 0 ]]; then
+    git config user.name "Travis Python Stub Generator";
+    find . -name "*.pyi" -type f -delete;
+    stubgen -p delira -o . --include-private --ignore-errors;
+    git add *.pyi;
+    git commit -a -m "Generated Python Stub Files";
+    git push https://$GITHUB_TOKEN@github.com/delira-dev/delira.git;
+
+fi

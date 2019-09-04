@@ -1,10 +1,11 @@
 import abc
 import chainer
+from chainer.backend import Device as ChainerDevice
 import numpy as np
 from typing import Union, Dict, Any
 from delira.models.abstract_network import AbstractNetwork
 
-Device = Union[chainer.backend.Device, str]
+Device = Union[ChainerDevice, str]
 
 
 # Use this Mixin Class to set __call__ to None, because there is an

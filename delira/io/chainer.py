@@ -5,7 +5,7 @@ import json
 from typing import Optional, Any, Dict
 
 
-def save_checkpoint(file: str, model: Optional[chainer.link.Link] = None,
+def save_checkpoint(file: str, model: Optional[chainer.Link] = None,
                     optimizers: Optional[Dict[str, chainer.Optimizer]] = None,
                     epoch: Optional[int] = None) -> None:
     """
@@ -109,7 +109,7 @@ def _deserialize_and_load(archive: zipfile.ZipFile, file: str, obj: Any,
 
 
 def load_checkpoint(file: str, old_state: Optional[Dict[str, Any]] = None,
-                    model: Optional[chainer.link.Link] = None,
+                    model: Optional[chainer.Link] = None,
                     optimizers: Optional[Dict[str, chainer.Optimizer]] = None
                     ) -> Dict[str, Any]:
     """

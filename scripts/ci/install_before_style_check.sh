@@ -2,3 +2,4 @@
 
 pip install pycodestyle;
 pip install autopep8;
+pip install mypy;
