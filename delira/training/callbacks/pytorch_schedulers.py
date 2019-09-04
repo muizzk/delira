@@ -15,7 +15,7 @@ if 'TORCH' in get_backends():
 
         """
 
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs) -> None:
             """
 
             Parameters
@@ -30,7 +30,7 @@ if 'TORCH' in get_backends():
 
             self.scheduler = None
 
-        def at_epoch_end(self, trainer: BaseNetworkTrainer, **kwargs):
+        def at_epoch_end(self, trainer: BaseNetworkTrainer, **kwargs) -> dict:
             """
             Executes a single scheduling step
 
@@ -62,7 +62,7 @@ if 'TORCH' in get_backends():
                      threshold: float = 1e-4, threshold_mode: str = 'rel',
                      cooldown: int = 0,
                      min_lr: Union[float, list, Iterable] = 0,
-                     eps: float = 1e-8):
+                     eps: float = 1e-8) -> None:
             """
 
             Parameters
@@ -123,7 +123,7 @@ if 'TORCH' in get_backends():
                 eps)
 
         def at_epoch_end(self, trainer: BaseNetworkTrainer,
-                         **kwargs):
+                         **kwargs) -> dict:
             """
             Executes a single scheduling step
 
@@ -157,7 +157,7 @@ if 'TORCH' in get_backends():
         """
 
         def __init__(self, optimizer: Optimizer, T_max: int,
-                     eta_min: float = 0, last_epoch: int = -1):
+                     eta_min: float = 0, last_epoch: int = -1) -> None:
             """
 
             Parameters
@@ -184,7 +184,7 @@ if 'TORCH' in get_backends():
         """
 
         def __init__(self, optimizer: Optimizer, gamma: float,
-                     last_epoch: int = -1):
+                     last_epoch: int = -1) -> None:
             """
 
             Parameters
@@ -209,7 +209,7 @@ if 'TORCH' in get_backends():
 
         def __init__(self, optimizer: Optimizer,
                      lr_lambda: Union[Callable, list, tuple, Iterable],
-                     last_epoch: int = -1):
+                     last_epoch: int = -1) -> None:
             """
 
             Parameters
@@ -236,7 +236,7 @@ if 'TORCH' in get_backends():
 
         def __init__(self, optimizer: Optimizer,
                      milestones: Union[list, tuple, Iterable],
-                     gamma: float = 0.1, last_epoch: int = -1):
+                     gamma: float = 0.1, last_epoch: int = -1) -> None:
             """
 
             Parameters
@@ -264,7 +264,7 @@ if 'TORCH' in get_backends():
         """
 
         def __init__(self, optimizer: Optimizer, step_size: int,
-                     gamma: float = 0.1, last_epoch: int = -1):
+                     gamma: float = 0.1, last_epoch: int = -1) -> None:
             """
 
             Parameters

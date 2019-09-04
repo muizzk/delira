@@ -12,7 +12,7 @@ class AbstractCallback(object):
 
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """
 
         Parameters
@@ -25,7 +25,7 @@ class AbstractCallback(object):
         """
         pass
 
-    def at_epoch_begin(self, trainer: BaseNetworkTrainer, **kwargs):
+    def at_epoch_begin(self, trainer: BaseNetworkTrainer, **kwargs) -> dict:
         """
         Function which will be executed at begin of each epoch
 
@@ -44,7 +44,7 @@ class AbstractCallback(object):
         """
         return {}
 
-    def at_epoch_end(self, trainer: BaseNetworkTrainer, **kwargs):
+    def at_epoch_end(self, trainer: BaseNetworkTrainer, **kwargs) -> dict:
         """
         Function which will be executed at end of each epoch
 
