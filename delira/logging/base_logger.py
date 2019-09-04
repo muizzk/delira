@@ -15,7 +15,7 @@ class Logger(object):
             self,
             backend: BaseBackend,
             max_queue_size: Optional[int] = None,
-            level: int = logging.NOTSET):
+            level: int = logging.NOTSET) -> None:
         """
 
         Parameters
@@ -42,7 +42,7 @@ class Logger(object):
         self._backend.set_event(self._abort_event)
         self._level = level
 
-    def log(self, log_message: dict):
+    def log(self, log_message: dict) -> None:
         """
         Main Logging Function, Decides whether to log with the assigned
         backend or python's internal module
@@ -89,7 +89,7 @@ class Logger(object):
             self._abort_event.set()
             raise e
 
-    def __call__(self, log_message: dict):
+    def __call__(self, log_message: dict) -> None:
         """
         Makes the class callable and forwards the call to
         :meth:`delira.logging.base_logger.Logger.log`
@@ -108,7 +108,7 @@ class Logger(object):
         """
         return self.log(log_message)
 
-    def close(self):
+    def close(self) -> None:
         """
         Function to close the actual logger; Waits for queue closing and sets
         the abortion event
@@ -119,7 +119,7 @@ class Logger(object):
 
         self._abort_event.set()
 
-    def __del__(self):
+    def __del__(self) -> None:
         """
         Function to be executed, when class instance will be deleted;
         Calls :meth:`delira.logging.base_logger.Logger.close`
@@ -135,7 +135,7 @@ class SingleThreadedLogger(Logger):
     a single element
     """
 
-    def log(self, log_message: dict):
+    def log(self, log_message: dict) -> None:
         """
         Function to log an actual logging message; Calls the backend to
         execute the logging right after pushing it to the queue
@@ -153,7 +153,7 @@ class SingleThreadedLogger(Logger):
 
 
 def make_logger(backend: BaseBackend, max_queue_size: Optional[int] = None,
-                level: int = logging.NOTSET):
+                level: int = logging.NOTSET) -> Logger:
     """
     Function to create a logger
 

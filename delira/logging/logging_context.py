@@ -1,6 +1,7 @@
 from delira.logging.registry import logger_exists, register_logger, \
     unregister_logger, log as _log
 from delira.logging.base_logger import make_logger
+from typing import Optional
 
 log = _log
 
@@ -15,7 +16,7 @@ class LoggingContext(object):
             name: str,
             initialize_if_missing: bool = False,
             destroy_on_exit: Optional[bool] = None,
-            **kwargs):
+            **kwargs) -> None:
         """
 
         Parameters
@@ -56,7 +57,7 @@ class LoggingContext(object):
 
         self._destroy_on_exit = destroy_on_exit
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         """
         Function to be executed during entrance;
         Resets the logging context
@@ -70,7 +71,7 @@ class LoggingContext(object):
         log = self.log
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args) -> None:
         """
         Function to be called during exiting the context manager;
         Destroys the logger if necessary and resets the old logging context
@@ -91,7 +92,7 @@ class LoggingContext(object):
         global log
         log = _log
 
-    def log(self, msg: dict):
+    def log(self, msg: dict) -> None:
         """
         Main Logging Function, Decides whether to log with the assigned
         backend or python's internal module
@@ -106,7 +107,7 @@ class LoggingContext(object):
 
         _log(msg, self._name)
 
-    def __call__(self, log_message: dict):
+    def __call__(self, log_message: dict) -> None:
         """
         Makes the class callable and forwards the call to
         :meth:`delira.logging.base_logger.Logger.log`

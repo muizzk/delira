@@ -1,13 +1,13 @@
 from delira.logging.base_logger import Logger
 from collections import OrderedDict
-from typing import Optional
+from typing import Optional, Tuple
 
 # Registry dict containing all registered available Loggers
 # Use Ordered Dict here to use first logger for logging if no name was given
 _AVAILABLE_LOGGERS = OrderedDict()
 
 
-def log(msg: dict, name: Optional[str] = None):
+def log(msg: dict, name: Optional[str] = None) -> None:
     """
     Global logging function
 
@@ -47,7 +47,7 @@ def log(msg: dict, name: Optional[str] = None):
     return _logger.log(msg)
 
 
-def logger_exists(name: str):
+def logger_exists(name: str) -> bool:
     """
     Check if logger exists
 
@@ -65,7 +65,8 @@ def logger_exists(name: str):
     return name in _AVAILABLE_LOGGERS
 
 
-def register_logger(logger: Logger, name: str, overwrite: bool = False):
+def register_logger(logger: Logger, name: str,
+                    overwrite: bool = False) -> Logger:
     """
     Register a new logger to the Registry
 
@@ -91,7 +92,7 @@ def register_logger(logger: Logger, name: str, overwrite: bool = False):
     return get_logger(name)
 
 
-def unregister_logger(name: str):
+def unregister_logger(name: str) -> Logger:
     """
     Unregisters a logger from the registry
 
@@ -108,7 +109,7 @@ def unregister_logger(name: str):
     return _AVAILABLE_LOGGERS.pop(name)
 
 
-def get_logger(name: str):
+def get_logger(name: str) -> Logger:
     """
     Returns a logger from the registry
 
@@ -126,7 +127,7 @@ def get_logger(name: str):
     return _AVAILABLE_LOGGERS[name]
 
 
-def get_available_loggers():
+def get_available_loggers() -> Tuple[str]:
     """
     Gets names for all registered loggers
 

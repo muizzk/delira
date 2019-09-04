@@ -1,6 +1,6 @@
 from threading import Event
 from queue import Queue
-from typing import Optional, Callable, Union, Iterable, Mapping
+from typing import Optional, Callable, Union, Iterable, Mapping, Dict, Any
 import numpy as np
 
 from delira.logging.writer_backend import WriterLoggingBackend
@@ -29,9 +29,9 @@ class TensorboardBackend(WriterLoggingBackend):
     A Tensorboard logging backend
     """
 
-    def __init__(self, writer_kwargs: Optional[dict] = None,
+    def __init__(self, writer_kwargs: Optional[Dict[str, Any]] = None,
                  abort_event: Optional[Event] = None,
-                 queue: Optional[Queue] = None):
+                 queue: Optional[Queue] = None) -> None:
         """
 
         Parameters
@@ -57,7 +57,7 @@ class TensorboardBackend(WriterLoggingBackend):
 
     def _call_exec_fn(self, exec_fn: Callable,
                       args: Union[Union[list, tuple, Iterable],
-                                  Union[dict, Mapping]]):
+                                  Union[dict, Mapping]]) -> Any:
         """
         Helper Function calling the actual mapped function and flushing
         results to the writer afterwards
@@ -81,7 +81,7 @@ class TensorboardBackend(WriterLoggingBackend):
 
         return ret_val
 
-    def __del__(self):
+    def __del__(self) -> None:
         """
         Function to be executed at deletion;
         Flushes all unsaved changes
@@ -92,7 +92,7 @@ class TensorboardBackend(WriterLoggingBackend):
     def _graph_pytorch(self, model: AbstractPyTorchNetwork,
                        input_to_model: Optional[torch.Tensor] = None,
                        verbose: bool = False,
-                       **kwargs):
+                       **kwargs) -> None:
         """
         Function to log a PyTorch graph
 
@@ -115,7 +115,7 @@ class TensorboardBackend(WriterLoggingBackend):
         self._writer.add_graph(*converted_args, **converted_kwargs)
 
     def _graph_tf(self, graph: tensorflow.Graph,
-                  run_metadata: Optional = None):
+                  run_metadata: Optional = None) -> None:
         """
         Function to log a TensorFlow Graph
 
@@ -154,7 +154,7 @@ class TensorboardBackend(WriterLoggingBackend):
                 graph_def=graphdef.SerializeToString(),
                 tagged_run_metadata=run_metadata))
 
-    def _graph_onnx(self, prototxt: str):
+    def _graph_onnx(self, prototxt: str) -> None:
         """
         Function to log a ONNX graph to file
 
@@ -172,7 +172,8 @@ class TensorboardBackend(WriterLoggingBackend):
                    metadata: Optional = None,
                    label_img: Optional[Union[np.array, Iterable]] = None,
                    global_step: Optional[int] = None,
-                   tag: str = 'default', metadata_header: Optional = None):
+                   tag: str = 'default', metadata_header: Optional = None
+                   ) -> None:
         """
         Function to create an embedding of given data
 
@@ -202,7 +203,7 @@ class TensorboardBackend(WriterLoggingBackend):
 
     def _scalars(self, main_tag: str, tag_scalar_dict: dict,
                  global_step: Optional[int] = None,
-                 walltime: Optional = None, sep: int = "/"):
+                 walltime: Optional = None, sep: int = "/") -> None:
         """
         Function to log multiple scalars at once. Opposing to the base
         function, this is done sequentially rather then parallel to avoid
@@ -232,5 +233,5 @@ class TensorboardBackend(WriterLoggingBackend):
                          walltime=walltime)
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "TensorFlow Backend"

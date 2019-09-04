@@ -31,7 +31,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         """
 
         def __init__(self, push_fn: Callable, figure_kwargs: dict,
-                     push_kwargs: dict):
+                     push_kwargs: dict) -> None:
             """
 
             Parameters
@@ -51,7 +51,7 @@ class BaseBackend(object, metaclass=ABCMeta):
             self._push_kwargs = push_kwargs
             self._fig = None
 
-        def __enter__(self):
+        def __enter__(self) -> None:
             """
             Function to be executed during context-manager entrance;
             Will create a figure with the figure kwargs
@@ -60,7 +60,7 @@ class BaseBackend(object, metaclass=ABCMeta):
             from matplotlib.pyplot import figure
             self._fig = figure(**self._figure_kwargs)
 
-        def __exit__(self, *args):
+        def __exit__(self, *args) -> None:
             """
             Function to be executed during context-manager exit;
             Will push the figure to the logging writer and destroy it
@@ -80,7 +80,7 @@ class BaseBackend(object, metaclass=ABCMeta):
             self._fig = None
 
     def __init__(self, abort_event: Optional[Event] = None,
-                 queue: Optional[Queue] = None):
+                 queue: Optional[Queue] = None) -> None:
         """
 
         Parameters
@@ -143,7 +143,7 @@ class BaseBackend(object, metaclass=ABCMeta):
             # "mesh": self._mesh
         })
 
-    def _log_item(self):
+    def _log_item(self) -> None:
         """
         Internal helper function to log an item of the queue
 
@@ -181,7 +181,7 @@ class BaseBackend(object, metaclass=ABCMeta):
             raise ValueError("Invalid Value passed for logging: %s"
                              % str(process_item))
 
-    def _resolve_global_step(self, key: str, **val):
+    def _resolve_global_step(self, key: str, **val) -> int:
         """
         Helper function to resolve the global step from given Arguments
 
@@ -236,7 +236,7 @@ class BaseBackend(object, metaclass=ABCMeta):
 
         return val
 
-    def run(self):
+    def run(self) -> None:
         """
         Main function which executes the logging, catches exceptions and sets
         the abortion event if necessary
@@ -252,7 +252,7 @@ class BaseBackend(object, metaclass=ABCMeta):
             self._abort_event.set()
             raise e
 
-    def set_queue(self, queue: Queue):
+    def set_queue(self, queue: Queue) -> None:
         """
         Setter Function for the Queue
 
@@ -264,7 +264,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         """
         self._queue = queue
 
-    def set_event(self, event: Event):
+    def set_event(self, event: Event) -> None:
         """
         Setter Function for the abortion event
 
@@ -278,7 +278,7 @@ class BaseBackend(object, metaclass=ABCMeta):
 
     def _call_exec_fn(self, exec_fn: Callable,
                       args: Union[Union[list, tuple, Iterable],
-                                  Union[dict, Mapping]]):
+                                  Union[dict, Mapping]]) -> Any:
         """
         Helper Function calling the actual  mapped function
 
@@ -314,7 +314,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         return ret_val
 
     @abstractmethod
-    def _image(self, *args, **kwargs):
+    def _image(self, *args, **kwargs) -> None:
         """
         Abstract Interface Function to log a single image
 
@@ -334,7 +334,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def _images(self, *args, **kwargs):
+    def _images(self, *args, **kwargs) -> None:
         """
         Abstract Interface Function to log multiple images
 
@@ -352,7 +352,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def _image_with_boxes(self, *args, **kwargs):
+    def _image_with_boxes(self, *args, **kwargs) -> None:
         """
         Abstract Interface Function to log a single image with bounding boxes
 
@@ -372,7 +372,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def _scalar(self, *args, **kwargs):
+    def _scalar(self, *args, **kwargs) -> None:
         """
         Abstract Interface Function to log a single scalar value
 
@@ -392,7 +392,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def _scalars(self, *args, **kwargs):
+    def _scalars(self, *args, **kwargs) -> None:
         """
         Abstract Interface Function to log multiple scalar values
 
@@ -412,7 +412,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def _histogram(self, *args, **kwargs):
+    def _histogram(self, *args, **kwargs) -> None:
         """
         Abstract Interface Function to create and log a histogram out of given
         values
@@ -433,7 +433,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def _figure(self, *args, **kwargs):
+    def _figure(self, *args, **kwargs) -> None:
         """
         Abstract Interface Function to log a single ``matplotlib`` figure
 
@@ -453,7 +453,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def _audio(self, *args, **kwargs):
+    def _audio(self, *args, **kwargs) -> None:
         """
         Abstract Interface Function to log a single audio signal
 
@@ -473,7 +473,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def _video(self, *args, **kwargs):
+    def _video(self, *args, **kwargs) -> None:
         """
         Abstract Interface Function to log a single video
 
@@ -493,7 +493,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def _text(self, *args, **kwargs):
+    def _text(self, *args, **kwargs) -> None:
         """
         Abstract Interface Function to log a single string as text
 
@@ -513,7 +513,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def _graph_pytorch(self, *args, **kwargs):
+    def _graph_pytorch(self, *args, **kwargs) -> None:
         """
         Abstract Interface Function to log a ``PyTorch`` Graph
 
@@ -534,7 +534,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def _graph_tf(self, *args, **kwargs):
+    def _graph_tf(self, *args, **kwargs) -> None:
         """
         Abstract Interface Function to log a TF Graph
 
@@ -554,7 +554,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def _graph_onnx(self, *args, **kwargs):
+    def _graph_onnx(self, *args, **kwargs) -> None:
         """
         Abstract Interface Function to log a ONNX Graph
 
@@ -574,7 +574,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def _embedding(self, *args, **kwargs):
+    def _embedding(self, *args, **kwargs) -> None:
         """
         Abstract Interface Function to create and log an embedding
 
@@ -594,7 +594,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def _pr_curve(self, *args, **kwargs):
+    def _pr_curve(self, *args, **kwargs) -> None:
         """
         Abstract Interface Function to calculate and log a PR curve out of
         given values
@@ -615,7 +615,7 @@ class BaseBackend(object, metaclass=ABCMeta):
         raise NotImplementedError
 
     def _scatter(self, plot_kwargs: dict, figure_kwargs: Optional[dict] = None,
-                 **kwargs):
+                 **kwargs) -> None:
         """
         Function to create a scatter plot and push it
 
@@ -639,7 +639,7 @@ class BaseBackend(object, metaclass=ABCMeta):
             scatter(self, **plot_kwargs)
 
     def _line(self, plot_kwargs: Optional[dict] = None,
-              figure_kwargs: Optional[dict] = None, **kwargs):
+              figure_kwargs: Optional[dict] = None, **kwargs) -> None:
         """
         Function to create a line plot and push it
 
@@ -664,7 +664,7 @@ class BaseBackend(object, metaclass=ABCMeta):
             plot(**plot_kwargs)
 
     def _stem(self, plot_kwargs: Optional[dict] = None,
-              figure_kwargs: Optional[dict] = None, **kwargs):
+              figure_kwargs: Optional[dict] = None, **kwargs) -> None:
         """
         Function to create a stem plot and push it
 
@@ -688,7 +688,7 @@ class BaseBackend(object, metaclass=ABCMeta):
             stem(**plot_kwargs)
 
     def _heatmap(self, plot_kwargs: Optional[dict] = None,
-                 figure_kwargs: Optional[dict] = None, **kwargs):
+                 figure_kwargs: Optional[dict] = None, **kwargs) -> None:
         """
         Function to create a heatmap plot and push it
 
@@ -712,7 +712,7 @@ class BaseBackend(object, metaclass=ABCMeta):
             heatmap(**plot_kwargs)
 
     def _bar(self, plot_kwargs: Optional[dict] = None,
-             figure_kwargs: Optional[dict] = None, **kwargs):
+             figure_kwargs: Optional[dict] = None, **kwargs) -> None:
         """
         Function to create a bar plot and push it
 
@@ -736,7 +736,7 @@ class BaseBackend(object, metaclass=ABCMeta):
             bar(**plot_kwargs)
 
     def _boxplot(self, plot_kwargs: Optional[dict] = None,
-                 figure_kwargs: Optional[dict] = None, **kwargs):
+                 figure_kwargs: Optional[dict] = None, **kwargs) -> None:
         """
         Function to create a boxplot and push it
 
@@ -760,7 +760,7 @@ class BaseBackend(object, metaclass=ABCMeta):
             boxplot(**plot_kwargs)
 
     def _surface(self, plot_kwargs: Optional[dict] = None,
-                 figure_kwargs: Optional[dict] = None, **kwargs):
+                 figure_kwargs: Optional[dict] = None, **kwargs) -> None:
         """
         Function to create a surface plot and push it
 
@@ -785,7 +785,7 @@ class BaseBackend(object, metaclass=ABCMeta):
             kdeplot(**plot_kwargs)
 
     def _contour(self, plot_kwargs: Optional[dict] = None,
-                 figure_kwargs: Optional[dict] = None, **kwargs):
+                 figure_kwargs: Optional[dict] = None, **kwargs) -> None:
         """
         Function to create a contour plot and push it
 
@@ -810,7 +810,7 @@ class BaseBackend(object, metaclass=ABCMeta):
             contour(**plot_kwargs)
 
     def _quiver(self, plot_kwargs: Optional[dict] = None,
-                figure_kwargs: Optional[dict] = None, **kwargs):
+                figure_kwargs: Optional[dict] = None, **kwargs) -> None:
         """
         Function to create a quiver plot and push it
 
@@ -834,5 +834,5 @@ class BaseBackend(object, metaclass=ABCMeta):
             quiver(**plot_kwargs)
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "BaseBackend"

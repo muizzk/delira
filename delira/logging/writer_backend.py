@@ -2,7 +2,7 @@
 from delira.logging.base_backend import BaseBackend
 from queue import Queue
 from threading import Event
-from typing import ClassVar, Optional, Any, Union, Iterable
+from typing import Type, Optional, Any, Union, Iterable, Dict, Tuple, Mapping
 import numpy as np
 try:
     from matplotlib.pyplot import Figure
@@ -15,15 +15,15 @@ class WriterLoggingBackend(BaseBackend):
     A Basic Writer Backend for a unspecified writer class
     """
 
-    def __init__(self, writer_cls: ClassVar[Any], writer_kwargs: dict,
+    def __init__(self, writer_cls: Type[Any], writer_kwargs: Dict[str, Any],
                  abort_event: Optional[Event] = None,
-                 queue: Optional[Queue] = None):
+                 queue: Optional[Queue] = None) -> None:
         super().__init__(abort_event, queue)
 
         self._writer = writer_cls(**writer_kwargs)
 
     @staticmethod
-    def convert_to_npy(*args, **kwargs):
+    def convert_to_npy(*args, **kwargs) -> (Tuple[Any], Mapping[Any, Any]):
         """
         Function to convert all positional args and keyword args to numpy
         (returns identity per default, but can be overwritten in subclass to
@@ -46,7 +46,7 @@ class WriterLoggingBackend(BaseBackend):
 
     def _image(self, tag: str, img_tensor: np.array,
                global_step: Optional[int] = None, walltime: Optional = None,
-               dataformats: str = 'CHW'):
+               dataformats: str = 'CHW') -> None:
         """
         Function to log a single image
 
@@ -73,7 +73,7 @@ class WriterLoggingBackend(BaseBackend):
 
     def _images(self, tag: str, img_tensor: np.ndarray,
                 global_step: Optional[int] = None, walltime: Optional = None,
-                dataformats: str = 'NCHW'):
+                dataformats: str = 'NCHW') -> None:
         """
         Function to log multiple values
 
@@ -102,7 +102,7 @@ class WriterLoggingBackend(BaseBackend):
                           box_tensor: np.ndarray,
                           global_step: Optional[int] = None,
                           walltime: Optional = None, dataformats: str = 'CHW',
-                          **kwargs):
+                          **kwargs) -> None:
         """
         Function to log a single image with bounding boxes
 
@@ -134,7 +134,8 @@ class WriterLoggingBackend(BaseBackend):
         self._writer.add_image_with_boxes(*converted_args, **converted_kwargs)
 
     def _scalar(self, tag: str, scalar_value: Union[int, float],
-                global_step: Optional[int] = None, walltime: Optional = None):
+                global_step: Optional[int] = None,
+                walltime: Optional = None) -> None:
         """
         Function to log a single scalar value
 
@@ -157,7 +158,7 @@ class WriterLoggingBackend(BaseBackend):
 
     def _scalars(self, main_tag: str, tag_scalar_dict: dict,
                  global_step: Optional[int] = None,
-                 walltime: Optional = None):
+                 walltime: Optional = None) -> None:
         """
         Function to log multiple scalars
 
@@ -182,7 +183,7 @@ class WriterLoggingBackend(BaseBackend):
 
     def _histogram(self, tag: str, values: Union[list, Iterable, np.ndarray],
                    global_step: Optional[int] = None, bins: str = 'tensorflow',
-                   walltime: Optional = None):
+                   walltime: Optional = None) -> None:
         """
         Function to create and log a histogram out of given values
 
@@ -208,7 +209,7 @@ class WriterLoggingBackend(BaseBackend):
 
     def _figure(self, tag: str, figure: Figure,
                 global_step: Optional[int] = None, close: bool = True,
-                walltime: Optional = None):
+                walltime: Optional = None) -> None:
         """
         Function to log a ``matplotlib.pyplot`` figure
 
@@ -233,7 +234,7 @@ class WriterLoggingBackend(BaseBackend):
 
     def _audio(self, tag: str, snd_tensor: np.ndarray,
                global_step: Optional[int] = None, sample_rate: int = 44100,
-               walltime: Optional = None):
+               walltime: Optional = None) -> None:
         """
         Function to log a single audio signal
         Parameters
@@ -258,7 +259,8 @@ class WriterLoggingBackend(BaseBackend):
         self._writer.add_audio(*converted_args, **converted_kwargs)
 
     def _text(self, tag: str, text_string: str,
-              global_step: Optional[int] = None, walltime: Optional = None):
+              global_step: Optional[int] = None, walltime: Optional = None
+              ) -> None:
         """
         Function to log a single string as text
 
@@ -282,7 +284,7 @@ class WriterLoggingBackend(BaseBackend):
     def _pr_curve(self, tag: str, labels: np.ndarray, predictions: np.ndarray,
                   global_step: Optional[int] = None, num_thresholds: int = 127,
                   weights: Optional[np.ndarray] = None,
-                  walltime: Optional = None):
+                  walltime: Optional = None) -> None:
         """
         Function to create and log a PR curve out of given predictions and +
         labels
@@ -316,7 +318,7 @@ class WriterLoggingBackend(BaseBackend):
 
     def _video(self, tag: str, vid_tensor: np.ndarray,
                global_step: Optional[int] = None, fps: int = 4,
-               walltime: Optional = None):
+               walltime: Optional = None) -> None:
         """
         Function to log a single video
 
@@ -341,5 +343,5 @@ class WriterLoggingBackend(BaseBackend):
         self._writer.add_video(*converted_args, **converted_kwargs)
 
     @property
-    def name(self):
+    def name(self) -> str:
         return "WriterBackend"
