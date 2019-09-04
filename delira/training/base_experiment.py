@@ -1,4 +1,4 @@
-from typing import Union, Callable, Optional, ClassVar, Iterable
+from typing import Union, Callable, Optional, Type, Dict, Any
 import logging
 import pickle
 import os
@@ -38,7 +38,7 @@ class BaseExperiment(object):
     def __init__(
             self,
             params: Union[str, Parameters],
-            model_cls: ClassVar[AbstractNetwork],
+            model_cls: Type[AbstractNetwork],
             n_epochs: Optional[int] = None,
             name: Optional[str] = None,
             save_path: Optional[str] = None,
@@ -46,9 +46,9 @@ class BaseExperiment(object):
             val_score_key: Optional[str] = None,
             optim_builder: Optional[Callable] = None,
             checkpoint_freq: int = 1,
-            trainer_cls: ClassVar[BaseNetworkTrainer] = BaseNetworkTrainer,
-            predictor_cls: ClassVar[Predictor] = Predictor,
-            **kwargs):
+            trainer_cls: Type[BaseNetworkTrainer] = BaseNetworkTrainer,
+            predictor_cls: Type[Predictor] = Predictor,
+            **kwargs) -> None:
         """
 
         Parameters
@@ -140,7 +140,8 @@ class BaseExperiment(object):
 
         self.kwargs = kwargs
 
-    def setup(self, params: Parameters, training: bool = True, **kwargs):
+    def setup(self, params: Parameters, training: bool = True, **kwargs
+              ) -> Union[BaseNetworkTrainer, Predictor]:
         """
         Defines the setup behavior (model, trainer etc.) for training and
         testing case
@@ -174,7 +175,8 @@ class BaseExperiment(object):
 
         return self._setup_test(params, **kwargs)
 
-    def _setup_training(self, params: Parameters, **kwargs):
+    def _setup_training(self, params: Parameters, **kwargs
+                        ) -> BaseNetworkTrainer:
         """
         Handles the setup for training case
 
@@ -231,7 +233,7 @@ class BaseExperiment(object):
 
     def _setup_test(self, params: Parameters, model: AbstractNetwork,
                     convert_batch_to_npy_fn: Callable,
-                    prepare_batch_fn: Callable, **kwargs):
+                    prepare_batch_fn: Callable, **kwargs) -> Predictor:
         """
 
         Parameters
@@ -264,7 +266,7 @@ class BaseExperiment(object):
 
     def run(self, train_data: BaseDataManager,
             val_data: Optional[BaseDataManager] = None,
-            params: Optional[Parameters] = None, **kwargs):
+            params: Optional[Parameters] = None, **kwargs) -> AbstractNetwork:
         """
         Setup and run training
 
@@ -314,7 +316,8 @@ class BaseExperiment(object):
 
     def resume(self, save_path: str, train_data: BaseDataManager,
                val_data: Optional[BaseDataManager] = None,
-               params: Optional[Parameters] = None, **kwargs):
+               params: Optional[Parameters] = None, **kwargs
+               ) -> AbstractNetwork:
         """
         Resumes a previous training by passing an explicit ``save_path``
         instead of generating a new one
@@ -354,7 +357,8 @@ class BaseExperiment(object):
     def test(self, network: AbstractNetwork, test_data: BaseDataManager,
              metrics: dict, metric_keys: Optional[dict] = None,
              verbose: bool = False, prepare_batch: Optional[Callable] = None,
-             convert_fn: Callable = lambda *x, **y: (x, y), **kwargs):
+             convert_fn: Callable = lambda *x, **y: (x, y), **kwargs
+             ) -> (Dict[str, Any], Dict[str, Any]):
         """
         Setup and run testing on a given network
 
@@ -412,7 +416,8 @@ class BaseExperiment(object):
               metric_keys: Optional[dict] = None,
               test_kwargs: Optional[dict] = None,
               params: Optional[Parameters] = None,
-              verbose: bool = False, **kwargs):
+              verbose: bool = False, **kwargs
+              ) -> (Dict[str, Any], Dict[str, Any]):
         """
         Performs a k-Fold cross-validation
 
@@ -595,7 +600,7 @@ class BaseExperiment(object):
 
         return outputs, metrics_test
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Converts :class:`BaseExperiment` to string representation
 
@@ -610,7 +615,7 @@ class BaseExperiment(object):
             s += "\t{} = {}\n".format(k, v)
         return s
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> AbstractNetwork:
         """
         Call :meth:`BaseExperiment.run`
 
@@ -623,13 +628,13 @@ class BaseExperiment(object):
 
         Returns
         -------
-        :class:`BaseNetworkTrainer`
-            trainer of trained network
+        :class:`AbstractNetwork`
+            trained network
 
         """
         return self.run(*args, **kwargs)
 
-    def save(self):
+    def save(self) -> None:
         """
         Saves the Whole experiments
 
@@ -641,7 +646,7 @@ class BaseExperiment(object):
         self.params.save(os.path.join(self.save_path, "parameters"))
 
     @staticmethod
-    def load(file_name: str):
+    def load(file_name: str) -> Any:
         """
         Loads whole experiment
 
@@ -654,7 +659,8 @@ class BaseExperiment(object):
         with open(file_name, "rb") as f:
             return pickle.load(f)
 
-    def _resolve_params(self, params: Optional[Parameters] = None):
+    def _resolve_params(self, params: Optional[Parameters] = None
+                        ) -> Parameters:
         """
         Merges the given params with ``self.params``.
         If the same argument is given in both params,
@@ -682,7 +688,7 @@ class BaseExperiment(object):
 
         return params
 
-    def _resolve_kwargs(self, kwargs: Optional[dict] = None):
+    def _resolve_kwargs(self, kwargs: Optional[dict] = None) -> dict:
         """
         Merges given kwargs with ``self.kwargs``
         If same argument is present in both kwargs, the one from the given
@@ -710,8 +716,8 @@ class BaseExperiment(object):
 
         return kwargs
 
-    def __getstate__(self):
+    def __getstate__(self) -> dict:
         return vars(self)
 
-    def __setstate__(self, state):
+    def __setstate__(self, state) -> None:
         vars(self).update(state)

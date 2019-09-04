@@ -12,7 +12,7 @@ if "TORCH" in get_backends():
         """
 
         def __init__(self, alpha: Optional[float] = None, gamma: float = 2.,
-                     reduction: str = 'elementwise_mean'):
+                     reduction: str = 'elementwise_mean') -> None:
             """
             Implements Focal Loss for binary class case
 
@@ -44,7 +44,7 @@ if "TORCH" in get_backends():
             self.gamma = gamma
             self.reduction = reduction
 
-        def forward(self, p: torch.Tensor, t: torch.Tensor):
+        def forward(self, p: torch.Tensor, t: torch.Tensor) -> torch.Tensor:
             bce_loss = F.binary_cross_entropy(p, t, reduction='none')
 
             if self.alpha is not None:
@@ -79,7 +79,7 @@ if "TORCH" in get_backends():
         """
 
         def __init__(self, alpha: Optional[float] = None, gamma: float = 2.,
-                     reduction: str = 'elementwise_mean'):
+                     reduction: str = 'elementwise_mean') -> None:
             """
             Implements Focal Loss for binary class case
 
@@ -110,7 +110,7 @@ if "TORCH" in get_backends():
             self.gamma = gamma
             self.reduction = reduction
 
-        def forward(self, p: torch.Tensor, t: torch.Tensor):
+        def forward(self, p: torch.Tensor, t: torch.Tensor) -> torch.Tensor:
             bce_loss = F.binary_cross_entropy_with_logits(
                 p, t, reduction='none')
 

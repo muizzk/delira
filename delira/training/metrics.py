@@ -1,6 +1,6 @@
 
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, \
-    f1_score, fbeta_score, hamming_loss, jaccard_similarity_score, log_loss, \
+    f1_score, fbeta_score, hamming_loss, jaccard_score, log_loss, \
     matthews_corrcoef, precision_score, recall_score, zero_one_loss, \
     roc_auc_score
 from sklearn.preprocessing import label_binarize
@@ -12,7 +12,7 @@ from typing import Callable, Union, Iterable
 
 class SklearnClassificationMetric(object):
     def __init__(self, score_fn: Callable, gt_logits: bool = False,
-                 pred_logits: bool = True, **kwargs):
+                 pred_logits: bool = True, **kwargs) -> None:
         """
         Wraps an score function as a metric
 
@@ -32,7 +32,8 @@ class SklearnClassificationMetric(object):
         self._pred_logits = pred_logits
         self.kwargs = kwargs
 
-    def __call__(self, y_true: np.ndarray, y_pred: np.ndarray, **kwargs):
+    def __call__(self, y_true: np.ndarray, y_pred: np.ndarray, **kwargs
+                 ) -> Union[float, np.ndarray]:
         """
         Compute metric with score_fn
 
@@ -71,7 +72,7 @@ class SklearnAccuracyScore(SklearnClassificationMetric):
             self,
             gt_logits: bool = False,
             pred_logits: bool = True,
-            **kwargs):
+            **kwargs) -> None:
         super().__init__(accuracy_score, gt_logits, pred_logits, **kwargs)
 
 
@@ -84,7 +85,7 @@ class SklearnBalancedAccuracyScore(SklearnClassificationMetric):
             self,
             gt_logits: bool = False,
             pred_logits: bool = True,
-            **kwargs):
+            **kwargs) -> None:
         super().__init__(balanced_accuracy_score, gt_logits, pred_logits,
                          **kwargs)
 
@@ -98,7 +99,7 @@ class SklearnF1Score(SklearnClassificationMetric):
             self,
             gt_logits: bool = False,
             pred_logits: bool = True,
-            **kwargs):
+            **kwargs) -> None:
         super().__init__(f1_score, gt_logits, pred_logits, **kwargs)
 
 
@@ -111,7 +112,7 @@ class SklearnFBetaScore(SklearnClassificationMetric):
             self,
             gt_logits: bool = False,
             pred_logits: bool = True,
-            **kwargs):
+            **kwargs) -> None:
         super().__init__(fbeta_score, gt_logits, pred_logits, **kwargs)
 
 
@@ -124,7 +125,7 @@ class SklearnHammingLoss(SklearnClassificationMetric):
             self,
             gt_logits: bool = False,
             pred_logits: bool = True,
-            **kwargs):
+            **kwargs) -> None:
         super().__init__(hamming_loss, gt_logits, pred_logits, **kwargs)
 
 
@@ -137,8 +138,8 @@ class SklearnJaccardSimilarityScore(SklearnClassificationMetric):
             self,
             gt_logits: bool = False,
             pred_logits: bool = True,
-            **kwargs):
-        super().__init__(jaccard_similarity_score, gt_logits, pred_logits,
+            **kwargs) -> None:
+        super().__init__(jaccard_score, gt_logits, pred_logits,
                          **kwargs)
 
 
@@ -151,7 +152,7 @@ class SklearnLogLoss(SklearnClassificationMetric):
             self,
             gt_logits: bool = False,
             pred_logits: bool = True,
-            **kwargs):
+            **kwargs) -> None:
         super().__init__(log_loss, gt_logits, pred_logits, **kwargs)
 
 
@@ -164,7 +165,7 @@ class SklearnMatthewsCorrCoeff(SklearnClassificationMetric):
             self,
             gt_logits: bool = False,
             pred_logits: bool = True,
-            **kwargs):
+            **kwargs) -> None:
         super().__init__(matthews_corrcoef, gt_logits, pred_logits, **kwargs)
 
 
@@ -177,7 +178,7 @@ class SklearnPrecisionScore(SklearnClassificationMetric):
             self,
             gt_logits: bool = False,
             pred_logits: bool = True,
-            **kwargs):
+            **kwargs) -> None:
         super().__init__(precision_score, gt_logits, pred_logits, **kwargs)
 
 
@@ -190,7 +191,7 @@ class SklearnRecallScore(SklearnClassificationMetric):
             self,
             gt_logits: bool = False,
             pred_logits: bool = True,
-            **kwargs):
+            **kwargs) -> None:
         super().__init__(recall_score, gt_logits, pred_logits, **kwargs)
 
 
@@ -203,13 +204,14 @@ class SklearnZeroOneLoss(SklearnClassificationMetric):
             self,
             gt_logits: bool = False,
             pred_logits: bool = True,
-            **kwargs):
+            **kwargs) -> None:
         super().__init__(zero_one_loss, gt_logits, pred_logits, **kwargs)
 
 
 class AurocMetric(object):
     def __init__(self, classes: Union[tuple,
-                                      list, Iterable] = (0, 1), **kwargs):
+                                      list, Iterable] = (0, 1), **kwargs
+                 ) -> None:
         """
         Implements the auroc metric for binary and multi class classification
 
@@ -232,7 +234,8 @@ class AurocMetric(object):
                              "classification. Only classes {} were passed to "
                              "AurocMetric.".format(classes))
 
-    def __call__(self, y_true: np.ndarray, y_pred: np.ndarray, **kwargs):
+    def __call__(self, y_true: np.ndarray, y_pred: np.ndarray, **kwargs
+                 ) -> Union[float, np.ndarray]:
         """
         Compute auroc
 

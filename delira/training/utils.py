@@ -1,11 +1,11 @@
 import collections
 import numpy as np
 
-from typing import Any, Type, Callable
+from typing import Any, Type, Callable, Mapping, Tuple, Union
 
 
 def recursively_convert_elements(element: Any, check_type: Type,
-                                 conversion_fn: Callable):
+                                 conversion_fn: Callable) -> Any:
     """
     Function to recursively convert all elements
 
@@ -58,9 +58,9 @@ def recursively_convert_elements(element: Any, check_type: Type,
     return element
 
 
-def _correct_zero_shape(arg: Any):
+def _correct_zero_shape(arg: Any) -> Any:
     """
-    Corrects the shape of numpy array to be at least 1d and returns the
+    Corrects the shape of array-like objects to be at least 1d and returns the
     argument as is otherwise
 
     Parameters
@@ -80,7 +80,9 @@ def _correct_zero_shape(arg: Any):
     return arg
 
 
-def convert_to_numpy_identity(*args, **kwargs):
+def convert_to_numpy_identity(*args, **kwargs
+                              ) -> (Tuple[Union[np.ndarray, Any]],
+                                    Mapping[Any, Union[np.ndarray, Any]]):
     """
     Corrects the shape of all zero-sized numpy arrays to be at least 1d
 

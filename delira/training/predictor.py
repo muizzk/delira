@@ -9,7 +9,7 @@ from delira.data_loading import BaseDataManager
 from delira.training.utils import convert_to_numpy_identity
 from delira.utils.config import LookupConfig
 from delira.models.abstract_network import AbstractNetwork
-from typing import Callable, Optional, Any, Mapping, Union
+from typing import Callable, Optional, Any, Mapping, Union, Dict, Generator
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class Predictor(object):
     def __init__(
             self, model: AbstractNetwork, key_mapping: dict,
             convert_batch_to_npy_fn: Callable = convert_to_numpy_identity,
-            prepare_batch_fn: Callable = lambda **x: x, **kwargs):
+            prepare_batch_fn: Callable = lambda **x: x, **kwargs) -> None:
         """
 
         Parameters
@@ -62,7 +62,7 @@ class Predictor(object):
 
     def _setup(self, network: AbstractNetwork, key_mapping: dict,
                convert_batch_args_kwargs_to_npy_fn: Callable,
-               prepare_batch_fn: Callable, **kwargs):
+               prepare_batch_fn: Callable, **kwargs) -> None:
         """
 
         Parameters
@@ -89,7 +89,7 @@ class Predictor(object):
         self._convert_to_npy_fn = convert_batch_args_kwargs_to_npy_fn
         self._prepare_batch = prepare_batch_fn
 
-    def __call__(self, data: dict, **kwargs):
+    def __call__(self, data: dict, **kwargs) -> Dict[str, np.ndarray]:
         """
         Method to call the class.
         Returns the predictions corresponding to the given data
@@ -107,7 +107,7 @@ class Predictor(object):
         """
         return self.predict(data, **kwargs)
 
-    def predict(self, data: dict, **kwargs):
+    def predict(self, data: dict, **kwargs) -> Dict[str, np.ndarray]:
         """
         Predict single batch
         Returns the predictions corresponding to the given data
@@ -146,7 +146,7 @@ class Predictor(object):
                          batchsize: Optional[int] = None,
                          metrics: Optional[dict] = None,
                          metric_keys: Optional[dict] = None,
-                         verbose: bool = False, **kwargs):
+                         verbose: bool = False, **kwargs) -> Generator:
         """
         Defines a routine to predict data obtained from a batchgenerator
         without explicitly caching anything
@@ -252,7 +252,7 @@ class Predictor(object):
             batchsize: Optional[int] = None,
             metrics: Optional[dict] = None,
             metric_keys: Optional[dict] = None,
-            verbose: bool = False, **kwargs):
+            verbose: bool = False, **kwargs) -> Generator:
         """
         Defines a routine to predict data obtained from a batchgenerator and
         caches the metrics
@@ -307,7 +307,7 @@ class Predictor(object):
             batchsize: Optional[int] = None,
             metrics: Optional[dict] = None,
             metric_keys: Optional[dict] = None,
-            verbose: bool = False, **kwargs):
+            verbose: bool = False, **kwargs) -> Generator:
         """
         Defines a routine to predict data obtained from a batchgenerator and
         caches all predictions and metrics (yields them in dicts)
@@ -362,7 +362,7 @@ class Predictor(object):
             metrics: Optional[dict] = None,
             metric_keys: Optional[dict] = None,
             verbose: bool = False,
-            cache_preds: bool = False, **kwargs):
+            cache_preds: bool = False, **kwargs) -> Generator:
         """
         Defines a routine to predict data obtained from a batchgenerator and
         caches all predictions and metrics (yields them in dicts)
@@ -447,7 +447,7 @@ class Predictor(object):
         return
 
     @staticmethod
-    def __convert_dict(old_dict: dict, new_dict: dict):
+    def __convert_dict(old_dict: dict, new_dict: dict) -> dict:
         """
         Function to recursively convert dicts
 
@@ -492,7 +492,7 @@ class Predictor(object):
         return new_dict
 
     @staticmethod
-    def __concatenate_dict_items(dict_like: Union[dict, Mapping]):
+    def __concatenate_dict_items(dict_like: Union[dict, Mapping]) -> dict:
         """
         Function to recursively concatenate dict-items
 
@@ -503,6 +503,8 @@ class Predictor(object):
 
         Returns
         -------
+        dict
+            the dictionary with concatenated items
 
         """
         for k, v in dict_like.items():
@@ -515,7 +517,7 @@ class Predictor(object):
 
             return dict_like
 
-    def __setattr__(self, key: str, value: Any):
+    def __setattr__(self, key: str, value: Any) -> None:
         """
         Set attributes and guard specific attributes after they have been set
         once
@@ -543,7 +545,8 @@ class Predictor(object):
 
     @staticmethod
     def calc_metrics(batch: LookupConfig, metrics: Optional[dict] = None,
-                     metric_keys: Optional[dict] = None):
+                     metric_keys: Optional[dict] = None
+                     ) -> Dict[str, Union[np.ndarray, float]]:
         """
         Compute metrics
 

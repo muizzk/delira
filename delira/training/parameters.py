@@ -4,7 +4,7 @@ from copy import deepcopy, copy
 import yaml
 
 from delira.utils import LookupConfig
-from typing import Optional, Union, Mapping, Iterable
+from typing import Optional, Union, Mapping, Iterable, Any
 
 
 class Parameters(LookupConfig):
@@ -19,7 +19,7 @@ class Parameters(LookupConfig):
     """
 
     def __init__(self, fixed_params: Optional[dict] = None,
-                 variable_params: Optional[dict] = None):
+                 variable_params: Optional[dict] = None) -> None:
         """
 
         Parameters
@@ -40,7 +40,7 @@ class Parameters(LookupConfig):
         super().__init__(fixed=fixed_params,
                          variable=variable_params)
 
-    def permute_hierarchy(self):
+    def permute_hierarchy(self) -> Any:
         """
         switches hierarchy
 
@@ -90,7 +90,7 @@ class Parameters(LookupConfig):
 
         return self
 
-    def permute_training_on_top(self):
+    def permute_training_on_top(self) -> Any:
         """
         permutes hierarchy in a way that the training-model hierarchy is on top
 
@@ -106,7 +106,7 @@ class Parameters(LookupConfig):
         else:
             return self.permute_hierarchy()
 
-    def permute_variability_on_top(self):
+    def permute_variability_on_top(self) -> Any:
         """
         permutes hierarchy in a way that the training-model hierarchy is on top
 
@@ -122,7 +122,7 @@ class Parameters(LookupConfig):
             return self.permute_hierarchy()
 
     @property
-    def hierarchy(self):
+    def hierarchy(self) -> str:
         """
         Returns the current hierarchy
 
@@ -143,7 +143,7 @@ class Parameters(LookupConfig):
 
         return hierarchy
 
-    def permute_to_hierarchy(self, hierarchy: str):
+    def permute_to_hierarchy(self, hierarchy: str) -> Any:
         """
         Permute hierarchy to match the specified hierarchy
 
@@ -173,7 +173,7 @@ class Parameters(LookupConfig):
             raise ValueError("Invalid Hierarchy: %s" % hierarchy)
 
     @property
-    def variability_on_top(self):
+    def variability_on_top(self) -> bool:
         """
         Return whether the variability is on top
 
@@ -187,7 +187,7 @@ class Parameters(LookupConfig):
         return hasattr(self, "fixed") and hasattr(self, "variable")
 
     @property
-    def training_on_top(self):
+    def training_on_top(self) -> bool:
         """
         Return whether the training hierarchy is on top
 
@@ -199,7 +199,7 @@ class Parameters(LookupConfig):
         """
         return hasattr(self, "model") and hasattr(self, "training")
 
-    def save(self, filepath: str):
+    def save(self, filepath: str) -> None:
         """
         Saves class to given filepath (YAML + Pickle)
 
@@ -227,7 +227,7 @@ class Parameters(LookupConfig):
 
     def update(self, dict_like: Union[dict, Mapping], deep: bool = False,
                ignore: Union[tuple, list, Iterable] = None,
-               allow_dict_overwrite: bool = True):
+               allow_dict_overwrite: bool = True) -> None:
         """Update entries in the Parameters
 
         Parameters
@@ -318,7 +318,7 @@ class Parameters(LookupConfig):
                 # dict_like changed to training_on_top
                 dict_like.permute_variability_on_top()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         String Representation of class
 
@@ -336,7 +336,7 @@ class Parameters(LookupConfig):
                 s += "\t{} = {}\n".format(k, v.__class__.__name__)
         return s
 
-    def __copy__(self):
+    def __copy__(self) -> Any:
         """
         Enables shallow copy
 
@@ -359,7 +359,7 @@ class Parameters(LookupConfig):
             self.permute_training_on_top()
             return _params.permute_training_on_top()
 
-    def __deepcopy__(self, memo):
+    def __deepcopy__(self, memo) -> Any:
         """
         Enables deepcopy
 
