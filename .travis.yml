@@ -178,6 +178,7 @@ script:
       else
           bash scripts/ci/run_style_checks.sh;
       fi
+    - echo "Debugging"
 
 before_deploy:
     - cd $TRAVIS_BUILD_DIR
