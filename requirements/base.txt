@@ -11,6 +11,7 @@ tqdm
 visdom>=0.1.8.5
 pyyaml
 batchgenerators>=0.18.2,!=0.19.2,<0.19.4
+Werkzeug==0.15.5 # installing after bacthgenerators to enforce version
 tensorboardX
 psutil
 nested_lookup
